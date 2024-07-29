@@ -1,0 +1,27 @@
+name: meili_flutter_ios
+description: iOS implementation of the meili_flutter plugin
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.4.0
+
+flutter:
+  plugin:
+    implements: meili_flutter
+    platforms:
+      ios:
+        pluginClass: MeiliFlutterPlugin
+        dartPluginClass: MeiliFlutterIOS
+
+dependencies:
+  flutter:
+    sdk: flutter
+  meili_flutter_platform_interface:
+    path: ../meili_flutter_platform_interface
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  plugin_platform_interface: ^2.1.8
+  very_good_analysis: ^6.0.0

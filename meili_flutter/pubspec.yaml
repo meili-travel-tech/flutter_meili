@@ -1,0 +1,32 @@
+name: meili_flutter
+description: Meili Flutter plugin
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.4.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        default_package: meili_flutter_android
+      ios:
+        default_package: meili_flutter_ios
+
+dependencies:
+  flutter:
+    sdk: flutter
+  meili_flutter_android:
+    path: ../meili_flutter_android
+  meili_flutter_ios:
+    path: ../meili_flutter_ios
+  meili_flutter_platform_interface:
+    path: ../meili_flutter_platform_interface
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+  plugin_platform_interface: ^2.1.8
+  very_good_analysis: ^6.0.0
