@@ -1,4 +1,5 @@
 import 'package:meili_flutter/src/model/avail_params.dart';
+import 'package:meili_flutter/src/model/booking_params.dart';
 import 'package:meili_flutter/src/model/flow_enum.dart';
 
 /// Represents the parameters required to open the Meili view.
@@ -16,7 +17,7 @@ class MeiliParams {
   final AvailParams? availParams;
 
   /// The booking parameters for the Meili view.
-  final Map<String, dynamic>? bookingParams;
+  final BookingParams? bookingParams;
 
   /// Creates an instance of [MeiliParams].
   MeiliParams({
@@ -34,7 +35,7 @@ class MeiliParams {
       'currentFlow': currentFlow.toString().split('.').last,
       'env': env,
       'availParams': availParams?.toMap(),
-      'bookingParams': bookingParams,
+      'bookingParams': bookingParams?.toMap(),
     };
   }
 }
