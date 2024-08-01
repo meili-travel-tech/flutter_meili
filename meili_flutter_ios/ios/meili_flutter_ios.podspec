@@ -1,7 +1,6 @@
 #
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
 #
-stripe_version = '~> 23.28.0'
 
 Pod::Spec.new do |s|
   s.name             = 'meili_flutter_ios'
@@ -22,6 +21,10 @@ Pod::Spec.new do |s|
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
-  s.dependency 'MeiliSDK'
+  # s.dependency 'MeiliSDK', '~> 1.0.49'
+
+s.preserve_paths = 'MeiliSDK.xcframework/**/*'
+s.xcconfig = { 'OTHER_LDFLAGS' => '-framework MeiliSDK' }
+s.vendored_frameworks = 'MeiliSDK.xcframework'
 
 end

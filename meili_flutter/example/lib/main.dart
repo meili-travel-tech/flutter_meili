@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meili_flutter/meili_flutter.dart';
 
@@ -8,7 +9,50 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: HomePage());
+    return const CupertinoApp(home: TabHomePage());
+  }
+}
+
+class TabHomePage extends StatefulWidget {
+  const TabHomePage({super.key});
+
+  @override
+  State<TabHomePage> createState() => _TabHomePageState();
+}
+
+class _TabHomePageState extends State<TabHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            label: 'Direct',
+            icon: Icon(CupertinoIcons.arrow_right),
+          ),
+          BottomNavigationBarItem(
+            label: 'Connect',
+            icon: Icon(CupertinoIcons.link),
+          ),
+          BottomNavigationBarItem(
+            label: 'Booking Manager',
+            icon: Icon(CupertinoIcons.person),
+          ),
+        ],
+      ),
+      tabBuilder: (context, index) {
+        switch (index) {
+          case 0:
+            return MeiliDirectFlowButton();
+          case 1:
+            return HomePage();
+          case 2:
+            return MeiliBookingManagerFlowButton();
+          default:
+            return Container();
+        }
+      },
+    );
   }
 }
 
@@ -20,45 +64,147 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String? _platformName;
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text('IN PATH BOOKING'),
+      ),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Higher dummy content above the MeiliView
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Welcome to the Flutter Example App',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'This is some dummy content above the MeiliView widget.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'More dummy content above the MeiliView widget.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Even more dummy content above the MeiliView widget.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+
+              // MeiliConnectWidget
+              MeiliConnectWidget(
+                ptid: "125.10",
+                env: "uat",
+                availParams: AvailParams(
+                  pickupLocation: "BCN",
+                  dropoffLocation: "BCN",
+                  pickupDateTime: DateTime.parse("2024-08-19T14:38:34.301Z"),
+                  dropoffDateTime: DateTime.parse("2024-08-28T14:38:34.301Z"),
+                  driverAge: 25,
+                  currencyCode: "EUR",
+                  residency: "IE",
+                ),
+              ),
+
+              // Dummy content below the MeiliView
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'This is some dummy content below the MeiliView widget.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Enjoy exploring the app!',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Even more dummy content below the MeiliView widget.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'More dummy content below the MeiliView widget.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MeiliDirectFlowButton extends StatelessWidget {
+  const MeiliDirectFlowButton({Key? key}) : super(key: key);
+
+  void _openMeiliView() async {
+    final params = MeiliParams(
+      ptid: '100.10',
+      currentFlow: FlowType.direct,
+      env: 'dev',
+    );
+
+    try {
+      await Meili.openMeiliView(params);
+    } catch (e) {
+      print("Failed to open MeiliView: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('MeiliFlutter Example')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (_platformName == null)
-              const SizedBox.shrink()
-            else
-              Text(
-                'Platform Name: $_platformName',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                if (!context.mounted) return;
-                try {
-                  final result = await getPlatformName();
-                  setState(() => _platformName = result);
-                } catch (error) {
-                  if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      content: Text('$error'),
-                    ),
-                  );
-                }
-              },
-              child: const Text('Get Platform Name'),
-            ),
-          ],
-        ),
-      ),
+    return CupertinoButton(
+      onPressed: _openMeiliView,
+      child: const Text('Open Meili Direct'),
+    );
+  }
+}
+
+class MeiliBookingManagerFlowButton extends StatelessWidget {
+  const MeiliBookingManagerFlowButton({Key? key}) : super(key: key);
+
+  void _openMeiliView() async {
+    final params = MeiliParams(
+      ptid: '100.10',
+      currentFlow: FlowType.bookingManager,
+      env: 'dev',
+    );
+
+    try {
+      await Meili.openMeiliView(params);
+    } catch (e) {
+      print("Failed to open MeiliView: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      onPressed: _openMeiliView,
+      child: const Text('Open Meili Booking Manager'),
     );
   }
 }

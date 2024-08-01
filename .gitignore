@@ -46,3 +46,6 @@ build/
 .project
 .classpath
 .settings
+
+
+meili_flutter_ios/ios/MeiliSDK.xcframework

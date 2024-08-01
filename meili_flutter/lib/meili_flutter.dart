@@ -1,10 +1,7 @@
-import 'package:meili_flutter_platform_interface/meili_flutter_platform_interface.dart';
+export 'src/meili.dart';
 
-MeiliFlutterPlatform get _platform => MeiliFlutterPlatform.instance;
+export 'src/model/avail_params.dart';
+export 'src/model/flow_enum.dart';
+export 'src/model/meili_params.dart';
 
-/// Returns the name of the current platform.
-Future<String> getPlatformName() async {
-  final platformName = await _platform.getPlatformName();
-  if (platformName == null) throw Exception('Unable to get platform name.');
-  return platformName;
-}
+export 'src/widgets/connect.dart';

@@ -1,44 +1,52 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meili_flutter/meili_flutter.dart';
-import 'package:meili_flutter_platform_interface/meili_flutter_platform_interface.dart';
+import 'package:meili_flutter/src/model/meili_params.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-class MockMeiliFlutterPlatform extends Mock
-    with MockPlatformInterfaceMixin
-    implements MeiliFlutterPlatform {}
+class MockMethodChannel extends Mock implements MethodChannel {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('MeiliFlutter', () {
-    late MeiliFlutterPlatform meiliFlutterPlatform;
+  const MethodChannel iosChannel = MethodChannel('meili_flutter_ios');
+  const MethodChannel androidChannel = MethodChannel('meili_flutter_android');
 
+  setUpAll(() {
+    // Register fallback values for MethodCall to avoid errors
+    registerFallbackValue(MethodCall('', null));
+  });
+
+  group('Meili', () {
     setUp(() {
-      meiliFlutterPlatform = MockMeiliFlutterPlatform();
-      MeiliFlutterPlatform.instance = meiliFlutterPlatform;
+      // Reset the mock channels before each test
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(iosChannel, null);
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(androidChannel, null);
     });
 
-    group('getPlatformName', () {
-      test('returns correct name when platform implementation exists',
-          () async {
-        const platformName = '__test_platform__';
-        when(
-          () => meiliFlutterPlatform.getPlatformName(),
-        ).thenAnswer((_) async => platformName);
+    test('openMeiliView on iOS invokes correct method', () async {
+      final params = MeiliParams(
+        ptid: '100.10',
+        currentFlow: FlowType.bookingManager,
+        env: 'dev',
+      );
 
-        final actualPlatformName = await getPlatformName();
-        expect(actualPlatformName, equals(platformName));
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(iosChannel, (MethodCall methodCall) async {
+        expect(methodCall.method, 'openMeiliViewController');
+        expect(methodCall.arguments, params.toMap());
+        return null;
       });
 
-      test('throws exception when platform implementation is missing',
-          () async {
-        when(
-          () => meiliFlutterPlatform.getPlatformName(),
-        ).thenAnswer((_) async => null);
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      await Meili.openMeiliView(params);
+    });
 
-        expect(getPlatformName, throwsException);
-      });
+    tearDown(() {
+      debugDefaultTargetPlatformOverride = null;
     });
   });
 }
