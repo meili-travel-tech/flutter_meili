@@ -1,6 +1,6 @@
 name: meili_flutter_android
 description: Android implementation of the meili_flutter plugin
-version: 0.1.0+1
+version: 0.1.1
 
 homepage: https://github.com/meili-travel-tech/flutter_meili
 
@@ -13,9 +13,8 @@ flutter:
         implements: meili_flutter
         platforms:
             android:
-                package: com.example.verygoodcore
+                package: com.flutter.meili
                 pluginClass: MeiliFlutterPlugin
-                dartPluginClass: MeiliFlutterAndroid
 
 dependencies:
     flutter:

@@ -1,4 +1,4 @@
-package com.example.verygoodcore.example
+package com.flutter.meili.example
 
 import io.flutter.embedding.android.FlutterActivity
 

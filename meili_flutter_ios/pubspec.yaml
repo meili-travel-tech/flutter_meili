@@ -1,6 +1,6 @@
 name: meili_flutter_ios
 description: iOS implementation of the meili_flutter plugin
-version: 0.1.0+1
+version: 0.1.2
 
 homepage: https://github.com/meili-travel-tech/flutter_meili
 
@@ -14,7 +14,6 @@ flutter:
         platforms:
             ios:
                 pluginClass: MeiliFlutterPlugin
-                dartPluginClass: MeiliFlutterIOS
 
 dependencies:
     flutter:

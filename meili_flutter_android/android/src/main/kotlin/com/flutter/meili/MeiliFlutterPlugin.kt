@@ -1,4 +1,4 @@
-package com.example.verygoodcore
+package com.flutter.meili
 
 import androidx.annotation.NonNull
 
