@@ -39,6 +39,8 @@ Update your iOS deployment target to 13.0 in your `project.pbxproj` or via Xcode
 Update your `Podfile`:
 
 ```ruby
+source 'https://github.com/meili-travel-tech/meili-ios-pods'
+
 platform :ios, '16.0'
 ```
 
@@ -139,7 +141,7 @@ The Meili view is supported on iOS. The `MethodChannel` for iOS is `meili_flutte
 
 ### Android
 
-The Meili view is currently not supported on Android. Attempting to open the Meili view on Android will result in a `PlatformException` with the message "Android platform view is not yet supported".
+We are working to integrate the Meili Android SDK into the Meili Flutter plugin. Support for the Meili view on Android will be available very soon. In the meantime, attempting to open the Meili view on Android may result in a PlatformException with the message "Android platform view is not yet supported".
 
 ## Contributing
 
