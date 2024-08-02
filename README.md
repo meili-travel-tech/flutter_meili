@@ -44,6 +44,15 @@ platform :ios, '16.0'
 
 ## Usage
 
+### Card payments
+
+There are 3 ways of handling card payments
+
+| Method               | Ease of use | description                                                            | Implementation docs                                                                           |
+| -------------------- | ----------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Meili Sheet View     | Easy        | It opens a sheet view screen rendering the Meili Flow                  | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
+| Meili Connect Widget | Easy        | Native flutter widget to be embedded together any other flutter widget | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
+
 #### Meili Direct
 
 To open the Meili view for the direct flow, use the following code snippet:

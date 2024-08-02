@@ -1,6 +1,6 @@
 //
 //  MeiliViewFactory.swift
-//  integration_test
+//  meili_flutter_ios
 //
 //  Created by Henrique Marques on 29/07/2024.
 //
@@ -74,11 +74,6 @@ class MeiliUIView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         meiliView?.frame = self.bounds
-        
-        // Get the updated frame size here
-        if let currentSize = meiliView?.frame.size {
-            sendHeightToFlutter(currentSize.height)
-        }
     }
     
     private func sendHeightToFlutter(_ height: CGFloat) {
@@ -133,9 +128,6 @@ class MeiliPlatformView: NSObject, FlutterPlatformView {
         switch call.method {
             
             case "updateHeight":
-                if let args = call.arguments as? Double {
-                    print("Height received: \(args)")
-                }
                 result(nil)
             default:
                 result(FlutterMethodNotImplemented)
