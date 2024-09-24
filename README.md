@@ -46,16 +46,15 @@ platform :ios, '16.0'
 
 ## Usage
 
-### Card payments
+There are 3 Meili views that are supported
 
-There are 3 ways of handling card payments
-
-| Method               | Ease of use | description                                                            | Implementation docs                                                                           |
+| Flow               | Ease of use | description                                                            | Implementation docs                                                                           |
 | -------------------- | ----------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Meili Sheet View     | Easy        | It opens a sheet view screen rendering the Meili Flow                  | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
-| Meili Connect Widget | Easy        | Native flutter widget to be embedded together any other flutter widget | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
+| Meili Direct     | Easy        | Opens a sheet view screen rendering the Meili Direct Flow                  | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
+| Meili Booking Manager     | Easy        | Opens a sheet view screen rendering the Meili Booking Manager Flow                  | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
+| Meili Connect Widget | Easy        | Native flutter widget that renders the Meili Connect Flow to be embedded in a flutter widget | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
 
-#### Meili Direct
+### Meili Direct
 
 To open the Meili view for the direct flow, use the following code snippet:
 
@@ -77,7 +76,7 @@ void _openMeiliView() async {
   }
 ```
 
-#### Meili Booking Manager
+### Meili Booking Manager
 
 To open the Meili view for the direct flow, use the following code snippet:
 
@@ -106,7 +105,7 @@ void _openMeiliView() async {
   }
 ```
 
-#### Meili Connect
+### Meili Connect
 
 To use the MeiliConnectWidget, integrate it into your widget tree with the necessary parameters:
 
