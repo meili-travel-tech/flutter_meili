@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:meili_flutter/meili_flutter.dart';
 
 void main() => runApp(const MyApp());
@@ -43,11 +42,11 @@ class _TabHomePageState extends State<TabHomePage> {
       tabBuilder: (context, index) {
         switch (index) {
           case 0:
-            return MeiliDirectFlowButton();
+            return const MeiliDirectFlowButton();
           case 1:
-            return HomePage();
+            return const HomePage();
           case 2:
-            return MeiliBookingManagerFlowButton();
+            return const MeiliBookingManagerFlowButton();
           default:
             return Container();
         }
@@ -77,28 +76,28 @@ class _HomePageState extends State<HomePage> {
             children: [
               // Higher dummy content above the MeiliView
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: Text(
                   'Welcome to the Flutter Example App',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: Text(
                   'This is some dummy content above the MeiliView widget.',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: Text(
                   'More dummy content above the MeiliView widget.',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: Text(
                   'Even more dummy content above the MeiliView widget.',
                   style: TextStyle(fontSize: 16),
@@ -107,43 +106,43 @@ class _HomePageState extends State<HomePage> {
 
               // MeiliConnectWidget
               MeiliConnectWidget(
-                ptid: "125.10",
-                env: "uat",
+                ptid: '125.10',
+                env: 'uat',
                 availParams: AvailParams(
-                  pickupLocation: "BCN",
-                  dropoffLocation: "BCN",
-                  pickupDateTime: DateTime.parse("2024-08-19T14:38:34.301Z"),
-                  dropoffDateTime: DateTime.parse("2024-08-28T14:38:34.301Z"),
+                  pickupLocation: 'BCN',
+                  dropoffLocation: 'BCN',
+                  pickupDateTime: DateTime.parse('2025-01-19T14:38:34.301Z'),
+                  dropoffDateTime: DateTime.parse('2025-01-28T14:38:34.301Z'),
                   driverAge: 25,
-                  currencyCode: "EUR",
-                  residency: "IE",
+                  currencyCode: 'EUR',
+                  residency: 'IE',
                 ),
               ),
 
               // Dummy content below the MeiliView
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: Text(
                   'This is some dummy content below the MeiliView widget.',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: Text(
                   'Enjoy exploring the app!',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: Text(
                   'Even more dummy content below the MeiliView widget.',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: Text(
                   'More dummy content below the MeiliView widget.',
                   style: TextStyle(fontSize: 16),
@@ -158,9 +157,9 @@ class _HomePageState extends State<HomePage> {
 }
 
 class MeiliDirectFlowButton extends StatelessWidget {
-  const MeiliDirectFlowButton({Key? key}) : super(key: key);
+  const MeiliDirectFlowButton({super.key});
 
-  void _openMeiliView() async {
+  Future<void> _openMeiliView() async {
     final params = MeiliParams(
       ptid: '100.10',
       currentFlow: FlowType.direct,
@@ -170,7 +169,7 @@ class MeiliDirectFlowButton extends StatelessWidget {
     try {
       await Meili.openMeiliView(params);
     } catch (e) {
-      print("Failed to open MeiliView: $e");
+      print('Failed to open MeiliView: $e');
     }
   }
 
@@ -184,9 +183,9 @@ class MeiliDirectFlowButton extends StatelessWidget {
 }
 
 class MeiliBookingManagerFlowButton extends StatelessWidget {
-  const MeiliBookingManagerFlowButton({Key? key}) : super(key: key);
+  const MeiliBookingManagerFlowButton({super.key});
 
-  void _openMeiliView() async {
+  Future<void> _openMeiliView() async {
     final params = MeiliParams(
       ptid: '100.10',
       currentFlow: FlowType.bookingManager,
@@ -196,7 +195,7 @@ class MeiliBookingManagerFlowButton extends StatelessWidget {
     try {
       await Meili.openMeiliView(params);
     } catch (e) {
-      print("Failed to open MeiliView: $e");
+      print('Failed to open MeiliView: $e');
     }
   }
 

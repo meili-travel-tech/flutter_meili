@@ -6,7 +6,7 @@ import 'package:meili_flutter/src/model/flow_enum.dart';
 
 class MeiliView extends StatefulWidget {
   MeiliView({
-    Key? key,
+    super.key,
     this.ptid,
     this.currentFlow,
     this.env,
@@ -16,11 +16,10 @@ class MeiliView extends StatefulWidget {
     double? width,
     double? height,
     BoxConstraints? constraints,
-  })  : constraints = (width != null || height != null)
+  }) : constraints = (width != null || height != null)
             ? constraints?.tighten(width: width, height: height) ??
                 BoxConstraints.tightFor(width: width, height: height)
-            : constraints,
-        super(key: key);
+            : constraints;
 
   final BoxConstraints? constraints;
   final String? ptid;

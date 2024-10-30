@@ -28,9 +28,12 @@ Run `flutter pub get` to install the package.
 ### Requirements
 
 -   iOS Version: 16.0 or higher
+    -   Add the meili CocoaPods repository `source https://github.com/meili-travel-tech/meili-ios-pods` to your Podfile project.
+    -   Run `pod repo update && pod install` in the ios directory.
+    -   If you find any issues, also try to clean up the cache of the pub-cache and Pods already installed.
 -   Android Version: As per your project's minimum SDK requirements
 
-#### iOS
+#### iOS - Steps
 
 Compatible with apps targeting iOS 16 or above.
 
@@ -48,11 +51,11 @@ platform :ios, '16.0'
 
 There are 3 Meili views that are supported
 
-| Flow               | Ease of use | description                                                            | Implementation docs                                                                           |
-| -------------------- | ----------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Meili Direct     | Easy        | Opens a sheet view screen rendering the Meili Direct Flow                  | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
-| Meili Booking Manager     | Easy        | Opens a sheet view screen rendering the Meili Booking Manager Flow                  | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
-| Meili Connect Widget | Easy        | Native flutter widget that renders the Meili Connect Flow to be embedded in a flutter widget | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
+| Flow                  | Ease of use | description                                                                                  | Implementation docs                                                                           |
+| --------------------- | ----------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Meili Direct          | Easy        | Opens a sheet view screen rendering the Meili Direct Flow                                    | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
+| Meili Booking Manager | Easy        | Opens a sheet view screen rendering the Meili Booking Manager Flow                           | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
+| Meili Connect Widget  | Easy        | Native flutter widget that renders the Meili Connect Flow to be embedded in a flutter widget | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
 
 ### Meili Direct
 

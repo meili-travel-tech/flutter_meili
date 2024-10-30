@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meili_flutter/meili_flutter.dart';
-import 'package:meili_flutter/src/model/meili_params.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockMethodChannel extends Mock implements MethodChannel {}
@@ -10,12 +9,12 @@ class MockMethodChannel extends Mock implements MethodChannel {}
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const MethodChannel iosChannel = MethodChannel('meili_flutter_ios');
-  const MethodChannel androidChannel = MethodChannel('meili_flutter_android');
+  const iosChannel = MethodChannel('meili_flutter_ios');
+  const androidChannel = MethodChannel('meili_flutter_android');
 
   setUpAll(() {
     // Register fallback values for MethodCall to avoid errors
-    registerFallbackValue(MethodCall('', null));
+    registerFallbackValue(const MethodCall(''));
   });
 
   group('Meili', () {
