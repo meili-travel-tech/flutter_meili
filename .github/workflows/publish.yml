@@ -1,0 +1,113 @@
+name: Publish to Pub.dev
+
+on:
+    release:
+        types: [published]
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Get version and release info
+              id: release_info
+              run: |
+                  echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+                  echo "RELEASE_BODY<<EOF" >> $GITHUB_ENV
+                  gh release view ${GITHUB_REF#refs/tags/} --json body -q .body >> $GITHUB_ENV
+                  echo "EOF" >> $GITHUB_ENV
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Update CHANGELOG.md
+              run: |
+                  # Create CHANGELOG.md if it doesn't exist
+                  touch CHANGELOG.md
+                  # Prepend new release notes
+                  echo -e "## $VERSION ($(date +%Y-%m-%d))\n\n$RELEASE_BODY\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
+
+            - name: Update version in pubspec files
+              run: |
+                  # Main package
+                  yq -i '.version = env(VERSION)' meili_flutter/pubspec.yaml
+
+                  # Update dependency versions in platform-specific packages
+                  if [ -f "meili_flutter_android/pubspec.yaml" ]; then
+                    yq -i '.version = env(VERSION)' meili_flutter_android/pubspec.yaml
+                  fi
+
+                  if [ -f "meili_flutter_ios/pubspec.yaml" ]; then
+                    yq -i '.version = env(VERSION)' meili_flutter_ios/pubspec.yaml
+                  fi
+
+            - name: Update README versions
+              run: |
+                  if [ -f "README.md" ]; then
+                    sed -i -E "s/(meili_flutter: \^)[0-9]+\.[0-9]+\.[0-9]+/\1$VERSION/" README.md
+                    sed -i -E "s/(meili_flutter_android: \^)[0-9]+\.[0-9]+\.[0-9]+/\1$VERSION/" README.md
+                    sed -i -E "s/(meili_flutter_ios: \^)[0-9]+\.[0-9]+\.[0-9]+/\1$VERSION/" README.md
+                  fi
+
+            - name: Setup Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  flutter-version: '3.x'
+                  channel: 'stable'
+
+            - name: Install dependencies
+              run: |
+                  flutter pub get
+                  cd meili_flutter/example && flutter pub get || true
+                  cd ../android && flutter pub get || true
+                  cd ../ios && flutter pub get || true
+
+            - name: Verify package
+              run: |
+                  flutter analyze
+                  flutter test
+                  dart format --set-exit-if-changed .
+
+            - name: Setup Pub Credentials
+              env:
+                  PUB_DEV_PUBLISH_ACCESS_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}
+                  PUB_DEV_PUBLISH_REFRESH_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}
+                  PUB_DEV_PUBLISH_TOKEN_ENDPOINT: ${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}
+                  PUB_DEV_PUBLISH_EXPIRATION: ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
+              run: |
+                  mkdir -p ~/.config/dart
+                  cat << EOF > ~/.config/dart/pub-credentials.json
+                  {
+                    "accessToken": "$PUB_DEV_PUBLISH_ACCESS_TOKEN",
+                    "refreshToken": "$PUB_DEV_PUBLISH_REFRESH_TOKEN",
+                    "tokenEndpoint": "$PUB_DEV_PUBLISH_TOKEN_ENDPOINT",
+                    "scopes": ["openid","https://www.googleapis.com/auth/userinfo.email"],
+                    "expiration": $PUB_DEV_PUBLISH_EXPIRATION
+                  }
+                  EOF
+
+            - name: Publish packages
+              run: |
+                  # Publish platform packages if they exist
+                  if [ -d "meili_flutter_android" ]; then
+                    cd meili_flutter_android && dart pub publish --force
+                  fi
+
+                  if [ -d "meili_flutter_ios" ]; then
+                    cd ../meili_flutter_ios && dart pub publish --force
+                  fi
+                  # Publish main package
+                  dart pub publish --force
+
+            - name: Commit updates
+              run: |
+                  git config --local user.email "action@github.com"
+                  git config --local user.name "GitHub Action"
+                  git add .
+                  git commit -m "chore: Update version to $VERSION and update CHANGELOG" || echo "No changes to commit"
+                  git push origin HEAD:main || git push origin HEAD:master
