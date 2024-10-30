@@ -4,6 +4,15 @@ import 'package:meili_flutter/src/model/flow_enum.dart';
 
 /// Represents the parameters required to open the Meili view.
 class MeiliParams {
+  /// Creates an instance of [MeiliParams].
+  MeiliParams({
+    required this.ptid,
+    required this.currentFlow,
+    required this.env,
+    this.availParams,
+    this.bookingParams,
+  });
+
   /// The ptid (possibly partner ID) for the Meili view.
   final String ptid;
 
@@ -18,15 +27,6 @@ class MeiliParams {
 
   /// The booking parameters for the Meili view.
   final BookingParams? bookingParams;
-
-  /// Creates an instance of [MeiliParams].
-  MeiliParams({
-    required this.ptid,
-    required this.currentFlow,
-    required this.env,
-    this.availParams,
-    this.bookingParams,
-  });
 
   /// Converts the [MeiliParams] instance to a map.
   Map<String, dynamic> toMap() {

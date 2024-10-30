@@ -14,14 +14,14 @@ class MeiliView extends StatefulWidget {
   /// The [ptid], [currentFlow], [env], [availParams], [onBookingInfoUpdated],
   /// and [height] can be optionally provided.
   const MeiliView({
-    Key? key,
+    super.key,
     this.ptid,
     this.currentFlow,
     this.env,
     this.availParams,
     this.onBookingInfoUpdated,
     this.height,
-  }) : super(key: key);
+  });
 
   /// The ptid (possibly partner ID) for the Meili view.
   final String? ptid;
@@ -62,8 +62,8 @@ class _MeiliViewState extends State<MeiliView> {
         creationParams: creationParams,
         creationParamsCodec: const StandardMessageCodec(),
         onPlatformViewCreated: (id) {
-          final _channel = MethodChannel('flutter_meili/meili_view/$id');
-          _channel.setMethodCallHandler((call) async {
+          final channel = MethodChannel('flutter_meili/meili_view/$id');
+          channel.setMethodCallHandler((call) async {
             if (call.method == 'onBookingInfoUpdated' &&
                 widget.onBookingInfoUpdated != null) {
               final arguments =

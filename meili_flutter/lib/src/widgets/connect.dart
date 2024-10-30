@@ -7,12 +7,12 @@ import 'package:meili_flutter/src/widgets/base.dart';
 
 class MeiliConnectWidget extends StatelessWidget {
   const MeiliConnectWidget({
-    Key? key,
+    super.key,
     this.ptid,
     this.env,
     this.availParams,
     this.onBookingInfoUpdated,
-  }) : super(key: key);
+  });
   final String? ptid;
   final String? env;
   final AvailParams? availParams;

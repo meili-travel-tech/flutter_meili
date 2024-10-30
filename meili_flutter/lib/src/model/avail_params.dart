@@ -1,12 +1,4 @@
 class AvailParams {
-  final String pickupLocation;
-  final String dropoffLocation;
-  final DateTime pickupDateTime;
-  final DateTime dropoffDateTime;
-  final int driverAge;
-  final String currencyCode;
-  final String residency;
-
   AvailParams({
     required this.pickupLocation,
     required this.dropoffLocation,
@@ -16,6 +8,13 @@ class AvailParams {
     required this.currencyCode,
     required this.residency,
   });
+  final String pickupLocation;
+  final String dropoffLocation;
+  final DateTime pickupDateTime;
+  final DateTime dropoffDateTime;
+  final int driverAge;
+  final String currencyCode;
+  final String residency;
 
   Map<String, dynamic> toMap() {
     return {

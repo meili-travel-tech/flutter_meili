@@ -1,34 +1,4 @@
 class BookingParams {
-  String? partnerLoyaltyAccount;
-  String? partnerLoyaltyAccountTier;
-  int? numberOfPassengers;
-  String? customerPartnerCode;
-  String? flightNumber;
-  String? passengerNameRecord;
-  String? superPassengerNameRecord;
-  int? infant;
-  int? child;
-  int? teenager;
-  String? supplierLoyaltyAccount;
-  String? fareTypeAndFlex;
-  String? departureAirport;
-  String? arrivalAirport;
-  String? ancillaryActivity;
-  double? airlineFareAmount;
-  String? airlineFareCurrency;
-  String? partnerCustomerID;
-  String? firstName;
-  String? lastName;
-  String? email;
-  List<int>? phoneNumbers;
-  String? companyName;
-  String? addressLine1;
-  String? postCode;
-  String? city;
-  String? state;
-  String? confirmationId;
-  bool? prefillOnly;
-
   BookingParams({
     this.partnerLoyaltyAccount,
     this.partnerLoyaltyAccountTier,
@@ -60,6 +30,35 @@ class BookingParams {
     this.confirmationId,
     this.prefillOnly,
   });
+  String? partnerLoyaltyAccount;
+  String? partnerLoyaltyAccountTier;
+  int? numberOfPassengers;
+  String? customerPartnerCode;
+  String? flightNumber;
+  String? passengerNameRecord;
+  String? superPassengerNameRecord;
+  int? infant;
+  int? child;
+  int? teenager;
+  String? supplierLoyaltyAccount;
+  String? fareTypeAndFlex;
+  String? departureAirport;
+  String? arrivalAirport;
+  String? ancillaryActivity;
+  double? airlineFareAmount;
+  String? airlineFareCurrency;
+  String? partnerCustomerID;
+  String? firstName;
+  String? lastName;
+  String? email;
+  List<int>? phoneNumbers;
+  String? companyName;
+  String? addressLine1;
+  String? postCode;
+  String? city;
+  String? state;
+  String? confirmationId;
+  bool? prefillOnly;
 
   Map<String, dynamic> toMap() {
     return {
