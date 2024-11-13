@@ -107,12 +107,14 @@ class _HomePageState extends State<HomePage> {
               // MeiliConnectWidget
               MeiliConnectWidget(
                 ptid: '125.10',
-                env: 'uat',
+                env: 'prod',
                 availParams: AvailParams(
-                  pickupLocation: 'BCN',
-                  dropoffLocation: 'BCN',
-                  pickupDateTime: DateTime.parse('2025-01-19T14:38:34.301Z'),
-                  dropoffDateTime: DateTime.parse('2025-01-28T14:38:34.301Z'),
+                  pickupLocation: 'MUC',
+                  dropoffLocation: 'MUC',
+                  pickupDate: '2025-01-01',
+                  pickupTime: '12:00',
+                  dropoffDate: '2025-01-07',
+                  dropoffTime: '12:00',
                   driverAge: 25,
                   currencyCode: 'EUR',
                   residency: 'IE',
@@ -161,8 +163,8 @@ class MeiliDirectFlowButton extends StatelessWidget {
 
   Future<void> _openMeiliView() async {
     final params = MeiliParams(
-      ptid: '100.10',
-      currentFlow: FlowType.direct,
+      ptid: '100.9',
+      flow: FlowType.direct,
       env: 'dev',
     );
 
@@ -187,8 +189,8 @@ class MeiliBookingManagerFlowButton extends StatelessWidget {
 
   Future<void> _openMeiliView() async {
     final params = MeiliParams(
-      ptid: '100.10',
-      currentFlow: FlowType.bookingManager,
+      ptid: '100.9',
+      flow: FlowType.bookingManager,
       env: 'dev',
     );
 

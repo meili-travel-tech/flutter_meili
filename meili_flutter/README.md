@@ -115,16 +115,18 @@ import 'package:flutter/material.dart';
 import 'package:meili_flutter/meili_flutter.dart';
 
 MeiliConnectWidget(
-  ptid: "ptid",
-  env: "uat",
+  ptid: '100.10',
+  env: 'dev',
   availParams: AvailParams(
-    pickupLocation: "BCN",
-    dropoffLocation: "BCN",
-    pickupDateTime: DateTime.parse("2024-08-19T14:38:34.301Z"),
-    dropoffDateTime: DateTime.parse("2024-08-28T14:38:34.301Z"),
+    pickupLocation: 'BCN',
+    dropoffLocation: 'BCN',
+    pickupDate: '2025-01-01',
+    pickupTime: '12:00',
+    dropoffDate: '2025-01-07',
+    dropoffTime: '12:00',
     driverAge: 25,
-    currencyCode: "EUR",
-    residency: "IE",
+    currencyCode: 'EUR',
+    residency: 'IE',
   )
 );
 ```

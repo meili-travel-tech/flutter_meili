@@ -1,5 +1,5 @@
-class BookingParams {
-  BookingParams({
+class AdditionalParams {
+  AdditionalParams({
     this.partnerLoyaltyAccount,
     this.partnerLoyaltyAccountTier,
     this.numberOfPassengers,
@@ -10,7 +10,7 @@ class BookingParams {
     this.infant,
     this.child,
     this.teenager,
-    this.supplierLoyaltyAccount,
+    this.supplierLoyaltyAccounts,
     this.fareTypeAndFlex,
     this.departureAirport,
     this.arrivalAirport,
@@ -40,7 +40,7 @@ class BookingParams {
   int? infant;
   int? child;
   int? teenager;
-  String? supplierLoyaltyAccount;
+  List<String>? supplierLoyaltyAccounts;
   String? fareTypeAndFlex;
   String? departureAirport;
   String? arrivalAirport;
@@ -72,7 +72,7 @@ class BookingParams {
       'infant': infant,
       'child': child,
       'teenager': teenager,
-      'supplierLoyaltyAccount': supplierLoyaltyAccount,
+      'supplierLoyaltyAccounts': supplierLoyaltyAccounts,
       'fareTypeAndFlex': fareTypeAndFlex,
       'departureAirport': departureAirport,
       'arrivalAirport': arrivalAirport,
