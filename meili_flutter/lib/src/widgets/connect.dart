@@ -22,7 +22,7 @@ class MeiliConnectWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MeiliView(
       ptid: ptid,
-      currentFlow: FlowType.connect,
+      flow: FlowType.connect,
       env: env,
       availParams: availParams,
       onBookingInfoUpdated: onBookingInfoUpdated,

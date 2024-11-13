@@ -100,14 +100,14 @@ class MeiliPlatformView: NSObject, FlutterPlatformView {
         
         if let arguments = args as? [String: Any],
            let ptid = arguments["ptid"] as? String,
-           let currentFlow = arguments["currentFlow"] as? String,
+           let flow = arguments["flow"] as? String,
            let env = arguments["env"] as? String {
             
-            let flow = MeiliFlow(rawValue: currentFlow) ?? .connect
+            let flow = MeiliFlow(rawValue: flow) ?? .connect
             let environment = MeiliEnvironment(rawValue: env) ?? .dev
             let availParams = (arguments["availParams"] as? [String: Any]).flatMap(parseAvailParams)
-            let bookingParams = (arguments["bookingParams"] as? [String: Any]).flatMap(parseBookingParams)
-            let meiliParams = MeiliParams(ptid: ptid, currentFlow: flow, env: environment, availParams: availParams, bookingParams: bookingParams)
+            let additionalParams = (arguments["additionalParams"] as? [String: Any]).flatMap(parseBookingParams)
+            let meiliParams = MeiliParams(ptid: ptid, flow: flow, env: environment, availParams: availParams, additionalParams: additionalParams)
             
             meiliUIView = MeiliUIView(frame: frame, meiliParams: meiliParams, channel: channel)
            
@@ -137,8 +137,8 @@ class MeiliPlatformView: NSObject, FlutterPlatformView {
 
 
 
-func parseBookingParams(from dict: [String: Any]) -> BookingParams? {
-    return BookingParams(
+func parseBookingParams(from dict: [String: Any]) -> AdditionalParams? {
+    return AdditionalParams(
         partnerLoyaltyAccount: dict["partnerLoyaltyAccount"] as? String,
         partnerLoyaltyAccountTier: dict["partnerLoyaltyAccountTier"] as? String,
         numberOfPassengers: dict["numberOfPassengers"] as? Int,
@@ -149,7 +149,7 @@ func parseBookingParams(from dict: [String: Any]) -> BookingParams? {
         infant: dict["infant"] as? Int,
         child: dict["child"] as? Int,
         teenager: dict["teenager"] as? Int,
-        supplierLoyaltyAccount: dict["supplierLoyaltyAccount"] as? String,
+        supplierLoyaltyAccounts: dict["supplierLoyaltyAccount"] as? [String],
         fareTypeAndFlex: dict["fareTypeAndFlex"] as? String,
         departureAirport: dict["departureAirport"] as? String,
         arrivalAirport: dict["arrivalAirport"] as? String,
@@ -174,6 +174,10 @@ func parseBookingParams(from dict: [String: Any]) -> BookingParams? {
 func parseAvailParams(from dict: [String: Any]) -> AvailParams? {
     guard let pickupLocation = dict["pickupLocation"] as? String,
           let dropoffLocation = dict["dropoffLocation"] as? String,
+          let pickupTime = dict["pickupTime"] as? String,
+          let pickupDate = dict["pickupDate"] as? String,
+          let dropoffTime = dict["dropoffTime"] as? String,
+          let dropoffDate = dict["dropoffDate"] as? String,
           let pickupDateTime = dict["pickupDateTime"] as? String,
           let dropoffDateTime = dict["dropoffDateTime"] as? String,
           let driverAge = dict["driverAge"] as? Int,
@@ -185,10 +189,14 @@ func parseAvailParams(from dict: [String: Any]) -> AvailParams? {
     return AvailParams(
         pickupLocation: pickupLocation,
         dropoffLocation: dropoffLocation,
-        pickupDateTime: pickupDateTime,
-        dropoffDateTime: dropoffDateTime,
+        pickupDate: pickupDate,
+        pickupTime: pickupTime,
+        dropoffDate: dropoffDate,
+        dropoffTime: dropoffTime,
         driverAge: driverAge,
         currencyCode: currencyCode,
-        residency: residency
+        residency: residency,
+        pickupDateTime: pickupDateTime,
+        dropoffDateTime: dropoffDateTime
     )
 }

@@ -44,23 +44,23 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
         }
         
         guard let ptid = arguments["ptid"] as? String,
-              let currentFlow = arguments["currentFlow"] as? String,
+              let flow = arguments["flow"] as? String,
               let env = arguments["env"] as? String else {
             result(FlutterError(code: "INVALID_ARGUMENT", message: "Required arguments are missing", details: nil))
             return
         }
         
-        let flow = MeiliFlow(rawValue: currentFlow) ?? .connect
+        let meiliFlow = MeiliFlow(rawValue: flow) ?? .connect
         let environment = MeiliEnvironment(rawValue: env) ?? .dev
         let availParams = (arguments["availParams"] as? [String: Any]).flatMap(parseAvailParams)
-        let bookingParams = (arguments["bookingParams"] as? [String: Any]).flatMap(parseBookingParams)
+        let additionalParams = (arguments["additionalParams"] as? [String: Any]).flatMap(parseBookingParams)
         
         let meiliParams = MeiliParams(
             ptid: ptid,
-            currentFlow: flow,
+            flow: meiliFlow,
             env: environment,
             availParams: availParams,
-            bookingParams: bookingParams
+            additionalParams: additionalParams
         )
         
         viewController.meiliParams = meiliParams

@@ -16,7 +16,7 @@ class MeiliView extends StatefulWidget {
   const MeiliView({
     super.key,
     this.ptid,
-    this.currentFlow,
+    this.flow,
     this.env,
     this.availParams,
     this.onBookingInfoUpdated,
@@ -27,7 +27,7 @@ class MeiliView extends StatefulWidget {
   final String? ptid;
 
   /// The current flow type for the Meili view.
-  final FlowType? currentFlow;
+  final FlowType? flow;
 
   /// The environment for the Meili view (e.g., dev, prod).
   final String? env;
@@ -50,7 +50,7 @@ class _MeiliViewState extends State<MeiliView> {
   Widget build(BuildContext context) {
     final creationParams = <String, dynamic>{
       'ptid': widget.ptid,
-      'currentFlow': widget.currentFlow.toString().split('.').last,
+      'flow': widget.flow.toString().split('.').last,
       'env': widget.env,
       'availParams': widget.availParams?.toMap(),
     };

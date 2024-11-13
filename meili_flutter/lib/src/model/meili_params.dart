@@ -7,17 +7,17 @@ class MeiliParams {
   /// Creates an instance of [MeiliParams].
   MeiliParams({
     required this.ptid,
-    required this.currentFlow,
+    required this.flow,
     required this.env,
     this.availParams,
-    this.bookingParams,
+    this.additionalParams,
   });
 
   /// The ptid (possibly partner ID) for the Meili view.
   final String ptid;
 
   /// The current flow type for the Meili view.
-  final FlowType currentFlow;
+  final FlowType flow;
 
   /// The environment for the Meili view (e.g., dev, prod).
   final String env;
@@ -26,16 +26,16 @@ class MeiliParams {
   final AvailParams? availParams;
 
   /// The booking parameters for the Meili view.
-  final BookingParams? bookingParams;
+  final AdditionalParams? additionalParams;
 
   /// Converts the [MeiliParams] instance to a map.
   Map<String, dynamic> toMap() {
     return {
       'ptid': ptid,
-      'currentFlow': currentFlow.toString().split('.').last,
+      'flow': flow.toString().split('.').last,
       'env': env,
       'availParams': availParams?.toMap(),
-      'bookingParams': bookingParams?.toMap(),
+      'additionalParams': additionalParams?.toMap(),
     };
   }
 }

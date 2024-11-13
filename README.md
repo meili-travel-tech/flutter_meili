@@ -81,7 +81,7 @@ void _openMeiliView() async {
 
 ### Meili Booking Manager
 
-To open the Meili view for the direct flow, use the following code snippet:
+To open the Meili view for the booking manager flow, use the following code snippet:
 
 ```dart
 import 'package:meili_flutter/meili_flutter.dart';
@@ -117,18 +117,20 @@ import 'package:flutter/material.dart';
 import 'package:meili_flutter/meili_flutter.dart';
 
 MeiliConnectWidget(
-  ptid: "ptid",
-  env: "uat",
+  ptid: 'ptid',
+  env: 'prod',
   availParams: AvailParams(
-    pickupLocation: "BCN",
-    dropoffLocation: "BCN",
-    pickupDateTime: DateTime.parse("2024-08-19T14:38:34.301Z"),
-    dropoffDateTime: DateTime.parse("2024-08-28T14:38:34.301Z"),
+    pickupLocation: 'MUC',
+    dropoffLocation: 'MUC',
+    pickupDate: '2025-01-01',
+    pickupTime: '12:00',
+    dropoffDate: '2025-01-07',
+    dropoffTime: '12:00',
     driverAge: 25,
-    currencyCode: "EUR",
-    residency: "IE",
-  )
-);
+    currencyCode: 'EUR',
+    residency: 'IE',
+  ),
+)
 ```
 
 ## Error Handling
