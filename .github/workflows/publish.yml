@@ -137,14 +137,14 @@ jobs:
               run: |
                   # Publish platform packages if they exist
                   if [ -d "meili_flutter_android" ]; then
-                    cd meili_flutter_android && dart pub publish --force --no-interactive
+                    cd meili_flutter_android && dart pub publish --force
                   fi
 
                   if [ -d "meili_flutter_ios" ]; then
-                    cd ../meili_flutter_ios && dart pub publish --force --no-interactive
+                    cd ../meili_flutter_ios && dart pub publish --force
                   fi
                   # Publish main package
-                  cd ../meili_flutter && dart pub publish --force --no-interactive
+                  cd ../meili_flutter && dart pub publish --force
 
             - name: Commit updates
               run: |
