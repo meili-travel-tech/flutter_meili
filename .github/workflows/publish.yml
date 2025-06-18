@@ -84,9 +84,15 @@ jobs:
             - name: Install dependencies
               run: |
                   flutter pub get
-                  cd meili_flutter/example && flutter pub get || true
-                  cd ../android && flutter pub get || true
-                  cd ../ios && flutter pub get || true
+                  if [ -d "meili_flutter/example" ]; then
+                    cd meili_flutter/example && flutter pub get && cd ../..
+                  fi
+                  if [ -d "meili_flutter_android" ]; then
+                    cd meili_flutter_android && flutter pub get && cd ..
+                  fi
+                  if [ -d "meili_flutter_ios" ]; then
+                    cd meili_flutter_ios && flutter pub get && cd ..
+                  fi
 
             - name: Verify package
               run: |
