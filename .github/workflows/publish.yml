@@ -18,7 +18,8 @@ jobs:
             - name: Get version and release info
               id: release_info
               run: |
-                  echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+                  VERSION=${GITHUB_REF#refs/tags/v}
+                  echo "VERSION=$VERSION" >> $GITHUB_ENV
                   echo "RELEASE_BODY<<EOF" >> $GITHUB_ENV
                   gh release view ${GITHUB_REF#refs/tags/} --json body -q .body >> $GITHUB_ENV
                   echo "EOF" >> $GITHUB_ENV
@@ -49,6 +50,8 @@ jobs:
             - name: Update README versions
               run: |
                   if [ -f "README.md" ]; then
+                    echo "Current VERSION value: $VERSION"
+                    echo "Testing sed command..."
                     sed -i -E "s/(meili_flutter: \^)[0-9]+\.[0-9]+\.[0-9]+/\1$VERSION/" README.md
                     sed -i -E "s/(meili_flutter_android: \^)[0-9]+\.[0-9]+\.[0-9]+/\1$VERSION/" README.md
                     sed -i -E "s/(meili_flutter_ios: \^)[0-9]+\.[0-9]+\.[0-9]+/\1$VERSION/" README.md
