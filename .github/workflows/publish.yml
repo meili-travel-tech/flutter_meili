@@ -59,10 +59,14 @@ jobs:
                   # Update dependency versions in platform-specific packages
                   if [ -f "meili_flutter_android/pubspec.yaml" ]; then
                     yq -i '.version = env(VERSION)' meili_flutter_android/pubspec.yaml
+                    # Update platform package CHANGELOG
+                    echo -e "## $VERSION ($(date +%Y-%m-%d))\n\n$RELEASE_BODY\n\n$(cat meili_flutter_android/CHANGELOG.md)" > meili_flutter_android/CHANGELOG.md
                   fi
 
                   if [ -f "meili_flutter_ios/pubspec.yaml" ]; then
                     yq -i '.version = env(VERSION)' meili_flutter_ios/pubspec.yaml
+                    # Update platform package CHANGELOG
+                    echo -e "## $VERSION ($(date +%Y-%m-%d))\n\n$RELEASE_BODY\n\n$(cat meili_flutter_ios/CHANGELOG.md)" > meili_flutter_ios/CHANGELOG.md
                   fi
 
             - name: Update README versions
@@ -104,6 +108,13 @@ jobs:
                   flutter test --no-pub || echo "Tests failed, continuing..."
                   dart format --set-exit-if-changed . || echo "Format check failed, continuing..."
 
+            - name: Commit changes before publishing
+              run: |
+                  git config --local user.email "action@github.com"
+                  git config --local user.name "GitHub Action"
+                  git add .
+                  git commit -m "chore: Update version to $VERSION and update CHANGELOG" || echo "No changes to commit"
+
             - name: Setup Pub Credentials
               env:
                   PUB_DEV_PUBLISH_ACCESS_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}
@@ -126,14 +137,14 @@ jobs:
               run: |
                   # Publish platform packages if they exist
                   if [ -d "meili_flutter_android" ]; then
-                    cd meili_flutter_android && dart pub publish --force
+                    cd meili_flutter_android && dart pub publish --force --no-interactive
                   fi
 
                   if [ -d "meili_flutter_ios" ]; then
-                    cd ../meili_flutter_ios && dart pub publish --force
+                    cd ../meili_flutter_ios && dart pub publish --force --no-interactive
                   fi
                   # Publish main package
-                  dart pub publish --force
+                  cd ../meili_flutter && dart pub publish --force --no-interactive
 
             - name: Commit updates
               run: |
