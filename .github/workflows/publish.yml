@@ -83,10 +83,11 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  flutter pub get
-                  if [ -d "meili_flutter/example" ]; then
-                    cd meili_flutter/example && flutter pub get && cd ../..
+                  cd meili_flutter && flutter pub get
+                  if [ -d "example" ]; then
+                    cd example && flutter pub get && cd ..
                   fi
+                  cd ..
                   if [ -d "meili_flutter_android" ]; then
                     cd meili_flutter_android && flutter pub get && cd ..
                   fi
@@ -96,6 +97,7 @@ jobs:
 
             - name: Verify package
               run: |
+                  cd meili_flutter
                   flutter analyze
                   flutter test
                   dart format --set-exit-if-changed .
