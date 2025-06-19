@@ -132,8 +132,18 @@ jobs:
                     "expiration": $PUB_DEV_PUBLISH_EXPIRATION
                   }
                   EOF
+                  echo "Credentials file created at ~/.config/dart/pub-credentials.json"
+                  echo "File contents (masked):"
+                  cat ~/.config/dart/pub-credentials.json | sed 's/"accessToken": "[^"]*"/"accessToken": "***"/' | sed 's/"refreshToken": "[^"]*"/"refreshToken": "***"/'
+                  export PUB_DEV_PUBLISH_ACCESS_TOKEN="$PUB_DEV_PUBLISH_ACCESS_TOKEN"
+                  export PUB_DEV_PUBLISH_REFRESH_TOKEN="$PUB_DEV_PUBLISH_REFRESH_TOKEN"
 
             - name: Publish packages
+              env:
+                  PUB_DEV_PUBLISH_ACCESS_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}
+                  PUB_DEV_PUBLISH_REFRESH_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}
+                  PUB_DEV_PUBLISH_TOKEN_ENDPOINT: ${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}
+                  PUB_DEV_PUBLISH_EXPIRATION: ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
               run: |
                   # Publish platform packages if they exist
                   if [ -d "meili_flutter_android" ]; then
