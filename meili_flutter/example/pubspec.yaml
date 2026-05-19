@@ -17,6 +17,10 @@ dependencies:
         # the parent directory to use the current plugin's version.
         path: ../
 
+dependency_overrides:
+    meili_flutter_android:
+        path: ../../meili_flutter_android
+
 dev_dependencies:
     flutter_driver:
         sdk: flutter

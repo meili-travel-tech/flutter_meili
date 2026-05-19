@@ -6,3 +6,4 @@ export 'src/model/flow_enum.dart';
 export 'src/model/meili_params.dart';
 
 export 'src/widgets/connect.dart';
+export 'src/widgets/meili_view.dart';

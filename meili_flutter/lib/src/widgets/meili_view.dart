@@ -105,14 +105,24 @@ class _MethodChannelMeiliViewState extends State<_MethodChannelMeiliView> {
       'availParams': widget.availParams?.toMap(),
     };
 
-    final Widget platform = defaultTargetPlatform == TargetPlatform.iOS
-        ? UiKitView(
-            viewType: _viewType,
-            creationParams: creationParams,
-            creationParamsCodec: const StandardMessageCodec(),
-            onPlatformViewCreated: _onPlatformViewCreated,
-          )
-        : throw UnsupportedError('Unsupported platform view');
+    final Widget platform;
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      platform = UiKitView(
+        viewType: _viewType,
+        creationParams: creationParams,
+        creationParamsCodec: const StandardMessageCodec(),
+        onPlatformViewCreated: _onPlatformViewCreated,
+      );
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      platform = AndroidView(
+        viewType: _viewType,
+        creationParams: creationParams,
+        creationParamsCodec: const StandardMessageCodec(),
+        onPlatformViewCreated: _onPlatformViewCreated,
+      );
+    } else {
+      throw UnsupportedError('Unsupported platform view');
+    }
 
     final constraints = widget.constraints ??
         const BoxConstraints.expand(height: kViewDefaultHeight);
