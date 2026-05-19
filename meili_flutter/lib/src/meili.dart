@@ -18,11 +18,9 @@ class Meili {
           params.toMap(),
         );
       } else if (defaultTargetPlatform == TargetPlatform.android) {
-        // Placeholder for Android until the native implementation is available
-
-        throw PlatformException(
-          code: 'UNSUPPORTED_PLATFORM',
-          message: 'Android platform view is not yet supported',
+        await _androidChannel.invokeMethod(
+          'openMeiliViewController',
+          params.toMap(),
         );
       } else {}
     } on PlatformException catch (e) {

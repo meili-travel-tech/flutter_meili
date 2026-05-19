@@ -2,14 +2,14 @@ group 'com.flutter.meili'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '2.1.0'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath 'com.android.tools.build:gradle:8.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -18,18 +18,26 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/meili-travel-tech/ux-native-android-sdk")
+            credentials {
+                username = System.getenv("MEILI_GITHUB_USERNAME") ?: ""
+                password = System.getenv("MEILI_GITHUB_TOKEN") ?: ""
+            }
+        }
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 android {
     if (project.android.hasProperty("namespace")) {
         namespace 'com.flutter.meili'
     }
 
-    compileSdk 34
+    compileSdk 35
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -46,12 +54,16 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 27
     }
 
-    dependencies {
-        testImplementation 'org.jetbrains.kotlin:kotlin-test'
-        testImplementation 'org.mockito:mockito-core:5.0.0'
+    buildFeatures {
+        compose true
+    }
+
+    packagingOptions {
+        pickFirst "**/libc++_shared.so"
+        pickFirst "**/libfbjni.so"
     }
 
     testOptions {
@@ -65,4 +77,17 @@ android {
             }
         }
     }
+}
+
+dependencies {
+    implementation "meili.travel:ux-native-android-sdk:1.1.0"
+
+    implementation 'androidx.activity:activity-compose:1.9.2'
+    implementation 'androidx.compose.ui:ui:1.7.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.6'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.8.6'
+    implementation 'androidx.savedstate:savedstate:1.2.1'
+
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'org.mockito:mockito-core:5.0.0'
 }
