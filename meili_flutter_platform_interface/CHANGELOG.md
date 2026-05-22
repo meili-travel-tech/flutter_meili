@@ -1,3 +1,7 @@
+## 0.2.1
+
+- Updated license to proprietary.
+
 ## 0.2.0
 
 - Replaced `getPlatformName()` with `openMeiliView(MeiliParams)` as the core platform API.

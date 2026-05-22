@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0-beta.2
+
+- Updated license to proprietary.
+
 ## 0.3.0-beta.1
 
 - Implemented `MeiliFlutterAndroid` with `registerWith()` for federated plugin registration.
