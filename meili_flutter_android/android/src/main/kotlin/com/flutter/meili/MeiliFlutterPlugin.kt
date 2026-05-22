@@ -17,7 +17,7 @@ class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private var activity: ComponentActivity? = null
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(binding.binaryMessenger, "meili_flutter_android")
+        channel = MethodChannel(binding.binaryMessenger, "meili_flutter")
         channel.setMethodCallHandler(this)
 
         binding.platformViewRegistry.registerViewFactory(

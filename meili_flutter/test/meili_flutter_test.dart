@@ -1,51 +1,53 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meili_flutter/meili_flutter.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:meili_flutter_platform_interface/meili_flutter_platform_interface.dart';
 
-class MockMethodChannel extends Mock implements MethodChannel {}
+class MockMeiliPlatform extends MeiliFlutterPlatform {
+  MeiliParams? lastParams;
+  Object? errorToThrow;
+
+  @override
+  Future<void> openMeiliView(MeiliParams params) async {
+    if (errorToThrow != null) throw errorToThrow!;
+    lastParams = params;
+  }
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const iosChannel = MethodChannel('meili_flutter_ios');
-  const androidChannel = MethodChannel('meili_flutter_android');
+  late MockMeiliPlatform mock;
 
-  setUpAll(() {
-    // Register fallback values for MethodCall to avoid errors
-    registerFallbackValue(const MethodCall(''));
+  setUp(() {
+    mock = MockMeiliPlatform();
+    MeiliFlutterPlatform.instance = mock;
   });
 
-  group('Meili', () {
-    setUp(() {
-      // Reset the mock channels before each test
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(iosChannel, null);
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(androidChannel, null);
-    });
+  final params = MeiliParams(
+    ptid: '100.10',
+    flow: FlowType.direct,
+    env: 'dev',
+  );
 
-    test('openMeiliView on iOS invokes correct method', () async {
-      final params = MeiliParams(
-        ptid: '100.10',
-        currentFlow: FlowType.bookingManager,
-        env: 'dev',
-      );
+  test('openMeiliView delegates to platform instance', () async {
+    await Meili.openMeiliView(params);
+    expect(mock.lastParams, params);
+  });
 
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(iosChannel, (MethodCall methodCall) async {
-        expect(methodCall.method, 'openMeiliViewController');
-        expect(methodCall.arguments, params.toMap());
-        return null;
-      });
+  test('openMeiliView propagates PlatformException from native side', () {
+    mock.errorToThrow = PlatformException(code: 'ERROR', message: 'native fail');
+    expect(
+      () => Meili.openMeiliView(params),
+      throwsA(isA<PlatformException>()),
+    );
+  });
 
-      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-      await Meili.openMeiliView(params);
-    });
-
-    tearDown(() {
-      debugDefaultTargetPlatformOverride = null;
-    });
+  test('unregistered platform throws MissingPluginException', () {
+    MeiliFlutterPlatform.instance = MethodChannelMeiliFlutter();
+    expect(
+      () => Meili.openMeiliView(params),
+      throwsA(isA<MissingPluginException>()),
+    );
   });
 }

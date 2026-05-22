@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
-import 'package:meili_flutter/src/model/avail_params.dart';
-import 'package:meili_flutter/src/model/flow_enum.dart';
+import 'package:meili_flutter_platform_interface/meili_flutter_platform_interface.dart';
+
 import 'package:meili_flutter/src/widgets/base.dart';
 
 class MeiliConnectWidget extends StatelessWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:meili_flutter/src/model/avail_params.dart';
-import 'package:meili_flutter/src/model/flow_enum.dart';
+import 'package:meili_flutter_platform_interface/meili_flutter_platform_interface.dart';
+
 
 /// A stateful widget that represents a Meili view.
 ///
