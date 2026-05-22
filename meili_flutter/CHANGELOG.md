@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.1-beta.2
+## 0.3.1-beta.3
 
 - Migrated to federated plugin architecture using `meili_flutter_platform_interface`.
 - `Meili.openMeiliView()` now delegates to the platform interface instance.
