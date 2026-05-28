@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meili_flutter_platform_interface/meili_flutter_platform_interface.dart';
 
-
 class MeiliView extends StatefulWidget {
   MeiliView({
     super.key,

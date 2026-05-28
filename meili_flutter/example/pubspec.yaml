@@ -20,6 +20,8 @@ dependencies:
 dependency_overrides:
     meili_flutter_android:
         path: ../../meili_flutter_android
+    meili_flutter_ios:
+        path: ../../meili_flutter_ios
     meili_flutter_platform_interface:
         path: ../../meili_flutter_platform_interface
 

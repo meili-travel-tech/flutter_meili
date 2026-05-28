@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meili_flutter_platform_interface/meili_flutter_platform_interface.dart';
 
-
 /// A stateful widget that represents a Meili view.
 ///
 /// This widget is responsible for creating the platform-specific view

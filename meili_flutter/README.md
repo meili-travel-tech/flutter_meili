@@ -172,7 +172,7 @@ import 'package:meili_flutter/meili_flutter.dart';
 MeiliView(
   ptid: 'your-ptid',
   env: 'prod',               // 'dev', 'uat', 'pre_prod', 'prod'
-  currentFlow: FlowType.direct,
+  flow: FlowType.direct,
   availParams: AvailParams(
     pickupLocation: 'DXB',
     dropoffLocation: 'DXB',

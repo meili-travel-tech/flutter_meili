@@ -1,5 +1,5 @@
+import 'additional_params.dart';
 import 'avail_params.dart';
-import 'booking_params.dart';
 import 'flow_enum.dart';
 
 /// Represents the parameters required to open the Meili view.

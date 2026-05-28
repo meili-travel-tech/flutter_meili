@@ -3,11 +3,6 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'method_channel_meili_flutter.dart';
 
-export 'model/avail_params.dart';
-export 'model/booking_params.dart';
-export 'model/flow_enum.dart';
-export 'model/meili_params.dart';
-
 abstract class MeiliFlutterPlatform extends PlatformInterface {
   MeiliFlutterPlatform() : super(token: _token);
 
