@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1-beta.3
+
+- Migrated to federated plugin architecture using `meili_flutter_platform_interface`.
+- `Meili.openMeiliView()` now delegates to the platform interface instance.
+- Exported `MeiliParams`, `AvailParams`, `BookingParams`, `FlowType` from the platform interface.
+
 ## [0.1.0+1] - 2024-08-01
 
 ### Added

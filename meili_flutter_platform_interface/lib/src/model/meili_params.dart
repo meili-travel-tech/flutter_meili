@@ -1,6 +1,6 @@
-import 'package:meili_flutter/src/model/avail_params.dart';
-import 'package:meili_flutter/src/model/booking_params.dart';
-import 'package:meili_flutter/src/model/flow_enum.dart';
+import 'additional_params.dart';
+import 'avail_params.dart';
+import 'flow_enum.dart';
 
 /// Represents the parameters required to open the Meili view.
 class MeiliParams {

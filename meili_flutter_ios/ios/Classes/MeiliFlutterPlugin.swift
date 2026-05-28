@@ -8,7 +8,7 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         registerAllFonts()
-        let channel = FlutterMethodChannel(name: "meili_flutter_ios", binaryMessenger: registrar.messenger())
+        let channel = FlutterMethodChannel(name: "meili_flutter", binaryMessenger: registrar.messenger())
         let instance = MeiliFlutterPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
         registrar.addApplicationDelegate(instance)

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 class AdditionalParams {
   AdditionalParams({
     this.partnerLoyaltyAccount,
@@ -30,6 +32,7 @@ class AdditionalParams {
     this.confirmationId,
     this.prefillOnly,
   });
+
   String? partnerLoyaltyAccount;
   String? partnerLoyaltyAccountTier;
   int? numberOfPassengers;
@@ -94,3 +97,6 @@ class AdditionalParams {
     };
   }
 }
+
+@Deprecated('Renamed to AdditionalParams. Will be removed in 0.4.0.')
+typedef BookingParams = AdditionalParams;

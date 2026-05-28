@@ -1,15 +1,13 @@
-import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/services.dart';
-import 'package:meili_flutter_platform_interface/meili_flutter_platform_interface.dart';
 
-/// An implementation of [MeiliFlutterPlatform] that uses method channels.
+import 'meili_flutter_platform_interface.dart';
+import 'model/meili_params.dart';
+
 class MethodChannelMeiliFlutter extends MeiliFlutterPlatform {
-  /// The method channel used to interact with the native platform.
-  @visibleForTesting
-  final methodChannel = const MethodChannel('meili_flutter');
+  static const _channel = MethodChannel('meili_flutter');
 
   @override
-  Future<String?> getPlatformName() {
-    return methodChannel.invokeMethod<String>('getPlatformName');
+  Future<void> openMeiliView(MeiliParams params) {
+    return _channel.invokeMethod('openMeiliViewController', params.toMap());
   }
 }

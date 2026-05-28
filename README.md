@@ -67,7 +67,7 @@ import 'package:meili_flutter/meili_flutter.dart';
 void _openMeiliView() async {
     final params = MeiliParams(
       ptid: 'ptid',
-      currentFlow: FlowType.direct,
+      flow: FlowType.direct,
       env: 'dev',
     );
 
@@ -89,15 +89,14 @@ import 'package:meili_flutter/meili_flutter.dart';
 void _openMeiliView() async {
     final params = MeiliParams(
       ptid: 'ptid',
-      currentFlow: FlowType.bookingManager,
+      flow: FlowType.bookingManager,
       env: 'dev',
       // you can pass the values to prefill the fields
       // it will search automatically once the flow is opened
-      bookingParams: BookingParams(
-        confirmationId: "1234ABCD",
-        lastName: "Doe"
-      )
-
+      additionalParams: AdditionalParams(
+        confirmationId: '1234ABCD',
+        lastName: 'Doe',
+      ),
     );
 
     try {
