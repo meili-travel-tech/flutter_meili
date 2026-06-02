@@ -47,10 +47,6 @@ class _TabHomePageState extends State<TabHomePage> {
             icon: Icon(CupertinoIcons.arrow_right),
           ),
           BottomNavigationBarItem(
-            label: 'Connect',
-            icon: Icon(CupertinoIcons.link),
-          ),
-          BottomNavigationBarItem(
             label: 'Booking Manager',
             icon: Icon(CupertinoIcons.person),
           ),
@@ -65,10 +61,8 @@ class _TabHomePageState extends State<TabHomePage> {
           case 0:
             return const MeiliDirectFlowButton();
           case 1:
-            return const HomePage();
-          case 2:
             return const MeiliBookingManagerFlowButton();
-          case 3:
+          case 2:
             return EventsTab(viewModel: _eventsViewModel);
           default:
             return Container();
@@ -98,109 +92,6 @@ class EventsTab extends StatelessWidget {
         ),
       ),
       child: SafeArea(child: EventsPanel(viewModel: viewModel)),
-    );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('IN PATH BOOKING'),
-      ),
-      child: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Higher dummy content above the MeiliView
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'Welcome to the Flutter Example App',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'This is some dummy content above the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'More dummy content above the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'Even more dummy content above the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-
-              // MeiliConnectWidget
-              MeiliConnectWidget(
-                ptid: '125.10',
-                env: 'prod',
-                availParams: AvailParams(
-                  pickupLocation: 'MUC',
-                  dropoffLocation: 'MUC',
-                  pickupDate: '2025-01-01',
-                  pickupTime: '12:00',
-                  dropoffDate: '2025-01-07',
-                  dropoffTime: '12:00',
-                  driverAge: 25,
-                  currencyCode: 'EUR',
-                  residency: 'IE',
-                ),
-              ),
-
-              // Dummy content below the MeiliView
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'This is some dummy content below the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'Enjoy exploring the app!',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'Even more dummy content below the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'More dummy content below the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

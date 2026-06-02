@@ -63,7 +63,7 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
             return
         }
         
-        let meiliFlow = MeiliFlow(rawValue: flow) ?? .connect
+        let meiliFlow = MeiliFlow(rawValue: flow) ?? .direct
         let environment = MeiliEnvironment(rawValue: env) ?? .dev
         let availParams = (arguments["availParams"] as? [String: Any]).flatMap(parseAvailParams)
         let additionalParams = (arguments["additionalParams"] as? [String: Any]).flatMap(parseBookingParams)

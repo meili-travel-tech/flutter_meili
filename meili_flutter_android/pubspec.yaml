@@ -19,7 +19,7 @@ flutter:
 dependencies:
     flutter:
         sdk: flutter
-    meili_flutter_platform_interface: ^0.2.0
+    meili_flutter_platform_interface: ^0.3.0
 
 dev_dependencies:
     flutter_test:

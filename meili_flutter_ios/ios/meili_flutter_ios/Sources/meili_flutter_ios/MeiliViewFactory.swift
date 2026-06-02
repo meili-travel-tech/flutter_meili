@@ -93,7 +93,7 @@ class MeiliPlatformView: NSObject, FlutterPlatformView {
            let flow = arguments["flow"] as? String,
            let env = arguments["env"] as? String {
 
-            let flow = MeiliFlow(rawValue: flow) ?? .connect
+            let flow = MeiliFlow(rawValue: flow) ?? .direct
             let environment = MeiliEnvironment(rawValue: env) ?? .dev
             let availParams = (arguments["availParams"] as? [String: Any]).flatMap(parseAvailParams)
             let additionalParams = (arguments["additionalParams"] as? [String: Any]).flatMap(parseBookingParams)
