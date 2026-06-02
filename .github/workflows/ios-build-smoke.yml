@@ -30,6 +30,14 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            # MeiliSDK's XCFramework is built with a recent Swift toolchain
+            # (>= 6.2.4); a Swift .swiftinterface can't be consumed by an older
+            # compiler, so select the newest Xcode rather than the runner default.
+            - name: Select latest Xcode
+              uses: maxim-lobanov/setup-xcode@v1
+              with:
+                  xcode-version: latest-stable
+
             - name: Setup Flutter
               uses: subosito/flutter-action@v2
               with:
