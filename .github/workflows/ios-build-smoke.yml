@@ -37,7 +37,13 @@ jobs:
                   channel: 'stable'
 
             - name: Configure Swift Package Manager
-              run: flutter config --enable-swift-package-manager=${{ matrix.swiftpm }}
+              # The flag takes no value; use the flag vs its --no- form.
+              run: |
+                  if [ "${{ matrix.swiftpm }}" = "true" ]; then
+                    flutter config --enable-swift-package-manager
+                  else
+                    flutter config --no-enable-swift-package-manager
+                  fi
 
             - name: Pub get
               working-directory: meili_flutter/example
