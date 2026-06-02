@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meili_flutter/meili_flutter.dart';
 
+import 'package:meili_flutter_example/events_view_model.dart';
+import 'package:meili_flutter_example/widgets/events_panel.dart';
+
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -20,6 +23,20 @@ class TabHomePage extends StatefulWidget {
 }
 
 class _TabHomePageState extends State<TabHomePage> {
+  late final EventsViewModel _eventsViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _eventsViewModel = EventsViewModel();
+  }
+
+  @override
+  void dispose() {
+    _eventsViewModel.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
@@ -37,6 +54,10 @@ class _TabHomePageState extends State<TabHomePage> {
             label: 'Booking Manager',
             icon: Icon(CupertinoIcons.person),
           ),
+          BottomNavigationBarItem(
+            label: 'Events',
+            icon: Icon(CupertinoIcons.list_bullet),
+          ),
         ],
       ),
       tabBuilder: (context, index) {
@@ -47,10 +68,36 @@ class _TabHomePageState extends State<TabHomePage> {
             return const HomePage();
           case 2:
             return const MeiliBookingManagerFlowButton();
+          case 3:
+            return EventsTab(viewModel: _eventsViewModel);
           default:
             return Container();
         }
       },
+    );
+  }
+}
+
+/// Tab that shows the live Meili event log, sourced from [Meili.events].
+class EventsTab extends StatelessWidget {
+  /// Creates the events tab bound to [viewModel].
+  const EventsTab({required this.viewModel, super.key});
+
+  /// The shared events view model.
+  final EventsViewModel viewModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: const Text('Meili Events'),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: viewModel.clear,
+          child: const Text('Clear'),
+        ),
+      ),
+      child: SafeArea(child: EventsPanel(viewModel: viewModel)),
     );
   }
 }

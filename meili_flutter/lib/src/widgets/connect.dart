@@ -1,22 +1,29 @@
-// ignore_for_file: public_member_api_docs
-
 import 'package:flutter/material.dart';
+import 'package:meili_flutter/src/widgets/meili_view.dart';
 import 'package:meili_flutter_platform_interface/meili_flutter_platform_interface.dart';
 
-import 'package:meili_flutter/src/widgets/base.dart';
-
+/// Convenience wrapper that embeds the Meili **connect** flow.
 class MeiliConnectWidget extends StatelessWidget {
+  /// Creates a connect-flow [MeiliView].
   const MeiliConnectWidget({
     super.key,
     this.ptid,
     this.env,
     this.availParams,
-    this.onBookingInfoUpdated,
+    this.onEvent,
   });
+
+  /// The ptid (partner/touchpoint id).
   final String? ptid;
+
+  /// The environment (e.g. `dev`, `prod`).
   final String? env;
+
+  /// Availability parameters.
   final AvailParams? availParams;
-  final ValueChanged<Map<String, dynamic>>? onBookingInfoUpdated;
+
+  /// Optional convenience callback for [MeiliEvent]s while mounted.
+  final ValueChanged<MeiliEvent>? onEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +32,7 @@ class MeiliConnectWidget extends StatelessWidget {
       flow: FlowType.connect,
       env: env,
       availParams: availParams,
-      onBookingInfoUpdated: onBookingInfoUpdated,
+      onEvent: onEvent,
       height: 430, // Specific height for connect flow
     );
   }

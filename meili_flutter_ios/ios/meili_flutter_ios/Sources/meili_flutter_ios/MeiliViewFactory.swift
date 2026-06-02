@@ -43,17 +43,14 @@ public class MeiliViewFactory: NSObject, FlutterPlatformViewFactory {
 class MeiliUIView: UIView {
     var meiliParams: MeiliParams
     var meiliView: UIView?
-    var channel: FlutterMethodChannel?
-    
-    
-    init(frame: CGRect, meiliParams: MeiliParams, channel: FlutterMethodChannel?) {
+
+    init(frame: CGRect, meiliParams: MeiliParams) {
         self.meiliParams = meiliParams
-        self.channel = channel
         super.init(frame: frame)
-        
+
         initializeMeiliView()
     }
-    
+
     private func initializeMeiliView() {
         let hostingController = UIHostingController(rootView: MeiliView(with: meiliParams))
         
@@ -75,11 +72,7 @@ class MeiliUIView: UIView {
         super.layoutSubviews()
         meiliView?.frame = self.bounds
     }
-    
-    private func sendHeightToFlutter(_ height: CGFloat) {
-        channel?.invokeMethod("updateHeight", arguments: height)
-    }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -88,50 +81,43 @@ class MeiliUIView: UIView {
 
 class MeiliPlatformView: NSObject, FlutterPlatformView {
     private let meiliUIView: MeiliUIView
-    private let channel: FlutterMethodChannel
-    
+
     init(
         frame: CGRect,
         viewIdentifier viewId: Int64,
         arguments args: Any?,
         binaryMessenger messenger: FlutterBinaryMessenger
     ) {
-        channel = FlutterMethodChannel(name: "flutter_meili/meili_view/\(viewId)", binaryMessenger: messenger)
-        
         if let arguments = args as? [String: Any],
            let ptid = arguments["ptid"] as? String,
            let flow = arguments["flow"] as? String,
            let env = arguments["env"] as? String {
-            
+
             let flow = MeiliFlow(rawValue: flow) ?? .connect
             let environment = MeiliEnvironment(rawValue: env) ?? .dev
             let availParams = (arguments["availParams"] as? [String: Any]).flatMap(parseAvailParams)
             let additionalParams = (arguments["additionalParams"] as? [String: Any]).flatMap(parseBookingParams)
-            let meiliParams = MeiliParams(ptid: ptid, flow: flow, env: environment, availParams: availParams, additionalParams: additionalParams)
-            
-            meiliUIView = MeiliUIView(frame: frame, meiliParams: meiliParams, channel: channel)
-           
+            var meiliParams = MeiliParams(ptid: ptid, flow: flow, env: environment, availParams: availParams, additionalParams: additionalParams)
+
+            // Forward embedded-view lifecycle events to the shared event stream.
+            meiliParams.dismissAction = {
+                MeiliEventDispatcher.shared.sendDismissed()
+            }
+            meiliParams.onEndBookingFlow = { popToRoot in
+                MeiliEventDispatcher.shared.sendBookingFlowEnded(popToRoot)
+            }
+
+            meiliUIView = MeiliUIView(frame: frame, meiliParams: meiliParams)
+
         } else {
             fatalError("Failed to initialize MeiliPlatformView with arguments.")
         }
-        
+
         super.init()
-        
-        channel.setMethodCallHandler(handle)
     }
-    
+
     func view() -> UIView {
         return meiliUIView
-    }
-    
-     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        switch call.method {
-            
-            case "updateHeight":
-                result(nil)
-            default:
-                result(FlutterMethodNotImplemented)
-        }
     }
 }
 

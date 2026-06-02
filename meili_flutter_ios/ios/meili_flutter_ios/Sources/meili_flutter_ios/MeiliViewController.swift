@@ -42,7 +42,13 @@ struct MeiliWrapperView: View {
     
     private var paramsWithDismiss: MeiliParams {
         var _params = self.params
-        _params.dismissAction = { dismiss(); }
+        _params.dismissAction = {
+            dismiss()
+            MeiliEventDispatcher.shared.sendDismissed()
+        }
+        _params.onEndBookingFlow = { popToRoot in
+            MeiliEventDispatcher.shared.sendBookingFlowEnded(popToRoot)
+        }
         return _params
     }
     

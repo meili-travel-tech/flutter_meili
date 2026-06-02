@@ -12,12 +12,22 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
         let instance = MeiliFlutterPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
         registrar.addApplicationDelegate(instance)
-        
+
+        // Event channel: forwards SDK lifecycle + analytics events to Dart.
+        let eventChannel = FlutterEventChannel(name: "meili_flutter/events", binaryMessenger: registrar.messenger())
+        eventChannel.setStreamHandler(MeiliEventDispatcher.shared)
+        // Plugin registration runs on the main thread. The SDK's
+        // MeiliAnalyticsProvider protocol is @MainActor, so the provider's init
+        // and `addProvider` must run on the main actor.
+        MainActor.assumeIsolated {
+            MeiliAnalytics.shared.addProvider(MeiliFlutterAnalyticsProvider())
+        }
+
         // Meili View
         let meiliViewFactory = MeiliViewFactory(messenger: registrar.messenger())
         registrar.register(meiliViewFactory, withId: "flutter_meili/meili_view")
     }
-    
+
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
             case "openMeiliViewController":
@@ -26,6 +36,9 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
                 } else {
                     result(FlutterError(code: "INVALID_ARGUMENT", message: "Arguments are missing", details: nil))
                 }
+            case "popToRoot":
+                MeiliEventDispatcher.shared.popToRoot()
+                result(nil)
             default:
                 result(FlutterMethodNotImplemented)
         }
