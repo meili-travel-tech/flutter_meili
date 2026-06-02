@@ -114,16 +114,16 @@ jobs:
 
             - name: Publish packages
               run: |
-                  # Publish platform packages if they exist
-                  if [ -d "meili_flutter_android" ]; then
-                    cd meili_flutter_android && dart pub publish --force
-                  fi
-
-                  if [ -d "meili_flutter_ios" ]; then
-                    cd ../meili_flutter_ios && dart pub publish --force
-                  fi
-                  # Publish main package
-                  dart pub publish --force
+                  # Publish in dependency order, each from the repo root via a
+                  # subshell. The platform interface is versioned independently
+                  # (its own pubspec) and must be published first so the
+                  # dependents' constraints resolve; bump it manually when its
+                  # API changes.
+                  publish() { echo "Publishing $1"; ( cd "$1" && dart pub publish --force ); }
+                  if [ -d meili_flutter_platform_interface ]; then publish meili_flutter_platform_interface; fi
+                  if [ -d meili_flutter_android ]; then publish meili_flutter_android; fi
+                  if [ -d meili_flutter_ios ]; then publish meili_flutter_ios; fi
+                  publish meili_flutter
 
             - name: Commit updates
               run: |

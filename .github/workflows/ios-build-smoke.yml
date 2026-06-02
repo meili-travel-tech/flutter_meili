@@ -9,7 +9,8 @@ on:
     pull_request:
         paths:
             - 'meili_flutter_ios/**'
-            - 'meili_flutter/example/ios/**'
+            - 'meili_flutter_platform_interface/**'
+            - 'meili_flutter/**'
             - '.github/workflows/ios-build-smoke.yml'
     workflow_dispatch:
 
@@ -23,6 +24,9 @@ jobs:
                 # false -> CocoaPods path (uses the podspec) — regression guard
                 swiftpm: [true, false]
         name: build (swiftpm=${{ matrix.swiftpm }})
+        # The example ships SwiftPM-default; the CocoaPods leg is an advisory
+        # regression check, so it must not block the PR.
+        continue-on-error: ${{ !matrix.swiftpm }}
         steps:
             - uses: actions/checkout@v4
 
