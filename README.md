@@ -49,13 +49,12 @@ platform :ios, '16.0'
 
 ## Usage
 
-There are 3 Meili views that are supported
+There are 2 Meili views that are supported
 
 | Flow                  | Ease of use | description                                                                                  | Implementation docs                                                                           |
 | --------------------- | ----------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | Meili Direct          | Easy        | Opens a sheet view screen rendering the Meili Direct Flow                                    | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
 | Meili Booking Manager | Easy        | Opens a sheet view screen rendering the Meili Booking Manager Flow                           | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
-| Meili Connect Widget  | Easy        | Native flutter widget that renders the Meili Connect Flow to be embedded in a flutter widget | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
 
 ### Meili Direct
 
@@ -105,31 +104,6 @@ void _openMeiliView() async {
       print("Failed to open MeiliView: $e");
     }
   }
-```
-
-### Meili Connect
-
-To use the MeiliConnectWidget, integrate it into your widget tree with the necessary parameters:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:meili_flutter/meili_flutter.dart';
-
-MeiliConnectWidget(
-  ptid: 'ptid',
-  env: 'prod',
-  availParams: AvailParams(
-    pickupLocation: 'MUC',
-    dropoffLocation: 'MUC',
-    pickupDate: '2025-01-01',
-    pickupTime: '12:00',
-    dropoffDate: '2025-01-07',
-    dropoffTime: '12:00',
-    driverAge: 25,
-    currencyCode: 'EUR',
-    residency: 'IE',
-  ),
-)
 ```
 
 ## Error Handling

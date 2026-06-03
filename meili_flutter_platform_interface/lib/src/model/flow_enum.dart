@@ -1,2 +1,2 @@
 /// Enum representing the different flow types for the MeiliView.
-enum FlowType { direct, connect, bookingManager }
+enum FlowType { direct, bookingManager }

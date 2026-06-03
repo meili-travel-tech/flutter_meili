@@ -36,7 +36,8 @@ void main() {
   });
 
   test('openMeiliView propagates PlatformException from native side', () {
-    mock.errorToThrow = PlatformException(code: 'ERROR', message: 'native fail');
+    mock.errorToThrow =
+        PlatformException(code: 'ERROR', message: 'native fail');
     expect(
       () => Meili.openMeiliView(params),
       throwsA(isA<PlatformException>()),

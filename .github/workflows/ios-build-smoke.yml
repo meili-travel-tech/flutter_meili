@@ -1,0 +1,64 @@
+name: iOS build smoke test
+
+# Builds the example app's iOS plugin in BOTH dependency modes so neither path
+# silently rots. publish.yml only does pub.dev publish + Dart analysis and never
+# compiles the native iOS layer — this closes that gap (mirrors the SDK plan's
+# "no CI smoke test" note in swiftpm-migration-spec.md).
+
+on:
+    pull_request:
+        paths:
+            - 'meili_flutter_ios/**'
+            - 'meili_flutter_platform_interface/**'
+            - 'meili_flutter/**'
+            - '.github/workflows/ios-build-smoke.yml'
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: macos-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                # true  -> SwiftPM path (uses meili_flutter_ios/ios/meili_flutter_ios/Package.swift)
+                # false -> CocoaPods path (uses the podspec) — regression guard
+                swiftpm: [true, false]
+        name: build (swiftpm=${{ matrix.swiftpm }})
+        # The example ships SwiftPM-default; the CocoaPods leg is an advisory
+        # regression check, so it must not block the PR.
+        continue-on-error: ${{ !matrix.swiftpm }}
+        steps:
+            - uses: actions/checkout@v4
+
+            # MeiliSDK's XCFramework is built with a recent Swift toolchain
+            # (>= 6.2.4); a Swift .swiftinterface can't be consumed by an older
+            # compiler, so select the newest Xcode rather than the runner default.
+            - name: Select latest Xcode
+              uses: maxim-lobanov/setup-xcode@v1
+              with:
+                  xcode-version: latest-stable
+
+            - name: Setup Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  flutter-version: '3.x'
+                  channel: 'stable'
+
+            - name: Configure Swift Package Manager
+              # The flag takes no value; use the flag vs its --no- form.
+              run: |
+                  if [ "${{ matrix.swiftpm }}" = "true" ]; then
+                    flutter config --enable-swift-package-manager
+                  else
+                    flutter config --no-enable-swift-package-manager
+                  fi
+
+            - name: Pub get
+              working-directory: meili_flutter/example
+              run: |
+                  flutter clean
+                  flutter pub get
+
+            - name: Build iOS (no codesign)
+              working-directory: meili_flutter/example
+              run: flutter build ios --no-codesign

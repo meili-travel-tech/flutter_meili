@@ -6,6 +6,7 @@ import com.meili.travel.api.MeiliActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -14,11 +15,21 @@ import io.flutter.plugin.common.MethodChannel.Result
 class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private lateinit var channel: MethodChannel
+    private lateinit var eventChannel: EventChannel
     private var activity: ComponentActivity? = null
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(binding.binaryMessenger, "meili_flutter")
         channel.setMethodCallHandler(this)
+
+        // No-op handler so the shared `Meili.events` stream does not throw a
+        // MissingPluginException on Android. The Android native layer does not
+        // yet forward SDK events (tracked separately); the stream stays empty.
+        eventChannel = EventChannel(binding.binaryMessenger, "meili_flutter/events")
+        eventChannel.setStreamHandler(object : EventChannel.StreamHandler {
+            override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {}
+            override fun onCancel(arguments: Any?) {}
+        })
 
         binding.platformViewRegistry.registerViewFactory(
             "flutter_meili/meili_view",
@@ -48,12 +59,15 @@ class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 act.startActivity(intent)
                 result.success(null)
             }
+            // Accepted as a no-op until Android forwards end-of-flow events.
+            "popToRoot" -> result.success(null)
             else -> result.notImplemented()
         }
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
+        eventChannel.setStreamHandler(null)
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {

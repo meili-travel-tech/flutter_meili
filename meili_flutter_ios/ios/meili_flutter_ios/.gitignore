@@ -1,0 +1,4 @@
+.build/
+.swiftpm/
+# Library packages don't pin a resolution graph; consuming apps do.
+Package.resolved

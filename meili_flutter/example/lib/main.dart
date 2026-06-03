@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meili_flutter/meili_flutter.dart';
 
+import 'package:meili_flutter_example/events_view_model.dart';
+import 'package:meili_flutter_example/widgets/events_panel.dart';
+
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -20,6 +23,20 @@ class TabHomePage extends StatefulWidget {
 }
 
 class _TabHomePageState extends State<TabHomePage> {
+  late final EventsViewModel _eventsViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _eventsViewModel = EventsViewModel();
+  }
+
+  @override
+  void dispose() {
+    _eventsViewModel.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
@@ -30,12 +47,12 @@ class _TabHomePageState extends State<TabHomePage> {
             icon: Icon(CupertinoIcons.arrow_right),
           ),
           BottomNavigationBarItem(
-            label: 'Connect',
-            icon: Icon(CupertinoIcons.link),
-          ),
-          BottomNavigationBarItem(
             label: 'Booking Manager',
             icon: Icon(CupertinoIcons.person),
+          ),
+          BottomNavigationBarItem(
+            label: 'Events',
+            icon: Icon(CupertinoIcons.list_bullet),
           ),
         ],
       ),
@@ -44,9 +61,9 @@ class _TabHomePageState extends State<TabHomePage> {
           case 0:
             return const MeiliDirectFlowButton();
           case 1:
-            return const HomePage();
-          case 2:
             return const MeiliBookingManagerFlowButton();
+          case 2:
+            return EventsTab(viewModel: _eventsViewModel);
           default:
             return Container();
         }
@@ -55,105 +72,26 @@ class _TabHomePageState extends State<TabHomePage> {
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+/// Tab that shows the live Meili event log, sourced from [Meili.events].
+class EventsTab extends StatelessWidget {
+  /// Creates the events tab bound to [viewModel].
+  const EventsTab({required this.viewModel, super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
+  /// The shared events view model.
+  final EventsViewModel viewModel;
 
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('IN PATH BOOKING'),
-      ),
-      child: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Higher dummy content above the MeiliView
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'Welcome to the Flutter Example App',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'This is some dummy content above the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'More dummy content above the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'Even more dummy content above the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-
-              // MeiliConnectWidget
-              MeiliConnectWidget(
-                ptid: '125.10',
-                env: 'prod',
-                availParams: AvailParams(
-                  pickupLocation: 'MUC',
-                  dropoffLocation: 'MUC',
-                  pickupDate: '2025-01-01',
-                  pickupTime: '12:00',
-                  dropoffDate: '2025-01-07',
-                  dropoffTime: '12:00',
-                  driverAge: 25,
-                  currencyCode: 'EUR',
-                  residency: 'IE',
-                ),
-              ),
-
-              // Dummy content below the MeiliView
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'This is some dummy content below the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'Enjoy exploring the app!',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'Even more dummy content below the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'More dummy content below the MeiliView widget.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-          ),
+      navigationBar: CupertinoNavigationBar(
+        middle: const Text('Meili Events'),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: viewModel.clear,
+          child: const Text('Clear'),
         ),
       ),
+      child: SafeArea(child: EventsPanel(viewModel: viewModel)),
     );
   }
 }

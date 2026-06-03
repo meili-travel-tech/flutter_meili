@@ -1,27 +1,25 @@
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-
 import 'package:meili_flutter_example/main.dart' as app;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('E2E', () {
-    testWidgets('getPlatformName', (tester) async {
+    testWidgets('launches with the supported flow tabs and an empty Events tab',
+        (tester) async {
       app.main();
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Get Platform Name'));
+
+      // Only Direct and Booking Manager flows are exposed (Connect removed),
+      // plus the Events tab.
+      expect(find.text('Direct'), findsOneWidget);
+      expect(find.text('Booking Manager'), findsOneWidget);
+      expect(find.text('Events'), findsOneWidget);
+
+      await tester.tap(find.text('Events'));
       await tester.pumpAndSettle();
-      final expected = expectedPlatformName();
-      await tester.ensureVisible(find.text('Platform Name: $expected'));
+      expect(find.textContaining('No Meili events yet'), findsOneWidget);
     });
   });
-}
-
-String expectedPlatformName() {
-  if (Platform.isAndroid) return 'Android';
-  if (Platform.isIOS) return 'iOS';
-  throw UnsupportedError('Unsupported platform ${Platform.operatingSystem}');
 }
