@@ -1,11 +1,13 @@
 package com.flutter.meili
 
 import android.view.View
+import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import com.meili.travel.api.MeiliCompose
+import com.meili.travel.api.AvailParams
+import com.meili.travel.api.MeiliActivity
+import com.meili.travel.api.MeiliComposeListener
 import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.platform.PlatformView
 
 internal class MeiliPlatformView(
@@ -13,29 +15,34 @@ internal class MeiliPlatformView(
     viewId: Int,
     creationParams: Map<*, *>,
     messenger: BinaryMessenger,
+    private val eventSinkProvider: () -> EventChannel.EventSink?,
 ) : PlatformView {
 
-    private val composeView = ComposeView(activity).apply {
-        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+    private val view = FrameLayout(activity)
 
+    init {
         val ptid = creationParams["ptid"] as? String ?: ""
         val env = parseEnv(creationParams["env"] as? String)
-        val flow = parseFlow(creationParams["currentFlow"] as? String)
+        val flow = parseFlow(creationParams["flow"] as? String)
         val availParams = parseAvailParams(creationParams["availParams"] as? Map<*, *>)
+            ?: AvailParams(null, null, null, null, null, null, null, null, null)
         val additionalParams = parseAdditionalParams(creationParams["bookingParams"] as? Map<*, *>)
 
-        setContent {
-            MeiliCompose(
-                ptid = ptid,
-                env = env,
-                flow = flow,
-                availParams = availParams,
-                additionalParams = additionalParams,
-            )
-        }
+        MeiliActivity.start(
+            context = activity,
+            ptid = ptid,
+            env = env,
+            flow = flow,
+            availParams = availParams,
+            additionalParams = additionalParams,
+            listener = object : MeiliComposeListener {},
+            onBack = {
+                eventSinkProvider()?.success(mapOf("type" to "flowDismissed"))
+            },
+        )
     }
 
-    override fun getView(): View = composeView
+    override fun getView(): View = view
 
     override fun dispose() {}
 }

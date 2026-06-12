@@ -3,6 +3,7 @@ package com.flutter.meili
 import android.content.Context
 import androidx.activity.ComponentActivity
 import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
@@ -10,6 +11,7 @@ import io.flutter.plugin.platform.PlatformViewFactory
 internal class MeiliViewFactory(
     private val messenger: BinaryMessenger,
     private val activityProvider: () -> ComponentActivity?,
+    private val eventSinkProvider: () -> EventChannel.EventSink?,
 ) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
 
     override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
@@ -19,6 +21,7 @@ internal class MeiliViewFactory(
             viewId = viewId,
             creationParams = params,
             messenger = messenger,
+            eventSinkProvider = eventSinkProvider,
         )
     }
 }
