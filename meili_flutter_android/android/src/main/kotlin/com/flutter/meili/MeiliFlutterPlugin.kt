@@ -1,8 +1,9 @@
 package com.flutter.meili
 
-import android.content.Intent
 import androidx.activity.ComponentActivity
+import com.meili.travel.api.AvailParams
 import com.meili.travel.api.MeiliActivity
+import com.meili.travel.api.MeiliComposeListener
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -17,23 +18,25 @@ class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var channel: MethodChannel
     private lateinit var eventChannel: EventChannel
     private var activity: ComponentActivity? = null
+    private var eventSink: EventChannel.EventSink? = null
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(binding.binaryMessenger, "meili_flutter")
         channel.setMethodCallHandler(this)
 
-        // No-op handler so the shared `Meili.events` stream does not throw a
-        // MissingPluginException on Android. The Android native layer does not
-        // yet forward SDK events (tracked separately); the stream stays empty.
         eventChannel = EventChannel(binding.binaryMessenger, "meili_flutter/events")
         eventChannel.setStreamHandler(object : EventChannel.StreamHandler {
-            override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {}
-            override fun onCancel(arguments: Any?) {}
+            override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                eventSink = events
+            }
+            override fun onCancel(arguments: Any?) {
+                eventSink = null
+            }
         })
 
         binding.platformViewRegistry.registerViewFactory(
             "flutter_meili/meili_view",
-            MeiliViewFactory(binding.binaryMessenger) { activity },
+            MeiliViewFactory(binding.binaryMessenger, { activity }, { eventSink }),
         )
     }
 
@@ -50,16 +53,22 @@ class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     result.error("MISSING_PTID", "ptid is required", null)
                     return
                 }
-                val envName = parseEnv(args["env"] as? String).name
 
-                val intent = Intent(act, MeiliActivity::class.java).apply {
-                    putExtra("PTID", ptid)
-                    putExtra("ENV", envName)
-                }
-                act.startActivity(intent)
+                MeiliActivity.start(
+                    context = act,
+                    ptid = ptid,
+                    env = parseEnv(args["env"] as? String),
+                    flow = parseFlow(args["flow"] as? String),
+                    availParams = parseAvailParams(args["availParams"] as? Map<*, *>)
+                        ?: AvailParams(null, null, null, null, null, null, null, null, null),
+                    additionalParams = parseAdditionalParams(args["additionalParams"] as? Map<*, *>),
+                    listener = object : MeiliComposeListener {},
+                    onBack = {
+                        eventSink?.success(mapOf("type" to "flowDismissed"))
+                    },
+                )
                 result.success(null)
             }
-            // Accepted as a no-op until Android forwards end-of-flow events.
             "popToRoot" -> result.success(null)
             else -> result.notImplemented()
         }

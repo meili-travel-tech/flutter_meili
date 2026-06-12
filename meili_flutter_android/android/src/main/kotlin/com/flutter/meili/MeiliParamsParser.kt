@@ -1,16 +1,13 @@
 package com.flutter.meili
 
+import com.meili.travel.api.AdditionalParams
+import com.meili.travel.api.AvailParams
 import com.meili.travel.api.DevelopmentEnvironment
 import com.meili.travel.api.MeiliEnvironment
+import com.meili.travel.api.MeiliFlow
 import com.meili.travel.api.PreProductionEnvironment
 import com.meili.travel.api.ProductionEnvironment
 import com.meili.travel.api.UatEnvironment
-import com.meili.travel.internal.models.AvailParams
-import com.meili.travel.internal.viewModels.AdditionalParams
-
-// com.meili.travel.internal.g is the obfuscated MeiliFlow enum in the 1.1.0 AAR:
-//   g.a = Direct, g.b = BookingManager
-private typealias MeiliFlowInternal = com.meili.travel.internal.g
 
 internal fun parseEnv(envName: String?): MeiliEnvironment = when (envName?.lowercase()) {
     "prod", "production" -> ProductionEnvironment()
@@ -19,9 +16,9 @@ internal fun parseEnv(envName: String?): MeiliEnvironment = when (envName?.lower
     else -> DevelopmentEnvironment()
 }
 
-internal fun parseFlow(flowName: String?): MeiliFlowInternal = when (flowName?.lowercase()) {
-    "bookingmanager" -> MeiliFlowInternal.b
-    else -> MeiliFlowInternal.a
+internal fun parseFlow(flowName: String?): MeiliFlow = when (flowName?.lowercase()) {
+    "bookingmanager" -> MeiliFlow.BookingManager
+    else -> MeiliFlow.Direct
 }
 
 internal fun parseAvailParams(map: Map<*, *>?): AvailParams? {
