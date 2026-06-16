@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1-beta.3
+
+- Updated `meili_flutter_platform_interface` constraint to `^0.3.0`.
+
 ## 0.3.1-beta.2
 
 - Updated license to proprietary.

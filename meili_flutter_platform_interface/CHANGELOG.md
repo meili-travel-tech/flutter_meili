@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Bumped to 0.3.0 to align with federated plugin versioning.
+
 ## 0.2.1
 
 - Updated license to proprietary.
