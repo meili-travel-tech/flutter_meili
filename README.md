@@ -2,124 +2,192 @@
 
 [![pub package](https://img.shields.io/pub/v/meili_flutter.svg)](https://pub.dev/packages/meili_flutter)
 
-The Meili Flutter Plugin allows you to integrate the Meili experience into your Flutter applications.
+The Meili Flutter Plugin allows you to integrate the Meili car rental booking experience into your Flutter applications on both iOS and Android.
 
 ## Features
 
-**Cross-Platform Support**: The Meili plugin supports both iOS and Android platforms.
+- **Cross-platform**: Full support for iOS and Android
+- **Two booking flows**: Direct (search & book) and Booking Manager (manage existing bookings)
+- **Dismiss callback**: Listen for when the user closes the Meili flow
+- **Prefill support**: Pass availability and booking parameters to pre-populate the search
 
-**Customizable UI**: Provides powerful and customizable UI screens and elements to collect user details.
+## Requirements
 
-**Direct Integration**: Directly integrates with Meili for a seamless user experience.
-
-**Platform Specific Implementation**: Different implementations for iOS and Android, ensuring optimal performance on each platform.
+| Platform | Minimum version |
+|----------|----------------|
+| iOS      | 16.0           |
+| Android  | API 27         |
 
 ## Installation
 
-Add the following to your `pubspec.yaml` file:
+Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-    meili_flutter: ^1.0.0
+  meili_flutter: ^0.3.1-beta.4
 ```
 
-Run `flutter pub get` to install the package.
+Run:
+```bash
+flutter pub get
+```
 
-### Requirements
+### Android setup
 
--   iOS Version: 16.0 or higher
-    -   Add the meili CocoaPods repository `source https://github.com/meili-travel-tech/meili-ios-pods` to your Podfile project.
-    -   Run `pod repo update && pod install` in the ios directory.
-    -   If you find any issues, also try to clean up the cache of the pub-cache and Pods already installed.
--   Android Version: As per your project's minimum SDK requirements
+The Android SDK is hosted on GitHub Packages. Add the Maven repository with credentials to your **project-level** `android/build.gradle`:
 
-#### iOS - Steps
+```groovy
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/meili-travel-tech/ux-native-android-sdk")
+            credentials {
+                username = System.getenv("MEILI_GITHUB_USERNAME") ?: ""
+                password = System.getenv("MEILI_GITHUB_TOKEN") ?: ""
+            }
+        }
+    }
+}
+```
 
-Compatible with apps targeting iOS 16 or above.
+Set environment variables (add to `~/.zshrc` or `~/.bashrc`):
 
-Update your iOS deployment target to 13.0 in your `project.pbxproj` or via Xcode under Build Settings.
+```bash
+export MEILI_GITHUB_USERNAME=your-github-username
+export MEILI_GITHUB_TOKEN=your-github-pat-with-read-packages-scope
+```
 
-Update your `Podfile`:
+### iOS setup
+
+Add the Meili CocoaPods source to your `ios/Podfile`:
 
 ```ruby
 source 'https://github.com/meili-travel-tech/meili-ios-pods'
+source 'https://cdn.cocoapods.org/'
 
 platform :ios, '16.0'
 ```
 
+Then run:
+```bash
+cd ios && pod repo update && pod install
+```
+
 ## Usage
 
-There are 2 Meili views that are supported
+### MeiliView widget (recommended)
 
-| Flow                  | Ease of use | description                                                                                  | Implementation docs                                                                           |
-| --------------------- | ----------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Meili Direct          | Easy        | Opens a sheet view screen rendering the Meili Direct Flow                                    | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
-| Meili Booking Manager | Easy        | Opens a sheet view screen rendering the Meili Booking Manager Flow                           | [Meili Support](https://meili.atlassian.net/servicedesk/customer/portal/1/article/1304231937) |
-
-### Meili Direct
-
-To open the Meili view for the direct flow, use the following code snippet:
+Embed the Meili flow directly as a widget — typically full screen:
 
 ```dart
+import 'package:flutter/material.dart';
 import 'package:meili_flutter/meili_flutter.dart';
 
-void _openMeiliView() async {
-    final params = MeiliParams(
-      ptid: 'ptid',
-      flow: FlowType.direct,
-      env: 'dev',
-    );
-
-    try {
-      await Meili.openMeiliView(params);
-    } catch (e) {
-      print("Failed to open MeiliView: $e");
-    }
-  }
-```
-
-### Meili Booking Manager
-
-To open the Meili view for the booking manager flow, use the following code snippet:
-
-```dart
-import 'package:meili_flutter/meili_flutter.dart';
-
-void _openMeiliView() async {
-    final params = MeiliParams(
-      ptid: 'ptid',
-      flow: FlowType.bookingManager,
-      env: 'dev',
-      // you can pass the values to prefill the fields
-      // it will search automatically once the flow is opened
-      additionalParams: AdditionalParams(
-        confirmationId: '1234ABCD',
-        lastName: 'Doe',
+class MyPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) => MeiliView(
+          ptid: 'your-ptid',
+          env: 'prod', // 'dev', 'uat', 'pre_prod', 'prod'
+          flow: FlowType.direct,
+          height: constraints.maxHeight,
+        ),
       ),
     );
-
-    try {
-      await Meili.openMeiliView(params);
-    } catch (e) {
-      print("Failed to open MeiliView: $e");
-    }
   }
+}
 ```
 
-## Error Handling
+### Programmatic open
 
-If an error occurs while attempting to open the Meili view, a `PlatformException` will be thrown, and an error message will be printed to the console.
+Open the Meili flow imperatively (e.g. on button tap):
 
-## Platform Support
+```dart
+import 'package:meili_flutter/meili_flutter.dart';
 
-### iOS
+await Meili.openMeiliView(MeiliParams(
+  ptid: 'your-ptid',
+  env: 'prod',
+  flow: FlowType.direct,
+));
+```
 
-The Meili view is supported on iOS. The `MethodChannel` for iOS is `meili_flutter_ios`.
+### Booking Manager flow
 
-### Android
+```dart
+await Meili.openMeiliView(MeiliParams(
+  ptid: 'your-ptid',
+  env: 'prod',
+  flow: FlowType.bookingManager,
+  additionalParams: AdditionalParams(
+    confirmationId: '1234ABCD',
+    lastName: 'Doe',
+  ),
+));
+```
 
-We are working to integrate the Meili Android SDK into the Meili Flutter plugin. Support for the Meili view on Android will be available very soon. In the meantime, attempting to open the Meili view on Android may result in a PlatformException with the message "Android platform view is not yet supported".
+### Prefill availability parameters
+
+```dart
+await Meili.openMeiliView(MeiliParams(
+  ptid: 'your-ptid',
+  env: 'prod',
+  flow: FlowType.direct,
+  availParams: AvailParams(
+    pickupLocation: 'LHR',
+    dropoffLocation: 'LHR',
+    pickupDate: '2025-06-01',
+    pickupTime: '10:00',
+    dropoffDate: '2025-06-08',
+    dropoffTime: '10:00',
+    driverAge: 30,
+    currencyCode: 'GBP',
+    residency: 'GB',
+  ),
+));
+```
+
+### Listening for dismiss events
+
+```dart
+import 'package:meili_flutter/meili_flutter.dart';
+
+class MyPage extends StatefulWidget { ... }
+
+class _MyPageState extends State<MyPage> {
+  @override
+  void initState() {
+    super.initState();
+    Meili.onEvent.listen((event) {
+      if (event is MeiliFlowDismissed) {
+        // User closed the Meili flow
+        Navigator.of(context).pop();
+      }
+    });
+  }
+}
+```
+
+## Flows
+
+| Flow | Description |
+|------|-------------|
+| `FlowType.direct` | Search and book a car rental |
+| `FlowType.bookingManager` | View and manage an existing booking |
+
+## Environments
+
+| Value | Description |
+|-------|-------------|
+| `'prod'` | Production |
+| `'pre_prod'` | Pre-production |
+| `'uat'` | UAT |
+| `'dev'` | Development |
 
 ## Contributing
 
-You can help us make this project better by opening new issues or pull requests.
+Open issues or pull requests at [github.com/meili-travel-tech/flutter_meili](https://github.com/meili-travel-tech/flutter_meili).

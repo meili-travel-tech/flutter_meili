@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1-beta.4
+
+- Bumped `meili_flutter_android` dependency to `^0.3.0-beta.3`.
+
 ## 0.3.1-beta.3
 
 - Migrated to federated plugin architecture using `meili_flutter_platform_interface`.
