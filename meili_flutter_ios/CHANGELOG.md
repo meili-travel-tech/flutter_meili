@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1-beta.4
+
+- Bumped `MeiliSDK` to `1.6.3-alpha.10` on both channels (SwiftPM `ux-native-ios` pin and CocoaPods podspec).
+
 ## 0.3.1-beta.3
 
 - Updated `meili_flutter_platform_interface` constraint to `^0.3.0`.

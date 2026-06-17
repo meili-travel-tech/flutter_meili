@@ -17,7 +17,7 @@ let package = Package(
         // `exact:` (not `from:`) because only pre-release tags exist today
         // (1.6.3-alpha.N); SwiftPM excludes pre-releases from `from:` ranges.
         // Switch to `from: "1.6.0"` once a stable 1.6.x ships.
-        .package(url: "https://github.com/meili-travel-tech/ux-native-ios", exact: "1.6.3-alpha.9")
+        .package(url: "https://github.com/meili-travel-tech/ux-native-ios", exact: "1.6.3-alpha.10")
     ],
     targets: [
         .target(
