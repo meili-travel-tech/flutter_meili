@@ -1,3 +1,7 @@
+# Declaring any custom source disables CocoaPods' implicit default trunk, so the
+# CDN must be listed explicitly — otherwise federated plugins (e.g.
+# shared_preferences_foundation) fail to resolve on clean machines/CI.
+source 'https://cdn.cocoapods.org/'
 source 'https://github.com/meili-travel-tech/meili-ios-pods'
 
 # Uncomment this line to define a global platform for your project
