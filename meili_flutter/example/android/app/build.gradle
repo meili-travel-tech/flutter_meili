@@ -4,8 +4,18 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+// Release signing is read from android/key.properties when present (that file
+// and the keystore are git-ignored). Without it, release builds fall back to
+// the debug keystore so local/CI builds still work — but a debug-signed
+// artifact cannot be uploaded to the Play Store. See android/key.properties.example.
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
-    namespace "com.flutter.meili.example"
+    namespace "com.meili.travel.sample.flutter"
     compileSdk flutter.compileSdkVersion
 
     compileOptions {
@@ -21,19 +31,33 @@ android {
         main.java.srcDirs += "src/main/kotlin"
     }
 
-    ndkVersion "26.3.11579264"
+    // Highest NDK required across the Flutter plugins (integration_test);
+    // needed so release builds can strip native debug symbols cleanly.
+    ndkVersion "28.2.13676358"
 
     defaultConfig {
-        applicationId "com.flutter.meili.example"
+        applicationId "com.meili.travel.sample.flutter"
         minSdk 27
         targetSdk flutter.targetSdkVersion
         versionCode flutter.versionCode
         versionName flutter.versionName
     }
 
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+                storeFile keystoreProperties["storeFile"] ? file(keystoreProperties["storeFile"]) : null
+                storePassword keystoreProperties["storePassword"]
+            }
+        }
+    }
+
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            // Real keystore when configured, debug keystore otherwise.
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
         }
     }
 }

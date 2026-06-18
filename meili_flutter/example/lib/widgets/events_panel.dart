@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:meili_flutter/meili_flutter.dart';
 import 'package:meili_flutter_example/events_view_model.dart';
 
@@ -24,8 +24,9 @@ class EventsPanel extends StatelessWidget {
             ),
           );
         }
-        return ListView.builder(
+        return ListView.separated(
           itemCount: records.length,
+          separatorBuilder: (context, index) => const Divider(height: 1),
           itemBuilder: (context, index) {
             final record = records[index];
             return _EventTile(
@@ -46,21 +47,10 @@ class _EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: CupertinoColors.separator, width: 0.5),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(_title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          if (_subtitle != null)
-            Text(_subtitle!, style: const TextStyle(fontSize: 13)),
-        ],
-      ),
+    final subtitle = _subtitle;
+    return ListTile(
+      title: Text(_title),
+      subtitle: subtitle == null ? null : Text(subtitle),
     );
   }
 
