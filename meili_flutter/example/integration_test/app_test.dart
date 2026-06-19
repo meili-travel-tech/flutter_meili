@@ -6,16 +6,19 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('E2E', () {
-    testWidgets('launches with the supported flow tabs and an empty Events tab',
+    testWidgets('launches on the configure screen with an empty Events tab',
         (tester) async {
-      app.main();
+      await app.main();
       await tester.pumpAndSettle();
 
-      // Only Direct and Booking Manager flows are exposed (Connect removed),
-      // plus the Events tab.
+      // The Launch tab hosts the inline settings; the Events tab is separate.
+      expect(find.text('Launch'), findsOneWidget);
+      expect(find.text('Events'), findsOneWidget);
+
+      // Inline settings are visible on the launch screen.
+      expect(find.text('PTID'), findsOneWidget);
       expect(find.text('Direct'), findsOneWidget);
       expect(find.text('Booking Manager'), findsOneWidget);
-      expect(find.text('Events'), findsOneWidget);
 
       await tester.tap(find.text('Events'));
       await tester.pumpAndSettle();

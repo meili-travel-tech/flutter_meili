@@ -1,4 +1,4 @@
-package com.flutter.meili.example
+package com.meili.travel.sample.flutter
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

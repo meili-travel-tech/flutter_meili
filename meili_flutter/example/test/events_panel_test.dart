@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meili_flutter/meili_flutter.dart';
 import 'package:meili_flutter_example/events_view_model.dart';
@@ -14,8 +14,8 @@ void main() {
     addTearDown(viewModel.dispose);
 
     await tester.pumpWidget(
-      CupertinoApp(
-        home: CupertinoPageScaffold(child: EventsPanel(viewModel: viewModel)),
+      MaterialApp(
+        home: Scaffold(body: EventsPanel(viewModel: viewModel)),
       ),
     );
 
