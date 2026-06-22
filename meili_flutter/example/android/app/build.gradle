@@ -56,6 +56,11 @@ android {
 
     buildTypes {
         release {
+            // R8 canary: exercise the SDK's bundled consumer rules + kotlinx
+            // serialization under obfuscation, through the full plugin chain.
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
             // Real keystore when configured, debug keystore otherwise.
             signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
         }
