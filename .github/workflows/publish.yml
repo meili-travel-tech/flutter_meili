@@ -125,11 +125,13 @@ jobs:
                   for pkg in meili_flutter_platform_interface meili_flutter_android meili_flutter_ios meili_flutter; do
                     echo "flutter analyze in $pkg"
                     (cd "$pkg" && flutter analyze --no-fatal-infos)
-                    if [ -d "$pkg/test" ]; then
-                      echo "flutter test in $pkg"
-                      (cd "$pkg" && flutter test)
-                    fi
                   done
+
+                  for pkg in meili_flutter_platform_interface meili_flutter; do
+                    echo "flutter test in $pkg"
+                    (cd "$pkg" && flutter test)
+                  done
+
                   dart format --set-exit-if-changed \
                     meili_flutter_platform_interface \
                     meili_flutter_android \
