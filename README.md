@@ -24,7 +24,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  meili_flutter: ^0.3.1-beta.4
+  meili_flutter: ^0.3.1-beta.6
 ```
 
 Run:
