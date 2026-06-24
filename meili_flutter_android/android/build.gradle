@@ -19,11 +19,7 @@ allprojects {
         google()
         mavenCentral()
         maven {
-            url = uri("https://maven.pkg.github.com/meili-travel-tech/ux-native-android-sdk")
-            credentials {
-                username = System.getenv("MEILI_GITHUB_USERNAME") ?: ""
-                password = System.getenv("MEILI_GITHUB_TOKEN") ?: ""
-            }
+            url = uri("https://meili-travel-tech.github.io/ux-native-android/")
         }
     }
 }
@@ -79,7 +75,7 @@ android {
 }
 
 dependencies {
-    implementation "meili.travel:ux-native-android-sdk:1.6.4"
+    implementation "meili.travel:ux-native-android-sdk:1.6.8"
 
     implementation 'androidx.activity:activity-compose:1.9.2'
     implementation 'androidx.compose.ui:ui:1.7.2'
