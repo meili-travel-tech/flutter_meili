@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1-beta.5
+
+- Bumped `meili_flutter_android` dependency to `^0.3.0-beta.5` (Android Gradle Plugin 9 compatibility and a bundled Compose compiler plugin).
+
 ## 0.3.1-beta.4
 
 - Bumped `meili_flutter_android` dependency to `^0.3.0-beta.3`.

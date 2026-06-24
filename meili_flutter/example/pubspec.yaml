@@ -1,6 +1,6 @@
 name: meili_flutter_example
 description: Demonstrates how to use the meili_flutter plugin.
-version: 0.1.0+1
+version: 0.1.0+3
 publish_to: none
 
 environment:
