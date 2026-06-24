@@ -156,35 +156,52 @@ jobs:
                   }
                   EOF
 
-            - name: Publish packages
+            - name: Publish to pub.dev
               run: |
-                  publish() {
-                    local dir="$1"
-                    echo "Publishing $dir"
-                    set +e
-                    output=$(cd "$dir" && dart pub publish --force 2>&1)
-                    status=$?
-                    set -e
-                    echo "$output"
-                    if [ $status -eq 0 ]; then
-                      return 0
-                    fi
-                    if echo "$output" | grep -qiE 'already exists|duplicate|was previously published'; then
-                      echo "Skipping $dir — version already on pub.dev"
-                      return 0
-                    fi
-                    return $status
+                  is_on_pub_dev() {
+                    local name="$1"
+                    local version="$2"
+                    curl -sf "https://pub.dev/api/packages/${name}/versions/${version}" >/dev/null
                   }
 
-                  # Publish platform packages first so meili_flutter can resolve them from pub.dev.
-                  # The platform interface is versioned independently — bump its pubspec manually
-                  # when the API changes.
-                  if [ -d meili_flutter_platform_interface ]; then publish meili_flutter_platform_interface; fi
-                  if [ -d meili_flutter_android ]; then publish meili_flutter_android; fi
-                  if [ -d meili_flutter_ios ]; then publish meili_flutter_ios; fi
+                  publish_if_needed() {
+                    local dir="$1"
+                    local name version
+                    name=$(yq -r '.name' "$dir/pubspec.yaml")
+                    version=$(yq -r '.version' "$dir/pubspec.yaml")
 
-            - name: Publish app-facing package
-              run: |
+                    echo "Checking pub.dev for ${name}@${version}..."
+                    if is_on_pub_dev "$name" "$version"; then
+                      echo "Skipping ${name}@${version} — already on pub.dev"
+                      return 0
+                    fi
+
+                    echo "Publishing ${name}@${version} from ${dir}"
+                    set +e
+                    timeout 600 bash -c "cd '$dir' && dart pub publish --force" 2>&1 | tee "/tmp/publish-${name}.log"
+                    local status=${PIPESTATUS[0]}
+                    set -e
+
+                    if [ "$status" -eq 124 ]; then
+                      echo "Publish timed out after 10 minutes for ${name}"
+                      return 1
+                    fi
+                    if [ "$status" -eq 0 ]; then
+                      return 0
+                    fi
+                    if grep -qiE 'already exists|duplicate|was previously published' "/tmp/publish-${name}.log"; then
+                      echo "Skipping ${name}@${version} — version already on pub.dev"
+                      return 0
+                    fi
+                    return "$status"
+                  }
+
+                  # Platform packages first so meili_flutter can resolve them from pub.dev.
+                  # Bump meili_flutter_platform_interface manually when its API changes.
+                  if [ -d meili_flutter_platform_interface ]; then publish_if_needed meili_flutter_platform_interface; fi
+                  if [ -d meili_flutter_android ]; then publish_if_needed meili_flutter_android; fi
+                  if [ -d meili_flutter_ios ]; then publish_if_needed meili_flutter_ios; fi
+
                   export VERSION ANDROID_VERSION
 
                   rm -f meili_flutter/pubspec_overrides.yaml
@@ -192,7 +209,6 @@ jobs:
                   yq -i '.dependencies.meili_flutter_android = "^" + env(ANDROID_VERSION)' meili_flutter/pubspec.yaml
                   yq -i '.dependencies.meili_flutter_ios = "^" + env(VERSION)' meili_flutter/pubspec.yaml
 
-                  # pub.dev can take a minute to index newly published siblings.
                   for attempt in 1 2 3 4 5 6; do
                     echo "flutter pub get in meili_flutter (pub.dev resolution, attempt $attempt)"
                     if (cd meili_flutter && flutter pub get); then
@@ -206,17 +222,7 @@ jobs:
                     sleep 30
                   done
 
-                  echo "Publishing meili_flutter"
-                  set +e
-                  output=$(cd meili_flutter && dart pub publish --force 2>&1)
-                  status=$?
-                  set -e
-                  echo "$output"
-                  if [ $status -ne 0 ] && echo "$output" | grep -qiE 'already exists|duplicate|was previously published'; then
-                    echo "Skipping meili_flutter — version already on pub.dev"
-                    exit 0
-                  fi
-                  exit $status
+                  publish_if_needed meili_flutter
 
             - name: Commit updates
               run: |
