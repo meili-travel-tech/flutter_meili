@@ -27,6 +27,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
+                  ref: main
                   fetch-depth: 0
 
             - name: Get version and release info
@@ -52,9 +53,13 @@ jobs:
                   fi
 
                   # Android package uses 0.3.0-beta.N while the app-facing package uses 0.3.1-beta.N.
-                  ANDROID_VERSION=$(echo "$VERSION" | sed -E 's/^0\.3\.1-beta\./0.3.0-beta./')
-                  if ! [[ "$ANDROID_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.+)?$ ]]; then
-                    echo "Could not derive ANDROID_VERSION from VERSION=$VERSION"
+                  if [[ "$VERSION" =~ ^0\.3\.1-beta\. ]]; then
+                    ANDROID_VERSION=$(echo "$VERSION" | sed -E 's/^0\.3\.1-beta\./0.3.0-beta./')
+                  elif [[ "$VERSION" == "0.3.1" ]]; then
+                    ANDROID_VERSION="0.3.0"
+                  else
+                    echo "Unsupported VERSION scheme for ANDROID_VERSION derivation: $VERSION"
+                    echo "Expected 0.3.1-beta.N or 0.3.1"
                     exit 1
                   fi
 
@@ -185,17 +190,37 @@ jobs:
                   yq -i '.dependencies.meili_flutter_android = "^" + env(ANDROID_VERSION)' meili_flutter/pubspec.yaml
                   yq -i '.dependencies.meili_flutter_ios = "^" + env(VERSION)' meili_flutter/pubspec.yaml
 
-                  echo "flutter pub get in meili_flutter (pub.dev resolution)"
-                  (cd meili_flutter && flutter pub get)
+                  # pub.dev can take a minute to index newly published siblings.
+                  for attempt in 1 2 3 4 5 6; do
+                    echo "flutter pub get in meili_flutter (pub.dev resolution, attempt $attempt)"
+                    if (cd meili_flutter && flutter pub get); then
+                      break
+                    fi
+                    if [ "$attempt" -eq 6 ]; then
+                      echo "Dependency resolution failed after waiting for pub.dev indexing"
+                      exit 1
+                    fi
+                    echo "Waiting 30s for pub.dev to index platform packages..."
+                    sleep 30
+                  done
 
                   echo "Publishing meili_flutter"
-                  (cd meili_flutter && dart pub publish --force)
+                  set +e
+                  output=$(cd meili_flutter && dart pub publish --force 2>&1)
+                  status=$?
+                  set -e
+                  echo "$output"
+                  if [ $status -ne 0 ] && echo "$output" | grep -qiE 'already exists|duplicate|was previously published'; then
+                    echo "Skipping meili_flutter — version already on pub.dev"
+                    exit 0
+                  fi
+                  exit $status
 
             - name: Commit updates
               run: |
                   git config --local user.email "github-actions[bot]@users.noreply.github.com"
                   git config --local user.name "github-actions[bot]"
-                  git checkout -B main
                   git add meili_flutter/CHANGELOG.md meili_flutter/pubspec.yaml meili_flutter_android/pubspec.yaml meili_flutter_ios/pubspec.yaml README.md meili_flutter/README.md
                   git commit -m "MPD-0: release version $VERSION" || echo "No changes to commit"
+                  git pull --rebase origin main
                   git push origin main
