@@ -78,9 +78,6 @@ jobs:
                   yq -i '.version = env(ANDROID_VERSION)' meili_flutter_android/pubspec.yaml
                   yq -i '.version = env(VERSION)' meili_flutter_ios/pubspec.yaml
 
-                  yq -i '.dependencies.meili_flutter_android = "^" + env(ANDROID_VERSION)' meili_flutter/pubspec.yaml
-                  yq -i '.dependencies.meili_flutter_ios = "^" + env(VERSION)' meili_flutter/pubspec.yaml
-
             - name: Update README versions
               run: |
                   semver='[0-9]+\.[0-9]+\.[0-9]+(-[^[:space:]]+)?'
@@ -102,6 +99,17 @@ jobs:
 
             - name: Install dependencies
               run: |
+                  # Sibling packages are not on pub.dev yet — resolve locally for verify.
+                  {
+                    echo 'dependency_overrides:'
+                    echo '  meili_flutter_android:'
+                    echo '    path: ../meili_flutter_android'
+                    echo '  meili_flutter_ios:'
+                    echo '    path: ../meili_flutter_ios'
+                    echo '  meili_flutter_platform_interface:'
+                    echo '    path: ../meili_flutter_platform_interface'
+                  } > meili_flutter/pubspec_overrides.yaml
+
                   for pkg in meili_flutter_platform_interface meili_flutter_android meili_flutter_ios meili_flutter; do
                     echo "flutter pub get in $pkg"
                     (cd "$pkg" && flutter pub get)
@@ -161,12 +169,27 @@ jobs:
                     return $status
                   }
 
-                  # Publish in dependency order. The platform interface is versioned
-                  # independently — bump its pubspec manually when the API changes.
+                  # Publish platform packages first so meili_flutter can resolve them from pub.dev.
+                  # The platform interface is versioned independently — bump its pubspec manually
+                  # when the API changes.
                   if [ -d meili_flutter_platform_interface ]; then publish meili_flutter_platform_interface; fi
                   if [ -d meili_flutter_android ]; then publish meili_flutter_android; fi
                   if [ -d meili_flutter_ios ]; then publish meili_flutter_ios; fi
-                  publish meili_flutter
+
+            - name: Publish app-facing package
+              run: |
+                  export VERSION ANDROID_VERSION
+
+                  rm -f meili_flutter/pubspec_overrides.yaml
+
+                  yq -i '.dependencies.meili_flutter_android = "^" + env(ANDROID_VERSION)' meili_flutter/pubspec.yaml
+                  yq -i '.dependencies.meili_flutter_ios = "^" + env(VERSION)' meili_flutter/pubspec.yaml
+
+                  echo "flutter pub get in meili_flutter (pub.dev resolution)"
+                  (cd meili_flutter && flutter pub get)
+
+                  echo "Publishing meili_flutter"
+                  (cd meili_flutter && dart pub publish --force)
 
             - name: Commit updates
               run: |
