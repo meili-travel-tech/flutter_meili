@@ -9,8 +9,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:compose-compiler-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -33,11 +33,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 android {
-    if (project.android.hasProperty("namespace")) {
-        namespace 'com.flutter.meili'
-    }
+    namespace = "com.flutter.meili"
 
-    compileSdk 35
+    compileSdk = 35
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -54,16 +52,17 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 27
+        minSdk = 27
     }
 
     buildFeatures {
-        compose true
+        compose = true
     }
 
-    packagingOptions {
-        pickFirst "**/libc++_shared.so"
-        pickFirst "**/libfbjni.so"
+    packaging {
+        jniLibs {
+            pickFirsts += ["**/libc++_shared.so", "**/libfbjni.so"]
+        }
     }
 
     testOptions {
