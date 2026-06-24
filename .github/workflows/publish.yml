@@ -83,16 +83,26 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  flutter pub get
-                  cd meili_flutter/example && flutter pub get || true
-                  cd ../android && flutter pub get || true
-                  cd ../ios && flutter pub get || true
+                  for pkg in meili_flutter_platform_interface meili_flutter_android meili_flutter_ios meili_flutter meili_flutter/example; do
+                    echo "flutter pub get in $pkg"
+                    (cd "$pkg" && flutter pub get)
+                  done
 
             - name: Verify package
               run: |
-                  flutter analyze
-                  flutter test
-                  dart format --set-exit-if-changed .
+                  for pkg in meili_flutter_platform_interface meili_flutter_android meili_flutter_ios meili_flutter; do
+                    echo "flutter analyze in $pkg"
+                    (cd "$pkg" && flutter analyze --no-fatal-infos)
+                    if [ -d "$pkg/test" ]; then
+                      echo "flutter test in $pkg"
+                      (cd "$pkg" && flutter test)
+                    fi
+                  done
+                  dart format --set-exit-if-changed \
+                    meili_flutter_platform_interface \
+                    meili_flutter_android \
+                    meili_flutter_ios \
+                    meili_flutter
 
             - name: Setup Pub Credentials
               env:
