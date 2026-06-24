@@ -9,11 +9,7 @@ subprojects {
 allprojects {
     repositories {
         maven {
-            url = uri("https://maven.pkg.github.com/meili-travel-tech/ux-native-android-sdk")
-            credentials {
-                username = System.getenv("MEILI_GITHUB_USERNAME") ?: ""
-                password = System.getenv("MEILI_GITHUB_TOKEN") ?: ""
-            }
+            url = uri("https://meili-travel-tech.github.io/ux-native-android/")
         }
     }
 }

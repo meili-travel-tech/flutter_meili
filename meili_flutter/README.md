@@ -42,52 +42,21 @@ This resolves the federated sub-packages automatically — you do not need to ad
 
 ## 2. Android setup
 
-### 2.1 GitHub credentials
+### 2.1 Declare the Maven repository
 
-The Android SDK is hosted on a private GitHub Packages repo. Set these environment variables before building:
-
-```bash
-export MEILI_GITHUB_USERNAME="your-github-username"
-export MEILI_GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
-```
-
-**Where to put them:**
-- CLI builds (`flutter run` in Terminal): append to `~/.zshrc`
-- IDE / GUI app builds (Android Studio, VS Code launched from Finder): append to `~/.zshenv` — GUI apps on macOS don't always source `~/.zshrc`
-
-After editing, reload with `source ~/.zshenv` or open a new terminal.
-
-**Verifying:**
-```bash
-echo "${MEILI_GITHUB_USERNAME:-NOT_SET}"
-[ -n "$MEILI_GITHUB_TOKEN" ] && echo "TOKEN_SET" || echo "TOKEN_NOT_SET"
-```
-
-**Failure mode:** if credentials are missing you will see:
-```
-Could not resolve meili.travel:ux-native-android-sdk:...
-  > Received status code 401 from server: Unauthorized
-```
-
-### 2.2 `android/build.gradle.kts` — declare the Maven repo
+The Android SDK is served from a public Maven repository over GitHub Pages, so **no credentials are required**. Add it to your project-level `android/build.gradle.kts`:
 
 ```kotlin
 allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://maven.pkg.github.com/meili-travel-tech/ux-native-android-sdk")
-            credentials {
-                username = System.getenv("MEILI_GITHUB_USERNAME") ?: ""
-                password = System.getenv("MEILI_GITHUB_TOKEN") ?: ""
-            }
-        }
+        maven { url = uri("https://meili-travel-tech.github.io/ux-native-android/") }
     }
 }
 ```
 
-### 2.3 `android/app/build.gradle.kts` — NDK + minSdk
+### 2.2 `android/app/build.gradle.kts` — NDK + minSdk
 
 ```kotlin
 android {
@@ -101,7 +70,7 @@ android {
 - `ndkVersion` must be pinned exactly — using `flutter.ndkVersion` may cause a linker error.
 - `minSdk = 27` is required by the Meili Android SDK.
 
-### 2.4 `android/settings.gradle.kts` — Kotlin Compose plugin
+### 2.3 `android/settings.gradle.kts` — Kotlin Compose plugin
 
 ```kotlin
 plugins {
@@ -112,7 +81,7 @@ plugins {
 }
 ```
 
-### 2.5 `MainActivity.kt`
+### 2.4 `MainActivity.kt`
 
 ```kotlin
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -219,8 +188,7 @@ await Meili.openMeiliView(MeiliParams(
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `401 Unauthorized` resolving Maven dep | `MEILI_GITHUB_TOKEN` missing or lacks `read:packages` scope | Re-create PAT with `read:packages`, export, restart shell. |
-| `Could not find ... .aar` during Gradle | Maven repo URL or token missing | Check `build.gradle.kts` repo block and env vars. |
+| `Could not find ... .aar` during Gradle | Maven repo URL missing, or the version isn't published yet | Check the `build.gradle.kts` repo block points to the public Pages URL and that the version exists. |
 | `Unable to find a specification for MeiliSDK` | Missing `source` line in Podfile | Add the private spec repo URL. |
 | `pod install` hangs on first run | First-time SSH clone of spec repo | Confirm SSH key: `ssh -T git@github.com`. |
 | `IllegalStateException ... requires FragmentActivity` | `MainActivity` still extends `FlutterActivity` | Change to `FlutterFragmentActivity`. |

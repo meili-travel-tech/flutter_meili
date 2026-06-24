@@ -34,29 +34,16 @@ flutter pub get
 
 ### Android setup
 
-The Android SDK is hosted on GitHub Packages. Add the Maven repository with credentials to your **project-level** `android/build.gradle`:
+The Android SDK is served from a public Maven repository over GitHub Pages, so **no credentials are required**. Add the repository to your **project-level** `android/build.gradle`:
 
 ```groovy
 allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://maven.pkg.github.com/meili-travel-tech/ux-native-android-sdk")
-            credentials {
-                username = System.getenv("MEILI_GITHUB_USERNAME") ?: ""
-                password = System.getenv("MEILI_GITHUB_TOKEN") ?: ""
-            }
-        }
+        maven { url = uri("https://meili-travel-tech.github.io/ux-native-android/") }
     }
 }
-```
-
-Set environment variables (add to `~/.zshrc` or `~/.bashrc`):
-
-```bash
-export MEILI_GITHUB_USERNAME=your-github-username
-export MEILI_GITHUB_TOKEN=your-github-pat-with-read-packages-scope
 ```
 
 ### iOS setup

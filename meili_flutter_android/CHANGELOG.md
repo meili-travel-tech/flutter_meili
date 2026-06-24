@@ -5,6 +5,8 @@
 - Made the Android Gradle build compatible with Android Gradle Plugin 9 (new DSL) while keeping AGP 8 support, using property-assignment syntax (`compileSdk`, `minSdk`, `compose`, `namespace`) and the `packaging { jniLibs { pickFirsts } }` block.
 - Bundled the Compose compiler plugin (`compose-compiler-gradle-plugin`) so host apps no longer need to declare `org.jetbrains.kotlin.plugin.compose` themselves.
 - Stopped pinning the Android Gradle Plugin in the plugin buildscript; it is now inherited from the host app, which avoids AGP version conflicts on AGP 9 hosts.
+- Resolve the Meili Android SDK from the public GitHub Pages Maven repository (`https://meili-travel-tech.github.io/ux-native-android/`); host apps no longer need GitHub Packages credentials (`MEILI_GITHUB_USERNAME` / `MEILI_GITHUB_TOKEN`).
+- Updated the Meili Android SDK dependency to 1.6.8.
 
 ## 0.3.0-beta.3
 
