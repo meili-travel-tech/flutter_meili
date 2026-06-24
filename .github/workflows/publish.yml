@@ -6,13 +6,17 @@ on:
     workflow_dispatch:
         inputs:
             version:
-                description: 'Version to publish (e.g., 1.5.1)'
+                description: 'Version to publish (e.g. 0.3.1-beta.7 or v0.3.1-beta.7)'
                 required: true
                 type: string
             release_notes:
                 description: 'Release notes for the version'
                 required: true
                 type: string
+
+concurrency:
+    group: publish-pub-dev
+    cancel-in-progress: false
 
 jobs:
     publish:
@@ -21,7 +25,7 @@ jobs:
             contents: write
 
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
               with:
                   fetch-depth: 0
 
@@ -30,50 +34,65 @@ jobs:
               run: |
                   if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
                     VERSION="${{ github.event.inputs.version }}"
-                    echo "VERSION=$VERSION" >> $GITHUB_ENV
+                    VERSION="${VERSION#v}"
                     echo "RELEASE_BODY<<EOF" >> $GITHUB_ENV
                     echo "${{ github.event.inputs.release_notes }}" >> $GITHUB_ENV
                     echo "EOF" >> $GITHUB_ENV
                   else
-                    VERSION=${GITHUB_REF#refs/tags/v}
-                    echo "VERSION=$VERSION" >> $GITHUB_ENV
+                    TAG="${{ github.event.release.tag_name }}"
+                    VERSION="${TAG#v}"
                     echo "RELEASE_BODY<<EOF" >> $GITHUB_ENV
-                    gh release view ${GITHUB_REF#refs/tags/} --json body -q .body >> $GITHUB_ENV
+                    gh release view "$TAG" --json body -q .body >> $GITHUB_ENV
                     echo "EOF" >> $GITHUB_ENV
                   fi
+
+                  if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.+)?$ ]]; then
+                    echo "Invalid VERSION: $VERSION"
+                    exit 1
+                  fi
+
+                  # Android package uses 0.3.0-beta.N while the app-facing package uses 0.3.1-beta.N.
+                  ANDROID_VERSION=$(echo "$VERSION" | sed -E 's/^0\.3\.1-beta\./0.3.0-beta./')
+                  if ! [[ "$ANDROID_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.+)?$ ]]; then
+                    echo "Could not derive ANDROID_VERSION from VERSION=$VERSION"
+                    exit 1
+                  fi
+
+                  echo "VERSION=$VERSION" >> $GITHUB_ENV
+                  echo "ANDROID_VERSION=$ANDROID_VERSION" >> $GITHUB_ENV
+                  echo "Publishing meili_flutter=$VERSION, meili_flutter_android=$ANDROID_VERSION, meili_flutter_ios=$VERSION"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Update CHANGELOG.md
               run: |
-                  # Create CHANGELOG.md if it doesn't exist
-                  touch CHANGELOG.md
-                  # Prepend new release notes
-                  echo -e "## $VERSION ($(date +%Y-%m-%d))\n\n$RELEASE_BODY\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
+                  changelog=meili_flutter/CHANGELOG.md
+                  touch "$changelog"
+                  echo -e "## $VERSION ($(date +%Y-%m-%d))\n\n$RELEASE_BODY\n\n$(cat "$changelog")" > "$changelog"
 
             - name: Update version in pubspec files
               run: |
-                  # Main package
+                  export VERSION ANDROID_VERSION
+
                   yq -i '.version = env(VERSION)' meili_flutter/pubspec.yaml
+                  yq -i '.version = env(ANDROID_VERSION)' meili_flutter_android/pubspec.yaml
+                  yq -i '.version = env(VERSION)' meili_flutter_ios/pubspec.yaml
 
-                  # Update dependency versions in platform-specific packages
-                  if [ -f "meili_flutter_android/pubspec.yaml" ]; then
-                    yq -i '.version = env(VERSION)' meili_flutter_android/pubspec.yaml
-                  fi
-
-                  if [ -f "meili_flutter_ios/pubspec.yaml" ]; then
-                    yq -i '.version = env(VERSION)' meili_flutter_ios/pubspec.yaml
-                  fi
+                  yq -i '.dependencies.meili_flutter_android = "^" + env(ANDROID_VERSION)' meili_flutter/pubspec.yaml
+                  yq -i '.dependencies.meili_flutter_ios = "^" + env(VERSION)' meili_flutter/pubspec.yaml
 
             - name: Update README versions
               run: |
-                  if [ -f "README.md" ]; then
-                    echo "Current VERSION value: $VERSION"
-                    echo "Testing sed command..."
-                    sed -i -E "s/(meili_flutter: \^)[0-9]+\.[0-9]+\.[0-9]+/\1$VERSION/" README.md
-                    sed -i -E "s/(meili_flutter_android: \^)[0-9]+\.[0-9]+\.[0-9]+/\1$VERSION/" README.md
-                    sed -i -E "s/(meili_flutter_ios: \^)[0-9]+\.[0-9]+\.[0-9]+/\1$VERSION/" README.md
-                  fi
+                  semver='[0-9]+\.[0-9]+\.[0-9]+(-[^[:space:]]+)?'
+                  update_readme() {
+                    local file="$1"
+                    [ -f "$file" ] || return 0
+                    sed -i -E "s#(meili_flutter: \^?)${semver}#\1${VERSION}#" "$file"
+                    sed -i -E "s#(meili_flutter_android: \^?)${semver}#\1${ANDROID_VERSION}#" "$file"
+                    sed -i -E "s#(meili_flutter_ios: \^?)${semver}#\1${VERSION}#" "$file"
+                  }
+                  update_readme README.md
+                  update_readme meili_flutter/README.md
 
             - name: Setup Flutter
               uses: subosito/flutter-action@v2
@@ -83,7 +102,7 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  for pkg in meili_flutter_platform_interface meili_flutter_android meili_flutter_ios meili_flutter meili_flutter/example; do
+                  for pkg in meili_flutter_platform_interface meili_flutter_android meili_flutter_ios meili_flutter; do
                     echo "flutter pub get in $pkg"
                     (cd "$pkg" && flutter pub get)
                   done
@@ -124,12 +143,26 @@ jobs:
 
             - name: Publish packages
               run: |
-                  # Publish in dependency order, each from the repo root via a
-                  # subshell. The platform interface is versioned independently
-                  # (its own pubspec) and must be published first so the
-                  # dependents' constraints resolve; bump it manually when its
-                  # API changes.
-                  publish() { echo "Publishing $1"; ( cd "$1" && dart pub publish --force ); }
+                  publish() {
+                    local dir="$1"
+                    echo "Publishing $dir"
+                    set +e
+                    output=$(cd "$dir" && dart pub publish --force 2>&1)
+                    status=$?
+                    set -e
+                    echo "$output"
+                    if [ $status -eq 0 ]; then
+                      return 0
+                    fi
+                    if echo "$output" | grep -qiE 'already exists|duplicate|was previously published'; then
+                      echo "Skipping $dir — version already on pub.dev"
+                      return 0
+                    fi
+                    return $status
+                  }
+
+                  # Publish in dependency order. The platform interface is versioned
+                  # independently — bump its pubspec manually when the API changes.
                   if [ -d meili_flutter_platform_interface ]; then publish meili_flutter_platform_interface; fi
                   if [ -d meili_flutter_android ]; then publish meili_flutter_android; fi
                   if [ -d meili_flutter_ios ]; then publish meili_flutter_ios; fi
@@ -137,8 +170,9 @@ jobs:
 
             - name: Commit updates
               run: |
-                  git config --local user.email "action@github.com"
-                  git config --local user.name "GitHub Action"
-                  git add .
-                  git commit -m "chore: Update version to $VERSION and update CHANGELOG" || echo "No changes to commit"
-                  git push origin HEAD:main || git push origin HEAD:master
+                  git config --local user.email "github-actions[bot]@users.noreply.github.com"
+                  git config --local user.name "github-actions[bot]"
+                  git checkout -B main
+                  git add meili_flutter/CHANGELOG.md meili_flutter/pubspec.yaml meili_flutter_android/pubspec.yaml meili_flutter_ios/pubspec.yaml README.md meili_flutter/README.md
+                  git commit -m "MPD-0: release version $VERSION" || echo "No changes to commit"
+                  git push origin main
