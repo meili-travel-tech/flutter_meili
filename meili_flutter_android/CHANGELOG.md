@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+- Stable release. Updated Meili Android SDK dependency to 1.7.0 (via public Maven repository).
+
 ## 0.3.0-beta.5
 
 - Made the Android Gradle build compatible with Android Gradle Plugin 9 (new DSL) while keeping AGP 8 support, using property-assignment syntax (`compileSdk`, `minSdk`, `compose`, `namespace`) and the `packaging { jniLibs { pickFirsts } }` block.
