@@ -2,7 +2,7 @@
 
 ## 0.4.0
 
-- Stable release. Updated Meili Android SDK dependency to 1.7.0 (via public Maven repository).
+- Stable release. Updated Meili Android SDK dependency to 1.6.9 (via public Maven repository).
 
 ## 0.3.0-beta.5
 
