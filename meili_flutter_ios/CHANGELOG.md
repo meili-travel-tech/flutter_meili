@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+- Stable release. Bumped `MeiliSDK` to `1.7.0`.
+
 ## 0.3.1-beta.4
 
 - Bumped `MeiliSDK` to `1.6.3-alpha.10` on both channels (SwiftPM `ux-native-ios` pin and CocoaPods podspec).
