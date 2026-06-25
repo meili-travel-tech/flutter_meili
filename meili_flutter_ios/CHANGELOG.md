@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- Point the SwiftPM `Package.swift` at the stable `ux-native-ios` 1.7.0 (was the 1.6.3 alpha), aligning the SwiftPM channel with the CocoaPods podspec.
+
 ## 0.4.0
 
 - Stable release. Bumped `MeiliSDK` to `1.7.0`.

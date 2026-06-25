@@ -14,10 +14,9 @@ let package = Package(
         // third-party SDKs (Stripe, Evervault, HorizonCalendar, Shimmer,
         // PhoneNumberKit, SwiftUIPager), so nothing else is declared here.
         //
-        // `exact:` (not `from:`) because only pre-release tags exist today
-        // (1.6.3-alpha.N); SwiftPM excludes pre-releases from `from:` ranges.
-        // Switch to `from: "1.6.0"` once a stable 1.6.x ships.
-        .package(url: "https://github.com/meili-travel-tech/ux-native-ios", exact: "1.6.3-alpha.10")
+        // `from:` tracks the latest 1.x stable. Keep this aligned with the
+        // CocoaPods channel (meili_flutter_ios.podspec).
+        .package(url: "https://github.com/meili-travel-tech/ux-native-ios", from: "1.7.0")
     ],
     targets: [
         .target(
