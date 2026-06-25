@@ -14,7 +14,7 @@ dependencies:
     # the federated platform packages to the in-repo source, so day-to-day
     # `flutter run` builds against local changes. Bump this to the version you
     # published before building against pub.dev (see scripts/build_published.sh).
-    meili_flutter: ^0.3.1-beta.4
+    meili_flutter: ^0.4.1
     shared_preferences: ^2.3.2
 
 dev_dependencies:
