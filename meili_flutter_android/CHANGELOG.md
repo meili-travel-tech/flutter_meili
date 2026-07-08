@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.2
+
+- Updated Meili Android SDK dependency to 1.7.0, fixing a `NoSuchMethodError` crash (`TopAppBarColors.copy`) on host apps resolving `androidx.compose.material3:material3` 1.4.0+. Built and tested against Compose BOM 2025.11.01 (material3 1.4.0, compose-ui 1.10.6).
+
 ## 0.4.0
 
 - Stable release. Updated Meili Android SDK dependency to 1.6.9 (via public Maven repository).
