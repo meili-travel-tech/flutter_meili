@@ -22,6 +22,7 @@ class MeiliView extends StatefulWidget {
     this.env,
     this.availParams,
     this.additionalParams,
+    this.verboseLogging = false,
     this.height,
     this.onEvent,
   });
@@ -40,6 +41,12 @@ class MeiliView extends StatefulWidget {
 
   /// Additional booking parameters.
   final AdditionalParams? additionalParams;
+
+  /// Enables verbose SDK logging (network dumps and flow-level diagnostics).
+  ///
+  /// **iOS only.** Off by default; error logs are always emitted regardless.
+  /// Has no effect on Android, which does not yet expose a logging control.
+  final bool verboseLogging;
 
   /// Fixed height for the embedded view. Defaults to [kViewDefaultHeight].
   final double? height;
@@ -85,6 +92,8 @@ class _MeiliViewState extends State<MeiliView> {
       'availParams': availParamsMap,
       'additionalParams': additionalParamsMap,
       'bookingParams': additionalParamsMap,
+      // iOS-only for now; Android ignores this key.
+      'verboseLogging': widget.verboseLogging,
     };
 
     final Widget platform;

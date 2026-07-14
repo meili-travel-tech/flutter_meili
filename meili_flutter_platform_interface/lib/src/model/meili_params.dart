@@ -11,6 +11,7 @@ class MeiliParams {
     required this.env,
     this.availParams,
     this.additionalParams,
+    this.verboseLogging = false,
   });
 
   /// The ptid (possibly partner ID) for the Meili view.
@@ -28,6 +29,15 @@ class MeiliParams {
   /// The booking parameters for the Meili view.
   final AdditionalParams? additionalParams;
 
+  /// Enables verbose SDK logging (network request/response dumps and
+  /// flow-level diagnostics), emitted via Apple's unified logging under
+  /// subsystem `com.meili.travel.MeiliSDK`.
+  ///
+  /// **iOS only.** Off by default so the SDK stays quiet in your console;
+  /// error logs are always emitted regardless of this flag. Has no effect on
+  /// Android, which does not yet expose a logging control.
+  final bool verboseLogging;
+
   /// Converts the [MeiliParams] instance to a map.
   Map<String, dynamic> toMap() {
     return {
@@ -36,6 +46,7 @@ class MeiliParams {
       'env': env,
       'availParams': availParams?.toMap(),
       'additionalParams': additionalParams?.toMap(),
+      'verboseLogging': verboseLogging,
     };
   }
 }
