@@ -1,4 +1,13 @@
 # Changelog
+
+## 0.4.4
+
+- Bumped `meili_flutter_ios` dependency to `^0.4.3` (MeiliSDK 1.7.2).
+
+## 0.4.3
+
+- Bumped `meili_flutter_android` dependency to `^0.4.3`. `0.4.2` referenced Android SDK `1.7.0`, which was published from a stale commit and did not actually contain the material3 fix; `0.4.3` pulls in the verified `1.7.1`.
+
 ## 0.4.2
 
 - Bumped `meili_flutter_android` dependency to `^0.4.2`, fixing a `NoSuchMethodError` crash on host apps resolving `androidx.compose.material3:material3` 1.4.0+.

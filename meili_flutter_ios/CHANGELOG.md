@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.3
+
+- Bumped `MeiliSDK` to `1.7.2` (CocoaPods podspec and SwiftPM `Package.swift`).
+
 ## 0.4.2
 
 - Bumped `MeiliSDK` to `1.7.1` (CocoaPods podspec and SwiftPM `Package.swift`).
