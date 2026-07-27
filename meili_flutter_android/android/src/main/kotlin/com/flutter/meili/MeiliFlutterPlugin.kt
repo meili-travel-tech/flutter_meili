@@ -33,11 +33,6 @@ class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 eventSink = null
             }
         })
-
-        binding.platformViewRegistry.registerViewFactory(
-            "flutter_meili/meili_view",
-            MeiliViewFactory(binding.binaryMessenger, { activity }, { eventSink }),
-        )
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
@@ -62,7 +57,12 @@ class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     availParams = parseAvailParams(args["availParams"] as? Map<*, *>)
                         ?: AvailParams(null, null, null, null, null, null, null, null, null),
                     additionalParams = parseAdditionalParams(args["additionalParams"] as? Map<*, *>),
-                    listener = object : MeiliComposeListener {},
+                    listener = object : MeiliComposeListener {
+                        override fun onEndBookingFlow(callback: (() -> Unit)?) {
+                            eventSink?.success(mapOf("type" to "bookingFlowEnded"))
+                            callback?.invoke()
+                        }
+                    },
                     onBack = {
                         eventSink?.success(mapOf("type" to "flowDismissed"))
                     },

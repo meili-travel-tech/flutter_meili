@@ -133,30 +133,10 @@ cd ios && pod install --repo-update && cd ..
 
 ## 4. Usage
 
-### Embedded widget
+### Full-screen modal (iOS and Android)
 
-```dart
-import 'package:meili_flutter/meili_flutter.dart';
-
-MeiliView(
-  ptid: 'your-ptid',
-  env: 'prod',               // 'dev', 'uat', 'pre_prod', 'prod'
-  flow: FlowType.direct,
-  availParams: AvailParams(
-    pickupLocation: 'DXB',
-    dropoffLocation: 'DXB',
-    pickupDate: '2025-06-01',
-    pickupTime: '10:00',
-    dropoffDate: '2025-06-05',
-    dropoffTime: '10:00',
-    driverAge: 30,
-    currencyCode: 'USD',
-    residency: 'US',
-  ),
-)
-```
-
-### Full-screen modal
+This is the only supported way to present the booking flow. It opens as a
+modal over the current screen and works identically on both platforms.
 
 ```dart
 import 'package:meili_flutter/meili_flutter.dart';

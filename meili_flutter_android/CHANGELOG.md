@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.6
+
+- Removed the slide-up entrance transition added in `0.4.5-beta.1`. In practice it produced a black flash on some devices (the revealed/covered host activity surface isn't always redrawn in time around the transition) and interacted badly with back-press timing. `Meili.openMeiliView()` now opens with the plain system default transition; the flow itself is otherwise unaffected.
+
+## 0.4.5-beta.2
+
+- BREAKING: removed the Android platform view behind the retired `MeiliView` widget; `Meili.openMeiliView()` is the only Android entry point.
+- Updated Meili Android SDK dependency to 1.7.2, which centralizes back handling: dismissing the flow via the system back button/gesture at the flow root now reliably invokes the dismiss callback, so `flowDismissed` is delivered for every back affordance (previously it was silently missed on system back — the root cause of the blank-host-page report in MPD-10997).
+
+## 0.4.5-beta.1
+
+- MPD-10997: present the Meili booking flow as a modal with a slide-up entrance, approximating iOS's page-sheet presentation. The host screen stays visible beneath the transition.
+- Forward `bookingFlowEnded` through the `meili_flutter/events` channel (previously iOS-only).
+
 ## 0.4.3
 
 - Updated Meili Android SDK dependency to 1.7.1. `1.7.0` was published from a commit that predated the material3 fix and did not actually contain it; `1.7.1` is the correct, verified fix — tested against host apps on Compose BOM 2026.01.01 (material3 1.4.0, compose-ui/foundation 1.10.2) with no `NoSuchMethodError`.

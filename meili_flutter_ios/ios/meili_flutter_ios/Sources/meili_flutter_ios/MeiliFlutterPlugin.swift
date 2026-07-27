@@ -22,10 +22,6 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
         MainActor.assumeIsolated {
             MeiliAnalytics.shared.addProvider(MeiliFlutterAnalyticsProvider())
         }
-
-        // Meili View
-        let meiliViewFactory = MeiliViewFactory(messenger: registrar.messenger())
-        registrar.register(meiliViewFactory, withId: "flutter_meili/meili_view")
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {

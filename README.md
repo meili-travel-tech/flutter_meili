@@ -64,34 +64,10 @@ cd ios && pod repo update && pod install
 
 ## Usage
 
-### MeiliView widget (recommended)
+### Open the Meili flow
 
-Embed the Meili flow directly as a widget — typically full screen:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:meili_flutter/meili_flutter.dart';
-
-class MyPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) => MeiliView(
-          ptid: 'your-ptid',
-          env: 'prod', // 'dev', 'uat', 'pre_prod', 'prod'
-          flow: FlowType.direct,
-          height: constraints.maxHeight,
-        ),
-      ),
-    );
-  }
-}
-```
-
-### Programmatic open
-
-Open the Meili flow imperatively (e.g. on button tap):
+Open the Meili flow imperatively (e.g. on button tap) — this is the only
+supported way to present it, on both iOS and Android:
 
 ```dart
 import 'package:meili_flutter/meili_flutter.dart';

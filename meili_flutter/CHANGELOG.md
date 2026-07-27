@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.4.7
+
+- BREAKING: the `MeiliView` embedded-widget class is removed from the public API entirely (bumped `meili_flutter_ios` dependency to `^0.4.4`). `Meili.openMeiliView()` is now the only way to present the booking flow on both platforms. Android already threw `UnsupportedError` for `MeiliView` since `0.4.5-beta.2`; iOS's previously-working inline embedding is retired for API symmetry and to keep a single, documented integration path (MPD-10997).
+- README updated: the "Embedded widget" section is removed; "Full-screen modal" is now the only usage section.
+
+## 0.4.6
+
+- Bumped `meili_flutter_android` dependency to `^0.4.6`, which removes the slide-up entrance transition on Android (it caused a black flash on some devices). `Meili.openMeiliView()` now opens with the plain system default transition.
+
+## 0.4.5-beta.2
+
+- BREAKING (Android): the `MeiliView` widget now throws `UnsupportedError` on Android with migration guidance. It never rendered inline there — it launched the full-screen flow as a side effect and left a blank host page on return. Use `Meili.openMeiliView()` from your UI action instead. iOS behaviour unchanged.
+- MPD-10997: via `meili_flutter_android` `0.4.5-beta.2` (Meili Android SDK 1.7.2), dismissing the flow from every back affordance (app-bar chevron, back button, back gesture) now reliably emits `MeiliFlowDismissed` on `Meili.events`. Previously the system back button at the flow root dismissed silently.
+
+## 0.4.5-beta.1
+
+- MPD-10997: `Meili.openMeiliView()` on Android presents the booking flow as a slide-up modal over the current screen.
+- `bookingFlowEnded` is now delivered on `Meili.events` on Android as well as iOS.
+
 ## 0.4.4
 
 - Bumped `meili_flutter_ios` dependency to `^0.4.3` (MeiliSDK 1.7.2).
