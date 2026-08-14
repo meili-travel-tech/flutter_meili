@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.7-beta.2
+
+- Updated Meili Android SDK dependency to 1.8.1.
+
+## 0.4.7-beta.1
+
+- Updated Meili Android SDK dependency to 1.8.0.
+
 ## 0.4.6
 
 - Removed the slide-up entrance transition added in `0.4.5-beta.1`. In practice it produced a black flash on some devices (the revealed/covered host activity surface isn't always redrawn in time around the transition) and interacted badly with back-press timing. `Meili.openMeiliView()` now opens with the plain system default transition; the flow itself is otherwise unaffected.

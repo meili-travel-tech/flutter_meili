@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.5-beta.2
+
+- Bumped `MeiliSDK` to `1.9.2` (CocoaPods podspec and SwiftPM `Package.swift`).
+
+## 0.4.5-beta.1
+
+- Bumped `MeiliSDK` to `1.8.0` (CocoaPods podspec and SwiftPM `Package.swift`).
+
 ## 0.4.4
 
 - BREAKING: removed the `MeiliView` embedded-widget platform view (`MeiliViewFactory`, `MeiliUIView`, `MeiliPlatformView`) and its `flutter_meili/meili_view` registration. `Meili.openMeiliView()` is now the only entry point on both platforms, matching Android since `meili_flutter_android 0.4.5-beta.2`.

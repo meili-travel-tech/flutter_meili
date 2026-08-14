@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.8-beta.2
+
+- Bumped `meili_flutter_android` dependency to `^0.4.7-beta.2` (Meili Android SDK 1.8.1) and `meili_flutter_ios` dependency to `^0.4.5-beta.2` (MeiliSDK 1.9.2).
+
+## 0.4.8-beta.1
+
+- Bumped `meili_flutter_android` dependency to `^0.4.7-beta.1` (Meili Android SDK 1.8.0) and `meili_flutter_ios` dependency to `^0.4.5-beta.1` (MeiliSDK 1.8.0).
+
 ## 0.4.7
 
 - BREAKING: the `MeiliView` embedded-widget class is removed from the public API entirely (bumped `meili_flutter_ios` dependency to `^0.4.4`). `Meili.openMeiliView()` is now the only way to present the booking flow on both platforms. Android already threw `UnsupportedError` for `MeiliView` since `0.4.5-beta.2`; iOS's previously-working inline embedding is retired for API symmetry and to keep a single, documented integration path (MPD-10997).
