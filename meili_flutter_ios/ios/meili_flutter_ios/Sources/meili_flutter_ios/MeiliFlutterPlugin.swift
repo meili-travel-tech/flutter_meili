@@ -35,6 +35,12 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
             case "popToRoot":
                 MeiliEventDispatcher.shared.popToRoot()
                 result(nil)
+            case "nativeFunnelAvailable":
+                // Device capability, not configuration: `true` says the native funnel can render
+                // here, not that the partner's config will load. On iOS 15 the SDK falls back to
+                // the web funnel, so a host can use this to route somewhere of its own — or, often
+                // better, not advertise the entry point at all.
+                result(MeiliSupport.isNativeFunnelAvailable)
             default:
                 result(FlutterMethodNotImplemented)
         }
@@ -42,8 +48,7 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
     
     private func openMeiliViewController(arguments: [String: Any], result: @escaping FlutterResult) {
         let viewController = MeiliViewController()
-        viewController.modalPresentationStyle = .pageSheet
-        
+
         guard let windowScene = UIApplication.shared.connectedScenes
             .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
               let window = windowScene.windows.first(where: { $0.isKeyWindow }),
@@ -74,7 +79,19 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
         
         viewController.meiliParams = meiliParams
         
-        rootViewController.present(viewController, animated: true, completion: nil)
+        if MeiliSupport.isNativeFunnelAvailable {
+            viewController.modalPresentationStyle = .pageSheet
+            rootViewController.present(viewController, animated: true, completion: nil)
+        } else {
+            // iOS 15: the hosted MeiliView is a placeholder that immediately presents the web
+            // funnel from the top-most presenter — which would be this page sheet. Animating one
+            // in first shows an empty card and then leaves it sitting behind the browser. Present
+            // full-screen and unanimated so the only motion the traveller sees is the web funnel
+            // arriving. Full-screen rather than .overFullScreen because the SDK's message state
+            // (reached only when no URL can be built at all) needs an opaque background.
+            viewController.modalPresentationStyle = .fullScreen
+            rootViewController.present(viewController, animated: false, completion: nil)
+        }
         result(nil)
     }
 }

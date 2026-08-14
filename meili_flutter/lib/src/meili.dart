@@ -20,4 +20,21 @@ class Meili {
   /// host in response to a [MeiliBookingFlowEnded] event. No-op if there is
   /// nothing to pop.
   static Future<void> popToRoot() => MeiliFlutterPlatform.instance.popToRoot();
+
+  /// Whether the native booking funnel can render on this device.
+  ///
+  /// `false` on iOS 15, where [openMeiliView] falls back to the web funnel in
+  /// an in-app browser. Use it to route somewhere of your own — or, usually the
+  /// better experience, to not show the entry point at all:
+  ///
+  /// ```dart
+  /// if (await Meili.nativeFunnelAvailable()) {
+  ///   await Meili.openMeiliView(params);
+  /// }
+  /// ```
+  ///
+  /// Answers **device capability**, not configuration: `true` does not promise
+  /// the partner's config will load.
+  static Future<bool> nativeFunnelAvailable() =>
+      MeiliFlutterPlatform.instance.nativeFunnelAvailable();
 }

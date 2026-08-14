@@ -70,6 +70,9 @@ class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 result.success(null)
             }
             "popToRoot" -> result.success(null)
+            // Always true: Android's minSdk is unrelated to iOS availability, and the Dart
+            // contract is "can the native funnel render on this device", not "is this iOS 16".
+            "nativeFunnelAvailable" -> result.success(true)
             else -> result.notImplemented()
         }
     }

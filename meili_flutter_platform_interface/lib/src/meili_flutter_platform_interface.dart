@@ -34,4 +34,14 @@ abstract class MeiliFlutterPlatform extends PlatformInterface {
   Future<void> popToRoot() {
     throw UnimplementedError('popToRoot() has not been implemented.');
   }
+
+  /// Whether the native booking funnel can render on this device.
+  ///
+  /// `false` on iOS 15, where the SDK falls back to the web funnel. Answers
+  /// **device capability**, not configuration — `true` does not promise the
+  /// partner's config will load. Always `true` on Android, whose minSdk is
+  /// unrelated to iOS availability.
+  Future<bool> nativeFunnelAvailable() {
+    throw UnimplementedError('nativeFunnelAvailable() has not been implemented.');
+  }
 }

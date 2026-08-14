@@ -62,3 +62,42 @@ jobs:
             - name: Build iOS (no codesign)
               working-directory: meili_flutter/example
               run: flutter build ios --no-codesign
+
+    # Blocking guard for the iOS deployment floor. The build matrix above runs the
+    # CocoaPods leg with continue-on-error, deliberately — but that is exactly the
+    # leg where a floor regression surfaces (CocoaPods refuses a pod whose
+    # dependency declares a higher platform), so on its own it can never fail a PR.
+    # This job does nothing but assert `pod install` resolves at the example's
+    # declared floor, and it does block.
+    cocoapods-floor:
+        runs-on: macos-latest
+        name: pod install at the example's iOS floor
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Select latest Xcode
+              uses: maxim-lobanov/setup-xcode@v1
+              with:
+                  xcode-version: latest-stable
+
+            - name: Setup Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  flutter-version: '3.x'
+                  channel: 'stable'
+
+            - name: Pub get (CocoaPods mode)
+              working-directory: meili_flutter/example
+              run: |
+                  flutter config --no-enable-swift-package-manager
+                  flutter pub get
+
+            - name: pod install
+              working-directory: meili_flutter/example/ios
+              # CocoaPods needs a UTF-8 locale or it dies in unicode_normalize.
+              env:
+                  LANG: en_US.UTF-8
+                  LC_ALL: en_US.UTF-8
+              run: |
+                  echo "Example floor: $(grep '^platform :ios' ../ios/Podfile)"
+                  pod install --repo-update

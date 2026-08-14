@@ -31,4 +31,13 @@ class MethodChannelMeiliFlutter extends MeiliFlutterPlatform {
   Future<void> popToRoot() {
     return _channel.invokeMethod('popToRoot');
   }
+
+  @override
+  Future<bool> nativeFunnelAvailable() async {
+    // Defaults to true if the platform returns nothing: an older native side
+    // that predates this method would otherwise report the funnel unavailable
+    // and push hosts down the fallback path on a perfectly capable device.
+    final available = await _channel.invokeMethod<bool>('nativeFunnelAvailable');
+    return available ?? true;
+  }
 }
