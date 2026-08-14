@@ -36,10 +36,7 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
                 MeiliEventDispatcher.shared.popToRoot()
                 result(nil)
             case "nativeFunnelAvailable":
-                // Device capability, not configuration: `true` says the native funnel can render
-                // here, not that the partner's config will load. On iOS 15 the SDK falls back to
-                // the web funnel, so a host can use this to route somewhere of its own — or, often
-                // better, not advertise the entry point at all.
+                // Device capability, not configuration — `true` doesn't promise the config loads.
                 result(MeiliSupport.isNativeFunnelAvailable)
             default:
                 result(FlutterMethodNotImplemented)
@@ -83,12 +80,9 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
             viewController.modalPresentationStyle = .pageSheet
             rootViewController.present(viewController, animated: true, completion: nil)
         } else {
-            // iOS 15: the hosted MeiliView is a placeholder that immediately presents the web
-            // funnel from the top-most presenter — which would be this page sheet. Animating one
-            // in first shows an empty card and then leaves it sitting behind the browser. Present
-            // full-screen and unanimated so the only motion the traveller sees is the web funnel
-            // arriving. Full-screen rather than .overFullScreen because the SDK's message state
-            // (reached only when no URL can be built at all) needs an opaque background.
+            // iOS 15: MeiliView is a placeholder that immediately presents the web funnel over
+            // this controller, so animating a page sheet in first would show an empty card.
+            // Full-screen, not .overFullScreen — the SDK's message state needs an opaque backdrop.
             viewController.modalPresentationStyle = .fullScreen
             rootViewController.present(viewController, animated: false, completion: nil)
         }

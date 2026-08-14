@@ -63,12 +63,8 @@ jobs:
               working-directory: meili_flutter/example
               run: flutter build ios --no-codesign
 
-    # Blocking guard for the iOS deployment floor. The build matrix above runs the
-    # CocoaPods leg with continue-on-error, deliberately — but that is exactly the
-    # leg where a floor regression surfaces (CocoaPods refuses a pod whose
-    # dependency declares a higher platform), so on its own it can never fail a PR.
-    # This job does nothing but assert `pod install` resolves at the example's
-    # declared floor, and it does block.
+    # Blocking floor guard: the matrix above runs CocoaPods with continue-on-error,
+    # but that is the leg a floor regression surfaces on, so it can never fail a PR.
     cocoapods-floor:
         runs-on: macos-latest
         name: pod install at the example's iOS floor
