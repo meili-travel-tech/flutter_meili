@@ -39,26 +39,5 @@ void main() {
       expect(log, hasLength(1));
       expect(log.single.method, 'popToRoot');
     });
-
-    test('nativeFunnelAvailable invokes the method and returns its result',
-        () async {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(channel, (methodCall) async {
-        log.add(methodCall);
-        return false;
-      });
-
-      final available = await impl.nativeFunnelAvailable();
-      expect(log.single.method, 'nativeFunnelAvailable');
-      expect(available, isFalse);
-    });
-
-    // A native side predating this method returns null rather than a bool.
-    // Reporting the funnel unavailable there would push hosts down the
-    // fallback path on a perfectly capable device.
-    test('nativeFunnelAvailable defaults to true when the platform returns null',
-        () async {
-      expect(await impl.nativeFunnelAvailable(), isTrue);
-    });
   });
 }

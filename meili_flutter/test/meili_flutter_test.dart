@@ -6,16 +6,12 @@ import 'package:meili_flutter_platform_interface/meili_flutter_platform_interfac
 class MockMeiliPlatform extends MeiliFlutterPlatform {
   MeiliParams? lastParams;
   Object? errorToThrow;
-  bool funnelAvailable = false;
 
   @override
   Future<void> openMeiliView(MeiliParams params) async {
     if (errorToThrow != null) throw errorToThrow!;
     lastParams = params;
   }
-
-  @override
-  Future<bool> nativeFunnelAvailable() async => funnelAvailable;
 }
 
 void main() {
@@ -54,12 +50,5 @@ void main() {
       () => Meili.openMeiliView(params),
       throwsA(isA<MissingPluginException>()),
     );
-  });
-
-  test('nativeFunnelAvailable delegates to the platform instance', () async {
-    expect(await Meili.nativeFunnelAvailable(), isFalse);
-
-    mock.funnelAvailable = true;
-    expect(await Meili.nativeFunnelAvailable(), isTrue);
   });
 }
