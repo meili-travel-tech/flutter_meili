@@ -20,4 +20,10 @@ class Meili {
   /// host in response to a [MeiliBookingFlowEnded] event. No-op if there is
   /// nothing to pop.
   static Future<void> popToRoot() => MeiliFlutterPlatform.instance.popToRoot();
+
+  /// Whether the native booking funnel can render on this device — `false` on
+  /// iOS 15, where [openMeiliView] falls back to the web funnel. Answers device
+  /// capability, not configuration.
+  static Future<bool> nativeFunnelAvailable() =>
+      MeiliFlutterPlatform.instance.nativeFunnelAvailable();
 }

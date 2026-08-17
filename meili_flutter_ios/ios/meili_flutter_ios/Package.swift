@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "meili_flutter_ios",
     platforms: [
-        .iOS("16.0")
+        .iOS("15.0")
     ],
     products: [
         .library(name: "meili-flutter-ios", targets: ["meili_flutter_ios"])
@@ -16,7 +16,7 @@ let package = Package(
         //
         // `from:` tracks the latest 1.x stable. Keep this aligned with the
         // CocoaPods channel (meili_flutter_ios.podspec).
-        .package(url: "https://github.com/meili-travel-tech/ux-native-ios", from: "1.7.2")
+        .package(url: "https://github.com/meili-travel-tech/ux-native-ios", from: "1.9.2")
     ],
     targets: [
         .target(

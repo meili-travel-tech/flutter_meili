@@ -35,6 +35,9 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
             case "popToRoot":
                 MeiliEventDispatcher.shared.popToRoot()
                 result(nil)
+            case "nativeFunnelAvailable":
+                // Device capability, not configuration — `true` doesn't promise the config loads.
+                result(MeiliSupport.isNativeFunnelAvailable)
             default:
                 result(FlutterMethodNotImplemented)
         }
@@ -42,8 +45,7 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
     
     private func openMeiliViewController(arguments: [String: Any], result: @escaping FlutterResult) {
         let viewController = MeiliViewController()
-        viewController.modalPresentationStyle = .pageSheet
-        
+
         guard let windowScene = UIApplication.shared.connectedScenes
             .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
               let window = windowScene.windows.first(where: { $0.isKeyWindow }),
@@ -74,7 +76,16 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
         
         viewController.meiliParams = meiliParams
         
-        rootViewController.present(viewController, animated: true, completion: nil)
+        if MeiliSupport.isNativeFunnelAvailable {
+            viewController.modalPresentationStyle = .pageSheet
+            rootViewController.present(viewController, animated: true, completion: nil)
+        } else {
+            // iOS 15: MeiliView is a placeholder that immediately presents the web funnel over
+            // this controller, so animating a page sheet in first would show an empty card.
+            // Full-screen, not .overFullScreen — the SDK's message state needs an opaque backdrop.
+            viewController.modalPresentationStyle = .fullScreen
+            rootViewController.present(viewController, animated: false, completion: nil)
+        }
         result(nil)
     }
 }

@@ -16,10 +16,10 @@ Pod::Spec.new do |s|
   s.source_files = 'meili_flutter_ios/Sources/meili_flutter_ios/**/*.swift'
   s.dependency 'Flutter'
   
-  s.platform = :ios, '16.0'
+  s.platform = :ios, '15.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
-  s.dependency 'MeiliSDK', '1.7.2'
+  s.dependency 'MeiliSDK', '1.9.2'
 end

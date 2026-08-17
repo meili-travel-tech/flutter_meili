@@ -70,6 +70,8 @@ class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 result.success(null)
             }
             "popToRoot" -> result.success(null)
+            // Always true — Android's minSdk is unrelated to iOS availability.
+            "nativeFunnelAvailable" -> result.success(true)
             else -> result.notImplemented()
         }
     }
