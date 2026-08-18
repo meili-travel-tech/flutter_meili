@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.4.8
+
+Stable release of the `0.4.8-beta.x` line.
+
+- **iOS 15 is now supported.** `meili_flutter_ios` lowers its deployment target to 15.0 (MPD-11195). A host app must also lower its own `IPHONEOS_DEPLOYMENT_TARGET` to 15.0 to inherit this. On iOS 15 the native funnel cannot render, so `Meili.openMeiliView()` presents the web funnel automatically — no host code required, and `Meili.events` still delivers analytics and `MeiliFlowDismissed` as usual. Android and iOS 16+ are unaffected.
+- Bumped `meili_flutter_ios` to `^0.4.5` (MeiliSDK 1.9.3) and `meili_flutter_android` to `^0.4.7` (Meili Android SDK 1.8.1).
+- The iOS funnel now takes its display language from the device instead of the host app's declared localisations, so a stock Flutter project no longer forces English (MPD-11229).
+
+## 0.4.8-beta.4
+
+- Removed `Meili.nativeFunnelAvailable()`, added in `0.4.8-beta.3`. It shipped against a `meili_flutter_platform_interface` change that was never published, so `0.4.8-beta.3` fails to compile for every consumer. The API was informational only — `openMeiliView()` already falls back to the web funnel on iOS 15 on its own, so nothing about the fallback changes. Hosts that want to vary their own UI on iOS 15 can check the OS version directly.
+- Bumped `meili_flutter_ios` dependency to `^0.4.5-beta.4`.
+
+## 0.4.8-beta.3
+
+- Bumped `meili_flutter_ios` dependency to `^0.4.5-beta.3` (MeiliSDK 1.9.3). The iOS funnel now takes its display language from the device instead of the host app's declared localisations, so a stock Flutter project no longer forces English (MPD-11229).
+
+## 0.4.8-beta.2
+
+- Bumped `meili_flutter_android` dependency to `^0.4.7-beta.2` (Meili Android SDK 1.8.1) and `meili_flutter_ios` dependency to `^0.4.5-beta.2` (MeiliSDK 1.9.2).
+
+## 0.4.8-beta.1
+
+- Bumped `meili_flutter_android` dependency to `^0.4.7-beta.1` (Meili Android SDK 1.8.0) and `meili_flutter_ios` dependency to `^0.4.5-beta.1` (MeiliSDK 1.8.0).
+
 ## 0.4.7
 
 - BREAKING: the `MeiliView` embedded-widget class is removed from the public API entirely (bumped `meili_flutter_ios` dependency to `^0.4.4`). `Meili.openMeiliView()` is now the only way to present the booking flow on both platforms. Android already threw `UnsupportedError` for `MeiliView` since `0.4.5-beta.2`; iOS's previously-working inline embedding is retired for API symmetry and to keep a single, documented integration path (MPD-10997).

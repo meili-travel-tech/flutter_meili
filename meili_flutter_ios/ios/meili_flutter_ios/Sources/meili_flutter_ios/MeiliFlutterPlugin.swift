@@ -35,9 +35,6 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
             case "popToRoot":
                 MeiliEventDispatcher.shared.popToRoot()
                 result(nil)
-            case "nativeFunnelAvailable":
-                // Device capability, not configuration — `true` doesn't promise the config loads.
-                result(MeiliSupport.isNativeFunnelAvailable)
             default:
                 result(FlutterMethodNotImplemented)
         }
