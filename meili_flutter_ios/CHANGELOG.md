@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.6
+
+- Pinned MeiliSDK `1.10.0` in both the podspec and `Package.swift`, which adds support for a partner
+  brand using a separate heading typeface alongside its body typeface (MPD-11080).
+- No plugin API change. Which typefaces a funnel uses is partner configuration resolved inside the
+  native SDK. If a brand font is not already on the device, the **host app** registers the files as
+  it would for its own screens — add them to the Runner target and list them in `UIAppFonts`. A font
+  declared only under `fonts:` in `pubspec.yaml` is not visible to the native funnel.
+
 ## 0.4.5
 
 Stable release of the `0.4.5-beta.x` line.

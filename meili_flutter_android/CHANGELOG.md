@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.8
+
+- Bumped the Meili Android SDK to `1.9.0`, which adds support for a partner brand using a separate
+  heading typeface alongside its body typeface, and honours the theme's heading font style for the
+  first time (MPD-11080).
+- No plugin API change. Which typefaces a funnel uses is partner configuration resolved inside the
+  native SDK. If a brand font is not already on the device, the **host app** supplies the files by
+  dropping them into `android/app/src/main/assets/meili/fonts/`, named so the weight is the last part
+  of the filename (`YourBrand-Bold.ttf`). A font declared only under `fonts:` in `pubspec.yaml` is not
+  visible to the native funnel. Use static faces rather than a variable font: a variable font carries
+  no weight in its name, so it would be used at regular for every weight.
+
 ## 0.4.7
 
 Stable release of the `0.4.7-beta.x` line.
