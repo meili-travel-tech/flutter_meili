@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.0
+
+- Bumped `meili_flutter_ios` to `^0.4.6` (MeiliSDK `1.10.0`) and `meili_flutter_android` to `^0.4.8`
+  (Meili Android SDK `1.9.0`). Together these let a partner brand use a separate heading typeface
+  alongside its body typeface, with prices and numeric text staying on the body typeface (MPD-11080).
+- No Dart API change, and nothing to configure in code. If a brand font is not already on the device,
+  the host app supplies the files in its **platform projects** — `UIAppFonts` in `ios/Runner`, and
+  `android/app/src/main/assets/meili/fonts/` on Android. A font declared only under `fonts:` in
+  `pubspec.yaml` registers with the Flutter engine and is **not** visible to the native funnel. See the
+  [installation guide](https://docs.meili.travel/native/flutter/installation#4-custom-fonts-only-if-you-need-one).
+
 ## 0.4.8
 
 Stable release of the `0.4.8-beta.x` line.
