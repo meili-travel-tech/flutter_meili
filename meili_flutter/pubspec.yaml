@@ -21,7 +21,7 @@ flutter:
 dependencies:
     flutter:
         sdk: flutter
-    meili_flutter_platform_interface: ^0.3.0
+    meili_flutter_platform_interface: ^0.4.0
     meili_flutter_android: ^0.4.9
     meili_flutter_ios: ^0.4.7
 

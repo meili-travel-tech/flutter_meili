@@ -114,6 +114,12 @@ await Meili.openMeiliView(MeiliParams(
 ));
 ```
 
+Every `AvailParams` field is optional. Pass only what you want to prefill and the funnel keeps its own defaults for the rest, so setting just the currency is:
+
+```dart
+availParams: AvailParams(currencyCode: 'GBP'),
+```
+
 ### Listening for dismiss events
 
 ```dart

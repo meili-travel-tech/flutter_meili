@@ -3,6 +3,7 @@
 ## 0.4.9
 
 - Pinned Meili Android SDK `1.10.0`.
+- Requires `meili_flutter_platform_interface` `^0.4.0`, in which every `AvailParams` field is optional.
 - **Action required: your app must enable core library desugaring.** The Meili Android SDK's date
   and calendar logic uses `java.time`, native only from API 26, so every consuming app must add
   `isCoreLibraryDesugaringEnabled = true` and `coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")`.

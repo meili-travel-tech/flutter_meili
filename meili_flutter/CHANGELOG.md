@@ -44,7 +44,9 @@
   and `dropoffDateTime` were also set, so currency overrides and deeplinks had no effect on iOS. The
   `""` / `0` placeholders for unused fields are now treated as unset on both platforms. Also fixed an
   iOS crash when `additionalParams` omitted `lastName` or `confirmationId`.
-- No Dart API change, and nothing to configure in code.
+- **`AvailParams` fields are all optional now** (`meili_flutter_platform_interface` 0.4.0). Pass only what
+  you want to prefill, for example `AvailParams(currencyCode: 'EUR')`. Code that passes every field is
+  unchanged. If you were passing `''` or `0` as placeholders, remove them.
 
 ## 0.5.0
 

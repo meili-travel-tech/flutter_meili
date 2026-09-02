@@ -1,3 +1,10 @@
+## 0.4.0
+
+- **Breaking:** every `AvailParams` field is now optional. Previously all of them were required, which
+  forced integrators to pass `''` and `0` for values they did not want to set; the native SDKs then
+  treated those placeholders as real values. Pass only the fields you want to prefill. Existing code
+  that passes every field keeps working unchanged.
+
 ## 0.3.0
 
 - Bumped to 0.3.0 to align with federated plugin versioning.

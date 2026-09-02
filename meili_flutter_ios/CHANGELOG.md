@@ -3,6 +3,7 @@
 ## 0.4.7
 
 - Pinned MeiliSDK `1.11.0` in both the podspec and `Package.swift`.
+- Requires `meili_flutter_platform_interface` `^0.4.0`, in which every `AvailParams` field is optional.
 - **`availParams` now reach the native SDK.** The plugin previously required every field, including
   `pickupDateTime` and `dropoffDateTime`, which the Dart model leaves optional, so any `availParams`
   without them were silently dropped and the funnel opened as if none had been passed. Each field is

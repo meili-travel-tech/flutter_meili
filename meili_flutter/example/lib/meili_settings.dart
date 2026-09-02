@@ -148,20 +148,5 @@ class MeiliSettings {
     );
   }
 
-  /// The Flutter [AvailParams] requires every field, unlike iOS which can set
-  /// the currency alone. The non-currency fields are intentionally left empty
-  /// so the native layer treats them as unset — see MPD-10696 for the gap.
-  AvailParams _currencyOnlyAvailParams() {
-    return AvailParams(
-      pickupLocation: '',
-      dropoffLocation: '',
-      pickupDate: '',
-      pickupTime: '',
-      dropoffDate: '',
-      dropoffTime: '',
-      driverAge: 0,
-      currencyCode: currency,
-      residency: '',
-    );
-  }
+  AvailParams _currencyOnlyAvailParams() => AvailParams(currencyCode: currency);
 }
