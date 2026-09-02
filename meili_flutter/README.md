@@ -56,19 +56,30 @@ allprojects {
 }
 ```
 
-### 2.2 `android/app/build.gradle.kts` — NDK + minSdk
+### 2.2 `android/app/build.gradle.kts` — NDK, minSdk + desugaring
 
 ```kotlin
 android {
     ndkVersion = "27.0.12077973"
     defaultConfig {
-        minSdk = 27
+        minSdk = 24
     }
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+    }
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 ```
 
 - `ndkVersion` must be pinned exactly — using `flutter.ndkVersion` may cause a linker error.
-- `minSdk = 27` is required by the Meili Android SDK.
+- `minSdk = 24` is the floor required by the Meili Android SDK.
+- **Core library desugaring is required.** The Meili Android SDK's date and calendar logic uses
+  `java.time`, which is only native from API 26, so every consuming app must enable it. Without it
+  the build fails with `Dependency 'meili.travel:ux-native-android-sdk' requires core library
+  desugaring to be enabled`.
 
 ### 2.3 `android/settings.gradle.kts` — Kotlin Compose plugin
 

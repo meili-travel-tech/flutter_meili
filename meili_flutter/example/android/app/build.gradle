@@ -21,6 +21,8 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        // The Meili Android SDK uses java.time, which needs API 26 natively.
+        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
@@ -37,7 +39,7 @@ android {
 
     defaultConfig {
         applicationId "com.meili.travel.sample.flutter"
-        minSdk 27
+        minSdk 24
         targetSdk flutter.targetSdkVersion
         versionCode flutter.versionCode
         versionName flutter.versionName
@@ -69,4 +71,8 @@ android {
 
 flutter {
     source "../.."
+}
+
+dependencies {
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.4"
 }

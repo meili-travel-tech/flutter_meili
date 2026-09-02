@@ -16,7 +16,7 @@ The Meili Flutter Plugin allows you to integrate the Meili car rental booking ex
 | Platform | Minimum version |
 |----------|----------------|
 | iOS      | 16.0           |
-| Android  | API 27         |
+| Android  | API 24         |
 
 ## Installation
 

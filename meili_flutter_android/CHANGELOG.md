@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.9
+
+- Pinned Meili Android SDK `1.10.0`.
+- **Action required: your app must enable core library desugaring.** The Meili Android SDK's date
+  and calendar logic uses `java.time`, native only from API 26, so every consuming app must add
+  `isCoreLibraryDesugaringEnabled = true` and `coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")`.
+  Without it the Android build fails with an explicit Gradle error naming the missing flag (MPD-11288).
+- **`minSdk` lowered from 27 to 24.** A host app on API 24-26 can now integrate the funnel; if your
+  app declares `minSdk 27` only because Meili required it, you can lower it (MPD-11288).
+- Partner theme and partner config now load from the Meili content CDN instead of the static CDN,
+  so partner theming resolves in uat and pre-production for the first time — previously those
+  environments silently fell back to the default theme (MPD-11293).
+- Funnel analytics report through the tagging endpoint, and requests move to the car-api gateway
+  (MPD-10768).
+- Single-tier loyalty programmes now render a checkbox rather than a tier picker on the search
+  panel (MPD-11031).
+- Request failures are logged from the view models, and the error-state guard is locked down
+  (MPD-10739).
+- No plugin API change.
+
 ## 0.4.8
 
 - Bumped the Meili Android SDK to `1.9.0`, which adds support for a partner brand using a separate

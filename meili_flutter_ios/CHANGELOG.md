@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.7
+
+- Pinned MeiliSDK `1.11.0` in both the podspec and `Package.swift`.
+- Partner theme and partner config now load from the Meili content CDN instead of the static CDN,
+  so partner theming resolves in uat and pre-production for the first time — previously those
+  environments silently fell back to the default theme (MPD-11293).
+- The terms and conditions and privacy policy links now follow the configured environment. They
+  were previously pinned to the development CDN in every build, production included (MPD-11293).
+- Funnel analytics report through the tagging endpoint, and requests move to the car-api gateway
+  (MPD-11045).
+- Single-tier loyalty programmes now render a checkbox rather than a tier picker, and a deeplinked
+  discount code or tier is carried into the funnel (MPD-11030).
+- No plugin API change.
+
 ## 0.4.6
 
 - Pinned MeiliSDK `1.10.0` in both the podspec and `Package.swift`, which adds support for a partner

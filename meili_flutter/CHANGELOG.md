@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.6.0
+
+- Bumped `meili_flutter_ios` to `^0.4.7` (MeiliSDK `1.11.0`) and `meili_flutter_android` to `^0.4.9`
+  (Meili Android SDK `1.10.0`).
+- **Action required on Android: enable core library desugaring.** The Meili Android SDK now uses
+  `java.time`, which is native only from API 26, so every host app must add this to
+  `android/app/build.gradle.kts`:
+
+  ```kotlin
+  android {
+      compileOptions {
+          isCoreLibraryDesugaringEnabled = true
+      }
+  }
+
+  dependencies {
+      coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+  }
+  ```
+
+  Without it the Android build fails with `Dependency 'meili.travel:ux-native-android-sdk' requires
+  core library desugaring to be enabled`. See the
+  [installation guide](https://docs.meili.travel/native/flutter/installation) (MPD-11288).
+- **Android `minSdk` is now 24, down from 27.** If your app sets `minSdk = 27` only to satisfy Meili,
+  you can lower it to 24 — see the [installation guide](https://docs.meili.travel/native/flutter/installation).
+  iOS is unchanged at a 15.0 integration floor with the native funnel on 16.0+.
+- Partner theming and partner configuration now resolve correctly in **uat and pre-production**. Both
+  SDKs previously fetched them from a host that only answered in dev and production, so those two
+  environments silently fell back to the default theme and configuration (MPD-11293).
+- On iOS, the terms and conditions and privacy policy shown in the funnel now come from the
+  environment the build targets. They were previously served from the development CDN in every
+  build, production included (MPD-11293).
+- Funnel analytics now report through the tagging endpoint on both platforms, and requests move to
+  the car-api gateway (MPD-11045 on iOS, MPD-10768 on Android).
+- Single-tier loyalty programmes render a checkbox instead of a tier picker (MPD-11030 / MPD-11031).
+- No Dart API change, and nothing to configure in code.
+
 ## 0.5.0
 
 - Bumped `meili_flutter_ios` to `^0.4.6` (MeiliSDK `1.10.0`) and `meili_flutter_android` to `^0.4.8`
