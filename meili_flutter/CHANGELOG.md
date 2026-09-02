@@ -40,6 +40,10 @@
 - Funnel analytics now report through the tagging endpoint on both platforms, and requests move to
   the car-api gateway (MPD-11045 on iOS, MPD-10768 on Android).
 - Single-tier loyalty programmes render a checkbox instead of a tier picker (MPD-11030 / MPD-11031).
+- **iOS: `availParams` now reach the native SDK.** They were silently dropped unless `pickupDateTime`
+  and `dropoffDateTime` were also set, so currency overrides and deeplinks had no effect on iOS. The
+  `""` / `0` placeholders for unused fields are now treated as unset on both platforms. Also fixed an
+  iOS crash when `additionalParams` omitted `lastName` or `confirmationId`.
 - No Dart API change, and nothing to configure in code.
 
 ## 0.5.0

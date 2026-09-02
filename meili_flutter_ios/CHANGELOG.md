@@ -3,6 +3,13 @@
 ## 0.4.7
 
 - Pinned MeiliSDK `1.11.0` in both the podspec and `Package.swift`.
+- **`availParams` now reach the native SDK.** The plugin previously required every field, including
+  `pickupDateTime` and `dropoffDateTime`, which the Dart model leaves optional, so any `availParams`
+  without them were silently dropped and the funnel opened as if none had been passed. Each field is
+  now passed through individually, and the `""` / `0` placeholders the Dart model forces for unused
+  fields are treated as unset.
+- Fixed a crash when `additionalParams` omitted `lastName` or `confirmationId`; both are optional in
+  Dart but were force-unwrapped on iOS.
 - Partner theme and partner config now load from the Meili content CDN instead of the static CDN,
   so partner theming resolves in uat and pre-production for the first time — previously those
   environments silently fell back to the default theme (MPD-11293).
