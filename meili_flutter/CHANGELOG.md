@@ -26,6 +26,11 @@
 - **Android `minSdk` is now 24, down from 27.** If your app sets `minSdk = 27` only to satisfy Meili,
   you can lower it to 24 — see the [installation guide](https://docs.meili.travel/native/flutter/installation).
   iOS is unchanged at a 15.0 integration floor with the native funnel on 16.0+.
+  **Android 7, 8 and 9 additionally need a TLS 1.3 security provider.** Meili's endpoints are TLS 1.3
+  only and Android gained TLS 1.3 in API 29, so on API 24 to 28 the funnel opens blank unless the host
+  registers one (for example Conscrypt) in `Application.onCreate`. See the installation guide. Verified
+  on an Android 7.0 emulator: without a provider every request fails the handshake; with Conscrypt the
+  funnel renders fully.
 - Partner theming and partner configuration now resolve correctly in **uat and pre-production**. Both
   SDKs previously fetched them from a host that only answered in dev and production, so those two
   environments silently fell back to the default theme and configuration (MPD-11293).

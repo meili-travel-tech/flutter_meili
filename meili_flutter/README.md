@@ -81,6 +81,33 @@ dependencies {
   the build fails with `Dependency 'meili.travel:ux-native-android-sdk' requires core library
   desugaring to be enabled`.
 
+#### Android 7 to 9 (API 24 to 28): supply a TLS 1.3 provider
+
+Meili's endpoints accept TLS 1.3 only, and Android only added TLS 1.3 in Android 10 (API 29). On
+Android 7, 8 and 9 the SDK cannot connect and the funnel opens on a blank screen, with
+`SSLHandshakeException: Handshake failed` in logcat. If your `minSdk` is 29 or higher, skip this.
+
+Add Conscrypt and register it as the first security provider in an `Application` subclass:
+
+```kotlin
+dependencies {
+    implementation("org.conscrypt:conscrypt-android:2.5.3")
+}
+```
+
+```kotlin
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        Security.insertProviderAt(Conscrypt.newProvider(), 1)
+    }
+}
+```
+
+and point `<application android:name=".MainApplication">` at it in `AndroidManifest.xml`. The
+example app does exactly this. Conscrypt adds about 2 MB on arm64 and works without Google Play
+services; Play services' `ProviderInstaller` is an alternative for devices that have them.
+
 ### 2.3 `android/settings.gradle.kts` — Kotlin Compose plugin
 
 ```kotlin

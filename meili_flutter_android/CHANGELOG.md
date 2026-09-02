@@ -9,6 +9,11 @@
   Without it the Android build fails with an explicit Gradle error naming the missing flag (MPD-11288).
 - **`minSdk` lowered from 27 to 24.** A host app on API 24-26 can now integrate the funnel; if your
   app declares `minSdk 27` only because Meili required it, you can lower it (MPD-11288).
+  **Android 7, 8 and 9 additionally need a TLS 1.3 security provider.** Meili's endpoints are TLS 1.3
+  only and Android gained TLS 1.3 in API 29, so on API 24 to 28 the funnel opens blank unless the host
+  registers one (for example Conscrypt) in `Application.onCreate`. See the installation guide. Verified
+  on an Android 7.0 emulator: without a provider every request fails the handshake; with Conscrypt the
+  funnel renders fully.
 - Partner theme and partner config now load from the Meili content CDN instead of the static CDN,
   so partner theming resolves in uat and pre-production for the first time — previously those
   environments silently fell back to the default theme (MPD-11293).
