@@ -33,6 +33,8 @@ internal fun parseAvailParams(map: Map<*, *>?): AvailParams? {
         driverAge = (map["driverAge"] as? Number)?.toInt(),
         currencyCode = map["currencyCode"] as? String,
         residency = map["residency"] as? String,
+        discountRequested = map["discountRequested"] as? Boolean,
+        partnerLoyaltyAccountTier = map["partnerLoyaltyAccountTier"] as? String,
     )
 }
 

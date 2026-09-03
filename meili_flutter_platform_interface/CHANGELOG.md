@@ -1,3 +1,9 @@
+## 0.4.1
+
+- Added `discountRequested` and `partnerLoyaltyAccountTier` to `AvailParams`. They pre-tick the
+  partner discount and loyalty card checkboxes on the search panel, and are carried to the native
+  SDKs on the request's `partnerParams`. Both are optional, so existing code is unaffected.
+
 ## 0.4.0
 
 - **Breaking:** every `AvailParams` field is now optional. Previously all of them were required, which

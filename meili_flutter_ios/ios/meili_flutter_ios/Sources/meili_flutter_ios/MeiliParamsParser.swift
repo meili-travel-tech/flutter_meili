@@ -53,6 +53,8 @@ func parseAvailParams(from dict: [String: Any]) -> AvailParams? {
         driverAge: (dict["driverAge"] as? Int).flatMap { $0 > 0 ? $0 : nil },
         currencyCode: dict.nonBlankString("currencyCode"),
         residency: dict.nonBlankString("residency"),
+        discountRequested: dict["discountRequested"] as? Bool,
+        partnerLoyaltyAccountTier: dict.nonBlankString("partnerLoyaltyAccountTier"),
         pickupDateTime: dict.nonBlankString("pickupDateTime"),
         dropoffDateTime: dict.nonBlankString("dropoffDateTime")
     )

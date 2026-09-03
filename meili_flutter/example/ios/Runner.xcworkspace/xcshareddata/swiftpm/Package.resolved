@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/meili-travel-tech/ux-native-ios",
       "state" : {
-        "revision" : "5ca7fbe0c6bcbeed34267811130a876b1937e9f8",
-        "version" : "1.11.0"
+        "revision" : "71679ca621fe0d6a3f0f270990a25ea6f53cb0a3",
+        "version" : "1.11.1"
       }
     }
   ],

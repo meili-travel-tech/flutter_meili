@@ -10,6 +10,8 @@
   the map depot picker (MPD-11030).
 - An empty ticket number is now omitted from `partnerParams` rather than sent as `""`, matching the
   web app and the Android SDK (MPD-11030).
+- Passes the new `AvailParams.discountRequested` and `AvailParams.partnerLoyaltyAccountTier` through
+  to the iOS SDK. Requires `meili_flutter_platform_interface` `^0.4.1`.
 
 ## 0.4.7
 
