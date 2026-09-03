@@ -3,7 +3,7 @@
 ## 0.6.0
 
 - Bumped `meili_flutter_ios` to `^0.4.7` (MeiliSDK `1.11.0`) and `meili_flutter_android` to `^0.4.9`
-  (Meili Android SDK `1.10.0`).
+  (Meili Android SDK `1.10.1`).
 - **Action required on Android: enable core library desugaring.** The Meili Android SDK now uses
   `java.time`, which is native only from API 26, so every host app must add this to
   `android/app/build.gradle.kts`:

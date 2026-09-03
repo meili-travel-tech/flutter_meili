@@ -2,7 +2,9 @@
 
 ## 0.4.9
 
-- Pinned Meili Android SDK `1.10.0`.
+- Pinned Meili Android SDK `1.10.1`. It fixes a Search button that silently did nothing, or crashed, when a
+  host passed placeholder values (`""`, `0`) in `availParams`, and a crash on 12-hour devices when the
+  pick-up date was today.
 - Requires `meili_flutter_platform_interface` `^0.4.0`, in which every `AvailParams` field is optional.
 - **Action required: your app must enable core library desugaring.** The Meili Android SDK's date
   and calendar logic uses `java.time`, native only from API 26, so every consuming app must add
