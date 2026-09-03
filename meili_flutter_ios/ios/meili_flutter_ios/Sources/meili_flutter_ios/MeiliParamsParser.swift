@@ -27,7 +27,7 @@ func parseBookingParams(from dict: [String: Any]) -> AdditionalParams? {
         airlineFareCurrency: dict["airlineFareCurrency"] as? String,
         partnerCustomerID: dict["partnerCustomerID"] as? String,
         firstName: dict["firstName"] as? String,
-        lastName: dict["lastName"] as! String,
+        lastName: dict["lastName"] as? String ?? "",
         email: dict["email"] as? String,
         phoneNumbers: dict["phoneNumbers"] as? [Int],
         companyName: dict["companyName"] as? String,
@@ -35,37 +35,31 @@ func parseBookingParams(from dict: [String: Any]) -> AdditionalParams? {
         postCode: dict["postCode"] as? String,
         city: dict["city"] as? String,
         state: dict["state"] as? String,
-        confirmationId: dict["confirmationId"] as! String,
+        confirmationId: dict["confirmationId"] as? String ?? "",
         prefillOnly: dict["prefillOnly"] as? Bool
     )
 }
 
+// Every AvailParams field is optional on the SDK side. The Dart model makes most of them
+// required, so hosts that only want to set the currency send "" and 0 to mean "not set".
 func parseAvailParams(from dict: [String: Any]) -> AvailParams? {
-    guard let pickupLocation = dict["pickupLocation"] as? String,
-          let dropoffLocation = dict["dropoffLocation"] as? String,
-          let pickupTime = dict["pickupTime"] as? String,
-          let pickupDate = dict["pickupDate"] as? String,
-          let dropoffTime = dict["dropoffTime"] as? String,
-          let dropoffDate = dict["dropoffDate"] as? String,
-          let pickupDateTime = dict["pickupDateTime"] as? String,
-          let dropoffDateTime = dict["dropoffDateTime"] as? String,
-          let driverAge = dict["driverAge"] as? Int,
-          let currencyCode = dict["currencyCode"] as? String,
-          let residency = dict["residency"] as? String else {
-        return nil
-    }
-
-    return AvailParams(
-        pickupLocation: pickupLocation,
-        dropoffLocation: dropoffLocation,
-        pickupDate: pickupDate,
-        pickupTime: pickupTime,
-        dropoffDate: dropoffDate,
-        dropoffTime: dropoffTime,
-        driverAge: driverAge,
-        currencyCode: currencyCode,
-        residency: residency,
-        pickupDateTime: pickupDateTime,
-        dropoffDateTime: dropoffDateTime
+    AvailParams(
+        pickupLocation: dict.nonBlankString("pickupLocation"),
+        dropoffLocation: dict.nonBlankString("dropoffLocation"),
+        pickupDate: dict.nonBlankString("pickupDate"),
+        pickupTime: dict.nonBlankString("pickupTime"),
+        dropoffDate: dict.nonBlankString("dropoffDate"),
+        dropoffTime: dict.nonBlankString("dropoffTime"),
+        driverAge: (dict["driverAge"] as? Int).flatMap { $0 > 0 ? $0 : nil },
+        currencyCode: dict.nonBlankString("currencyCode"),
+        residency: dict.nonBlankString("residency"),
+        pickupDateTime: dict.nonBlankString("pickupDateTime"),
+        dropoffDateTime: dict.nonBlankString("dropoffDateTime")
     )
+}
+
+private extension Dictionary where Key == String, Value == Any {
+    func nonBlankString(_ key: String) -> String? {
+        (self[key] as? String).flatMap { $0.trimmingCharacters(in: .whitespaces).isEmpty ? nil : $0 }
+    }
 }

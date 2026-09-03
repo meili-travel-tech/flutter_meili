@@ -1,5 +1,53 @@
 # Changelog
 
+## 0.6.0
+
+- Bumped `meili_flutter_ios` to `^0.4.7` (MeiliSDK `1.11.0`) and `meili_flutter_android` to `^0.4.9`
+  (Meili Android SDK `1.10.1`).
+- **Action required on Android: enable core library desugaring.** The Meili Android SDK now uses
+  `java.time`, which is native only from API 26, so every host app must add this to
+  `android/app/build.gradle.kts`:
+
+  ```kotlin
+  android {
+      compileOptions {
+          isCoreLibraryDesugaringEnabled = true
+      }
+  }
+
+  dependencies {
+      coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+  }
+  ```
+
+  Without it the Android build fails with `Dependency 'meili.travel:ux-native-android-sdk' requires
+  core library desugaring to be enabled`. See the
+  [installation guide](https://docs.meili.travel/native/flutter/installation) (MPD-11288).
+- **Android `minSdk` is now 24, down from 27.** If your app sets `minSdk = 27` only to satisfy Meili,
+  you can lower it to 24 — see the [installation guide](https://docs.meili.travel/native/flutter/installation).
+  iOS is unchanged at a 15.0 integration floor with the native funnel on 16.0+.
+  **Android 7, 8 and 9 additionally need a TLS 1.3 security provider.** Meili's endpoints are TLS 1.3
+  only and Android gained TLS 1.3 in API 29, so on API 24 to 28 the funnel opens blank unless the host
+  registers one (for example Conscrypt) in `Application.onCreate`. See the installation guide. Verified
+  on an Android 7.0 emulator: without a provider every request fails the handshake; with Conscrypt the
+  funnel renders fully.
+- Partner theming and partner configuration now resolve correctly in **uat and pre-production**. Both
+  SDKs previously fetched them from a host that only answered in dev and production, so those two
+  environments silently fell back to the default theme and configuration (MPD-11293).
+- On iOS, the terms and conditions and privacy policy shown in the funnel now come from the
+  environment the build targets. They were previously served from the development CDN in every
+  build, production included (MPD-11293).
+- Funnel analytics now report through the tagging endpoint on both platforms, and requests move to
+  the car-api gateway (MPD-11045 on iOS, MPD-10768 on Android).
+- Single-tier loyalty programmes render a checkbox instead of a tier picker (MPD-11030 / MPD-11031).
+- **iOS: `availParams` now reach the native SDK.** They were silently dropped unless `pickupDateTime`
+  and `dropoffDateTime` were also set, so currency overrides and deeplinks had no effect on iOS. The
+  `""` / `0` placeholders for unused fields are now treated as unset on both platforms. Also fixed an
+  iOS crash when `additionalParams` omitted `lastName` or `confirmationId`.
+- **`AvailParams` fields are all optional now** (`meili_flutter_platform_interface` 0.4.0). Pass only what
+  you want to prefill, for example `AvailParams(currencyCode: 'EUR')`. Code that passes every field is
+  unchanged. If you were passing `''` or `0` as placeholders, remove them.
+
 ## 0.5.0
 
 - Bumped `meili_flutter_ios` to `^0.4.6` (MeiliSDK `1.10.0`) and `meili_flutter_android` to `^0.4.8`

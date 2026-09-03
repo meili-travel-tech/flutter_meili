@@ -16,7 +16,7 @@ The Meili Flutter Plugin allows you to integrate the Meili car rental booking ex
 | Platform | Minimum version |
 |----------|----------------|
 | iOS      | 16.0           |
-| Android  | API 27         |
+| Android  | API 24         |
 
 ## Installation
 
@@ -112,6 +112,12 @@ await Meili.openMeiliView(MeiliParams(
     residency: 'GB',
   ),
 ));
+```
+
+Every `AvailParams` field is optional. Pass only what you want to prefill and the funnel keeps its own defaults for the rest, so setting just the currency is:
+
+```dart
+availParams: AvailParams(currencyCode: 'GBP'),
 ```
 
 ### Listening for dismiss events

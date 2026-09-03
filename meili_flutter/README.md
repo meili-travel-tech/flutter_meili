@@ -56,19 +56,57 @@ allprojects {
 }
 ```
 
-### 2.2 `android/app/build.gradle.kts` — NDK + minSdk
+### 2.2 `android/app/build.gradle.kts` — NDK, minSdk + desugaring
 
 ```kotlin
 android {
     ndkVersion = "27.0.12077973"
     defaultConfig {
-        minSdk = 27
+        minSdk = 24
     }
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+    }
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 ```
 
 - `ndkVersion` must be pinned exactly — using `flutter.ndkVersion` may cause a linker error.
-- `minSdk = 27` is required by the Meili Android SDK.
+- `minSdk = 24` is the floor required by the Meili Android SDK.
+- **Core library desugaring is required.** The Meili Android SDK's date and calendar logic uses
+  `java.time`, which is only native from API 26, so every consuming app must enable it. Without it
+  the build fails with `Dependency 'meili.travel:ux-native-android-sdk' requires core library
+  desugaring to be enabled`.
+
+#### Android 7 to 9 (API 24 to 28): supply a TLS 1.3 provider
+
+Meili's endpoints accept TLS 1.3 only, and Android only added TLS 1.3 in Android 10 (API 29). On
+Android 7, 8 and 9 the SDK cannot connect and the funnel opens on a blank screen, with
+`SSLHandshakeException: Handshake failed` in logcat. If your `minSdk` is 29 or higher, skip this.
+
+Add Conscrypt and register it as the first security provider in an `Application` subclass:
+
+```kotlin
+dependencies {
+    implementation("org.conscrypt:conscrypt-android:2.5.3")
+}
+```
+
+```kotlin
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        Security.insertProviderAt(Conscrypt.newProvider(), 1)
+    }
+}
+```
+
+and point `<application android:name=".MainApplication">` at it in `AndroidManifest.xml`. The
+example app does exactly this. Conscrypt adds about 2 MB on arm64 and works without Google Play
+services; Play services' `ProviderInstaller` is an alternative for devices that have them.
 
 ### 2.3 `android/settings.gradle.kts` — Kotlin Compose plugin
 

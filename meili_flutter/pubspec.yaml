@@ -1,6 +1,6 @@
 name: meili_flutter
 description: Meili Flutter plugin
-version: 0.5.0
+version: 0.6.0
 
 homepage: https://github.com/meili-travel-tech/flutter_meili
 repository: https://github.com/meili-travel-tech/flutter_meili
@@ -21,9 +21,9 @@ flutter:
 dependencies:
     flutter:
         sdk: flutter
-    meili_flutter_platform_interface: ^0.3.0
-    meili_flutter_android: ^0.4.8
-    meili_flutter_ios: ^0.4.6
+    meili_flutter_platform_interface: ^0.4.0
+    meili_flutter_android: ^0.4.9
+    meili_flutter_ios: ^0.4.7
 
 dev_dependencies:
     flutter_test:
