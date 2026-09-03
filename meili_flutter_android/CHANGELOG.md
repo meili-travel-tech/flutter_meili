@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.10
+
+- Passes the new `AvailParams.discountRequested` and `AvailParams.partnerLoyaltyAccountTier` through
+  to the Android SDK. Requires `meili_flutter_platform_interface` `^0.4.1`.
+- No Meili Android SDK bump; still `1.10.1`, which already accepts both fields.
+
 ## 0.4.9
 
 - Pinned Meili Android SDK `1.10.1`. It fixes a Search button that silently did nothing, or crashed, when a

@@ -13,6 +13,8 @@ class AvailParams {
     this.residency,
     this.pickupDateTime,
     this.dropoffDateTime,
+    this.discountRequested,
+    this.partnerLoyaltyAccountTier,
   });
 
   final String? pickupLocation;
@@ -27,6 +29,15 @@ class AvailParams {
   final String? currencyCode;
   final String? residency;
 
+  /// Pre-ticks the partner discount checkbox on the search panel, when the
+  /// partner has one configured.
+  final bool? discountRequested;
+
+  /// Pre-ticks the partner loyalty card checkbox on the search panel, when the
+  /// partner declares a single loyalty tier. Pass the tier value itself, for
+  /// example `CARD`.
+  final String? partnerLoyaltyAccountTier;
+
   Map<String, dynamic> toMap() {
     return {
       'pickupLocation': pickupLocation,
@@ -40,6 +51,8 @@ class AvailParams {
       'driverAge': driverAge,
       'currencyCode': currencyCode,
       'residency': residency,
+      'discountRequested': discountRequested,
+      'partnerLoyaltyAccountTier': partnerLoyaltyAccountTier,
     };
   }
 }

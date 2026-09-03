@@ -17,6 +17,8 @@ void main() {
       'residency',
       'pickupDateTime',
       'dropoffDateTime',
+      'discountRequested',
+      'partnerLoyaltyAccountTier',
     ]) {
       expect(map[key], isNull, reason: key);
     }
@@ -41,5 +43,21 @@ void main() {
     expect(map['residency'], 'IE');
     expect(map['pickupDateTime'], '2026-10-05T10:00:00.000Z');
     expect(map['dropoffDateTime'], isNull);
+  });
+
+  test('the loyalty prefill fields are carried when supplied', () {
+    final map = AvailParams(
+      discountRequested: true,
+      partnerLoyaltyAccountTier: 'CARD',
+    ).toMap();
+
+    expect(map['discountRequested'], isTrue);
+    expect(map['partnerLoyaltyAccountTier'], 'CARD');
+  });
+
+  test('discountRequested: false is carried, not dropped as if unset', () {
+    final map = AvailParams(discountRequested: false).toMap();
+
+    expect(map['discountRequested'], isFalse);
   });
 }

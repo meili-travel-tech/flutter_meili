@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.7.0
+
+- Bumped `meili_flutter_ios` to `^0.4.8` (MeiliSDK `1.11.1`), `meili_flutter_android` to `^0.4.10`
+  and `meili_flutter_platform_interface` to `^0.4.1`.
+- Fixes partner loyalty details being dropped when a search is re-run from the results screen on
+  iOS, which returned prices without the partner discount applied (MPD-11030).
+- **New:** `AvailParams` gains `discountRequested` and `partnerLoyaltyAccountTier`, which pre-tick
+  the partner discount and loyalty card checkboxes on the search panel. Both native SDKs have
+  accepted these since MeiliSDK `1.11.0` / Meili Android SDK `1.10.0`, but Flutter hosts had no way
+  to pass them. Both fields are optional, so existing code is unaffected.
+
+  ```dart
+  AvailParams(
+    pickupLocation: 'NTE',
+    discountRequested: true,
+    partnerLoyaltyAccountTier: 'CARD',
+  )
+  ```
+
+  This is a minor rather than a patch release because it adds public API.
+
 ## 0.6.0
 
 - Bumped `meili_flutter_ios` to `^0.4.7` (MeiliSDK `1.11.0`) and `meili_flutter_android` to `^0.4.9`
