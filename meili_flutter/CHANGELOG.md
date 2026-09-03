@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.1
+
+- Bumped `meili_flutter_ios` to `^0.4.8` (MeiliSDK `1.11.1`). iOS-only patch; `meili_flutter_android`
+  and `meili_flutter_platform_interface` are unchanged.
+- Fixes partner loyalty details being dropped when a search is re-run from the results screen on
+  iOS, which returned prices without the partner discount applied (MPD-11030).
+
 ## 0.6.0
 
 - Bumped `meili_flutter_ios` to `^0.4.7` (MeiliSDK `1.11.0`) and `meili_flutter_android` to `^0.4.9`

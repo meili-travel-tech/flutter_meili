@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.8
+
+- Pinned MeiliSDK `1.11.1` in both the podspec and `Package.swift`.
+- Fixes the loyalty tier, the discount flag and the ticket number being dropped when a search is
+  re-run from the results screen. Ticking "I have an eligible SNCF card", searching, then editing
+  the search and searching again sent no `partnerParams` at all, so results came back without the
+  partner discount applied. The same loss affected the currency switcher, the failure retry and
+  the map depot picker (MPD-11030).
+- An empty ticket number is now omitted from `partnerParams` rather than sent as `""`, matching the
+  web app and the Android SDK (MPD-11030).
+
 ## 0.4.7
 
 - Pinned MeiliSDK `1.11.0` in both the podspec and `Package.swift`.
