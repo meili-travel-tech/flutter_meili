@@ -59,28 +59,18 @@ private func parseSupplierLoyaltyAccounts(_ value: Any?) -> [SupplierLoyaltyAcco
     }
 }
 
-// Every AvailParams field is optional on the SDK side. The Dart model makes most of them
-// required, so hosts that only want to set the currency send "" and 0 to mean "not set".
 func parseAvailParams(from dict: [String: Any]) -> AvailParams? {
     AvailParams(
-        pickupLocation: dict.nonBlankString("pickupLocation"),
-        dropoffLocation: dict.nonBlankString("dropoffLocation"),
-        pickupDate: dict.nonBlankString("pickupDate"),
-        pickupTime: dict.nonBlankString("pickupTime"),
-        dropoffDate: dict.nonBlankString("dropoffDate"),
-        dropoffTime: dict.nonBlankString("dropoffTime"),
-        driverAge: (dict["driverAge"] as? Int).flatMap { $0 > 0 ? $0 : nil },
-        currencyCode: dict.nonBlankString("currencyCode"),
-        residency: dict.nonBlankString("residency"),
+        pickupLocation: dict["pickupLocation"] as? String,
+        dropoffLocation: dict["dropoffLocation"] as? String,
+        pickupDate: dict["pickupDate"] as? String,
+        pickupTime: dict["pickupTime"] as? String,
+        dropoffDate: dict["dropoffDate"] as? String,
+        dropoffTime: dict["dropoffTime"] as? String,
+        driverAge: dict["driverAge"] as? Int,
+        currencyCode: dict["currencyCode"] as? String,
+        residency: dict["residency"] as? String,
         discountRequested: dict["discountRequested"] as? Bool,
-        partnerLoyaltyAccountTier: dict.nonBlankString("partnerLoyaltyAccountTier"),
-        pickupDateTime: dict.nonBlankString("pickupDateTime"),
-        dropoffDateTime: dict.nonBlankString("dropoffDateTime")
+        partnerLoyaltyAccountTier: dict["partnerLoyaltyAccountTier"] as? String
     )
-}
-
-private extension Dictionary where Key == String, Value == Any {
-    func nonBlankString(_ key: String) -> String? {
-        (self[key] as? String).flatMap { $0.trimmingCharacters(in: .whitespaces).isEmpty ? nil : $0 }
-    }
 }

@@ -17,12 +17,8 @@ void main() {
       availParams: AvailParams(
         pickupLocation: 'LHR',
         dropoffLocation: 'CDG',
-        pickupDate: '2026-11-05',
-        pickupTime: '10:30',
-        dropoffDate: '2026-11-12',
-        dropoffTime: '16:45',
-        pickupDateTime: DateTime.utc(2026, 11, 5, 10, 30),
-        dropoffDateTime: DateTime.utc(2026, 11, 12, 16, 45),
+        pickupDateTime: DateTime(2026, 11, 5, 10, 30),
+        dropoffDateTime: DateTime(2026, 11, 12, 16, 45),
         driverAge: 34,
         currencyCode: 'GBP',
         residency: 'FR',
@@ -73,6 +69,36 @@ void main() {
     expect(params.toMap(), equals(_fixture()['params']));
   });
 
+  test(
+    'blanks and zeros are sent as given and absent sections are left out',
+    () {
+      final params = MeiliCarParams(
+        ptid: '100.9',
+        flow: FlowType.direct,
+        env: MeiliCarEnv.dev,
+        availParams: AvailParams(
+          pickupLocation: '',
+          driverAge: 0,
+          partnerLoyaltyAccountTier: ' ',
+        ),
+      );
+
+      expect(params.toMap(), equals(_fixture()['paramsBlank']));
+    },
+  );
+
+  test('toMap leaves out null entries in every section', () {
+    final map = MeiliCarParams(
+      ptid: '100.9',
+      flow: FlowType.direct,
+      env: MeiliCarEnv.dev,
+      additionalParams: AdditionalParams(confirmationId: 'ABC'),
+    ).toMap();
+
+    expect(map.containsKey('availParams'), isFalse);
+    expect(map['additionalParams'], {'confirmationId': 'ABC'});
+  });
+
   test('every MeiliCarEnv is sent as its name', () {
     for (final env in MeiliCarEnv.values) {
       final map =
@@ -86,7 +112,7 @@ void main() {
     );
   });
 
-  test('SupplierLoyaltyAccount sends its customerAccount and supplierName', () {
+  test('SupplierLoyaltyAccount sends customerAccount and a set supplierName', () {
     expect(
       const SupplierLoyaltyAccount(customerAccount: '123', supplierName: 'Avis')
           .toMap(),
@@ -94,7 +120,7 @@ void main() {
     );
     expect(
       const SupplierLoyaltyAccount(customerAccount: '123').toMap(),
-      {'customerAccount': '123', 'supplierName': null},
+      {'customerAccount': '123'},
     );
   });
 
@@ -109,19 +135,14 @@ void main() {
     ).toMap();
 
     expect(map['supplierLoyaltyAccounts'], [
-      {'customerAccount': '1', 'supplierName': null},
+      {'customerAccount': '1'},
     ]);
     expect(map['phoneNumbers'], ['+0044']);
     expect(map['givenName'], 'Ada');
     expect(map['corporateCode'], 'ACME');
   });
 
-  test('unset AdditionalParams fields are sent as null', () {
-    final map = AdditionalParams().toMap();
-
-    expect(map['supplierLoyaltyAccounts'], isNull);
-    expect(map['phoneNumbers'], isNull);
-    expect(map['givenName'], isNull);
-    expect(map['corporateCode'], isNull);
+  test('unset AdditionalParams fields are left out', () {
+    expect(AdditionalParams().toMap(), isEmpty);
   });
 }

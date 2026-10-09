@@ -107,7 +107,7 @@ class AdditionalParams {
       'confirmationId': confirmationId,
       'prefillOnly': prefillOnly,
       'givenName': givenName,
-    };
+    }..removeWhere((_, value) => value == null);
   }
 }
 

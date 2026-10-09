@@ -25,6 +25,9 @@ internal object ChannelContractFixture {
 
     val additionalParams: ChannelMap get() = params.getValue("additionalParams").asMap()
 
+    val availParamsBlank: ChannelMap
+        get() = root.getValue("paramsBlank").asMap().getValue("availParams").asMap()
+
     @Suppress("UNCHECKED_CAST")
     private fun Any?.asMap() = this as ChannelMap
 

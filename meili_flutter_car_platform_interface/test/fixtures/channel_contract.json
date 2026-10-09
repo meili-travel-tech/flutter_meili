@@ -10,8 +10,6 @@
       "pickupTime": "10:30",
       "dropoffDate": "2026-11-12",
       "dropoffTime": "16:45",
-      "pickupDateTime": "2026-11-05T10:30:00.000Z",
-      "dropoffDateTime": "2026-11-12T16:45:00.000Z",
       "driverAge": 34,
       "currencyCode": "GBP",
       "residency": "FR",
@@ -31,7 +29,7 @@
       "teenager": 4,
       "supplierLoyaltyAccounts": [
         { "customerAccount": "SLA-1006", "supplierName": "Hertz" },
-        { "customerAccount": "SLA-1007", "supplierName": null }
+        { "customerAccount": "SLA-1007" }
       ],
       "corporateCode": "CORP-1012",
       "fareTypeAndFlex": "FLEX-1008",
@@ -53,6 +51,16 @@
       "confirmationId": "CONF-1011",
       "prefillOnly": true,
       "givenName": "Augusta"
+    }
+  },
+  "paramsBlank": {
+    "ptid": "100.9",
+    "flow": "direct",
+    "env": "dev",
+    "availParams": {
+      "pickupLocation": "",
+      "driverAge": 0,
+      "partnerLoyaltyAccountTier": " "
     }
   }
 }

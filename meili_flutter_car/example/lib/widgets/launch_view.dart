@@ -166,6 +166,17 @@ class _LaunchViewState extends State<LaunchView> {
                   _vm.update(settings.copyWith(currency: value)),
             ),
           ),
+        const _SectionHeader('Dates'),
+        SwitchListTile(
+          title: const Text('Override pickup and drop-off'),
+          subtitle: const Text(
+            'Seeds the search from a DateTime: pickup in 7 days at 10:30, '
+            'drop-off in 14 days at 16:45.',
+          ),
+          value: settings.overrideDates,
+          onChanged: (value) =>
+              _vm.update(settings.copyWith(overrideDates: value)),
+        ),
         // The booking lookup fields only apply to the Booking Manager flow,
         // so hide the whole section for the Direct flow to avoid confusion.
         if (settings.flow == FlowType.bookingManager) ...[

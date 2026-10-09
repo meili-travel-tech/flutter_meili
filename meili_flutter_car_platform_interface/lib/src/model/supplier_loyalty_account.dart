@@ -11,10 +11,11 @@ class SupplierLoyaltyAccount {
   /// The supplier the account belongs to, such as `Hertz`.
   final String? supplierName;
 
+  /// The channel map: `supplierName` is left out when null.
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       'customerAccount': customerAccount,
       'supplierName': supplierName,
-    };
+    }..removeWhere((_, value) => value == null);
   }
 }

@@ -36,8 +36,6 @@ struct MeiliParamsParserTests {
         ("pickupTime", "10:30"),
         ("dropoffDate", "2026-11-12"),
         ("dropoffTime", "16:45"),
-        ("pickupDateTime", "2026-11-05T10:30:00.000Z"),
-        ("dropoffDateTime", "2026-11-12T16:45:00.000Z"),
         ("driverAge", 34),
         ("currencyCode", "GBP"),
         ("residency", "FR"),
@@ -48,6 +46,17 @@ struct MeiliParamsParserTests {
         let params = try #require(parseAvailParams(from: try ChannelContractFixture.availParams()))
 
         #expect(storedProperties(of: params)[key] == AnyHashable(expected))
+    }
+
+    @Test
+    func blankAvailValuesReachTheSDKParamsUnchanged() throws {
+        let params = try #require(parseAvailParams(from: try ChannelContractFixture.availParamsBlank()))
+        let stored = storedProperties(of: params)
+
+        #expect(stored["pickupLocation"] == AnyHashable(""))
+        #expect(stored["driverAge"] == AnyHashable(0))
+        #expect(stored["partnerLoyaltyAccountTier"] == AnyHashable(" "))
+        #expect(stored["currencyCode"] == nil)
     }
 
     @Test(arguments: [
