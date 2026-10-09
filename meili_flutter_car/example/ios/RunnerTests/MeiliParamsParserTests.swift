@@ -71,7 +71,8 @@ struct MeiliParamsParserTests {
         ("firstName", "Ada"),
         ("lastName", "Lovelace"),
         ("email", "ada.lovelace@example.com"),
-        ("phoneNumbers", [353_871_234_567, 442_071_234_567]),
+        ("phoneNumbers", ["+353871234567", "+442071234567"]),
+        ("corporateCode", "CORP-1012"),
         ("companyName", "Analytical Engines Ltd"),
         ("addressLine1", "12 Babbage Street"),
         ("postCode", "D02 X285"),
@@ -79,10 +80,73 @@ struct MeiliParamsParserTests {
         ("state", "Leinster"),
         ("confirmationId", "CONF-1011"),
         ("prefillOnly", true),
+        ("givenName", "Augusta"),
     ])
     func fixtureAdditionalParamsReachTheSDKParams(key: String, expected: any Hashable & Sendable) throws {
         let params = try #require(parseBookingParams(from: try ChannelContractFixture.additionalParams()))
 
         #expect(storedProperties(of: params)[key] == AnyHashable(expected))
+    }
+
+    @Test
+    func fixtureSupplierLoyaltyAccountsReachTheSDKParams() throws {
+        let params = try #require(parseBookingParams(from: try ChannelContractFixture.additionalParams()))
+        let accounts = try #require(params.supplierLoyaltyAccounts)
+
+        #expect(accounts.map(\.customerAccount) == ["SLA-1006", "SLA-1007"])
+        #expect(accounts.map(\.supplierName) == ["Hertz", nil])
+    }
+
+    @Test
+    func skipsLoyaltyElementsWithoutAUsableCustomerAccount() throws {
+        let valid: [String: Any] = ["customerAccount": "OK-1", "supplierName": "Avis"]
+        let elements: [Any] = [
+            ["supplierName": "Hertz"],
+            NSNull(),
+            "SLA-123",
+            ["customerAccount": 42],
+            valid,
+        ]
+
+        let params = try #require(parseBookingParams(from: ["supplierLoyaltyAccounts": elements]))
+        let accounts = try #require(params.supplierLoyaltyAccounts)
+
+        #expect(accounts.map(\.customerAccount) == ["OK-1"])
+        #expect(accounts.map(\.supplierName) == ["Avis"])
+    }
+
+    @Test
+    func dropsAWrongTypedSupplierNameButKeepsTheAccount() throws {
+        let elements: [Any] = [["customerAccount": "OK-1", "supplierName": 7]]
+
+        let params = try #require(parseBookingParams(from: ["supplierLoyaltyAccounts": elements]))
+        let accounts = try #require(params.supplierLoyaltyAccounts)
+
+        #expect(accounts.map(\.customerAccount) == ["OK-1"])
+        #expect(accounts.map(\.supplierName) == [nil])
+    }
+
+    @Test
+    func ignoresASupplierLoyaltyAccountsValueThatIsNotAList() throws {
+        let params = try #require(parseBookingParams(from: ["supplierLoyaltyAccounts": "SLA-123"]))
+
+        #expect(params.supplierLoyaltyAccounts == nil)
+    }
+
+    @Test
+    func skipsNonStringPhoneNumbers() throws {
+        let numbers: [Any] = ["+44123", 4412, NSNull(), "+353871234567"]
+
+        let params = try #require(parseBookingParams(from: ["phoneNumbers": numbers]))
+
+        #expect(params.phoneNumbers == ["+44123", "+353871234567"])
+    }
+
+    @Test
+    func ignoresWrongTypedGivenNameAndCorporateCode() throws {
+        let params = try #require(parseBookingParams(from: ["givenName": 1, "corporateCode": ["x"]]))
+
+        #expect(params.givenName == nil)
+        #expect(params.corporateCode == nil)
     }
 }

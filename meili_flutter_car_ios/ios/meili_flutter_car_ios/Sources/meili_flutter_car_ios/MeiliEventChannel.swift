@@ -59,9 +59,8 @@ final class MeiliEventDispatcher: NSObject, FlutterStreamHandler {
         send(["type": "flowDismissed"])
     }
 
-    /// Retains `popToRoot` and emits a `bookingFlowEnded` event.
-    func sendBookingFlowEnded(_ popToRoot: @escaping () -> Void) {
-        retainPopToRoot(popToRoot)
+    /// Emits a `bookingFlowEnded` event.
+    func sendBookingFlowEnded() {
         send(["type": "bookingFlowEnded"])
     }
 

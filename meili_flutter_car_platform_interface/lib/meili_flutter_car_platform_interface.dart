@@ -6,3 +6,4 @@ export 'src/model/flow_enum.dart';
 export 'src/model/meili_car_env.dart';
 export 'src/model/meili_car_event.dart';
 export 'src/model/meili_car_params.dart';
+export 'src/model/supplier_loyalty_account.dart';

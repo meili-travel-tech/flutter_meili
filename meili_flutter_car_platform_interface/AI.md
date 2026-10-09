@@ -7,7 +7,7 @@ Notes
   default `MethodChannelMeiliCarFlutter` implementation here (channel `meili_flutter_car`, event
   channel `meili_flutter_car/events`) is shared by both platforms.
 - Models: `MeiliCarParams`, `AvailParams`, `AdditionalParams` (`BookingParams` is a deprecated
-  alias), `FlowType`, `MeiliCarEnv`, `MeiliCarEvent` and its subclasses.
+  alias), `SupplierLoyaltyAccount`, `FlowType`, `MeiliCarEnv`, `MeiliCarEvent` and its subclasses.
 - `test/fixtures/channel_contract.json` is the one channel-message fixture (`params` holds the
   canonical `MeiliCarParams.toMap()` output). The Dart tests, the Android plugin's JVM tests and
   the example's iOS `RunnerTests` all read it by repo path; extend it, never copy it. See

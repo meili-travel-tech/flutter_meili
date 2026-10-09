@@ -6,6 +6,7 @@ export 'package:meili_flutter_car_platform_interface/meili_flutter_car_platform_
         AvailParams,
         AdditionalParams,
         BookingParams,
+        SupplierLoyaltyAccount,
         FlowType,
         MeiliCarEnv,
         MeiliCarFlutterPlatform,

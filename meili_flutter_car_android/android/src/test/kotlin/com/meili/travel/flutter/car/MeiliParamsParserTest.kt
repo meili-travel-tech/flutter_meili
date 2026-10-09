@@ -3,6 +3,7 @@ package com.meili.travel.flutter.car
 import com.meili.travel.car.api.DevelopmentEnvironment
 import com.meili.travel.car.api.PreProductionEnvironment
 import com.meili.travel.car.api.ProductionEnvironment
+import com.meili.travel.car.api.SupplierLoyaltyAccount
 import com.meili.travel.car.api.UatEnvironment
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -63,7 +64,11 @@ class MeiliParamsParserTest {
         assertEquals(1, params.infant)
         assertEquals(2, params.child)
         assertEquals(4, params.teenager)
-        assertEquals("SLA-1006", params.supplierLoyaltyAccount)
+        assertEquals(
+            listOf(SupplierLoyaltyAccount("SLA-1006", "Hertz"), SupplierLoyaltyAccount("SLA-1007", null)),
+            params.supplierLoyaltyAccounts,
+        )
+        assertEquals("CORP-1012", params.corporateCode)
         assertEquals("FLEX-1008", params.fareTypeAndFlex)
         assertEquals("DUB", params.departureAirport)
         assertEquals("NCE", params.arrivalAirport)
@@ -74,7 +79,7 @@ class MeiliParamsParserTest {
         assertEquals("Ada", params.firstName)
         assertEquals("Lovelace", params.lastName)
         assertEquals("ada.lovelace@example.com", params.email)
-        assertEquals(listOf("353871234567", "442071234567"), params.phoneNumbers)
+        assertEquals(listOf("+353871234567", "+442071234567"), params.phoneNumbers)
         assertEquals("Analytical Engines Ltd", params.companyName)
         assertEquals("12 Babbage Street", params.addressLine1)
         assertEquals("D02 X285", params.postCode)
@@ -82,5 +87,61 @@ class MeiliParamsParserTest {
         assertEquals("Leinster", params.state)
         assertEquals("CONF-1011", params.confirmationId)
         assertEquals(true, params.prefillOnly)
+        assertEquals("Augusta", params.givenName)
+    }
+
+    @Test
+    fun `loyalty elements without a usable customerAccount are skipped and the valid one survives`() {
+        val valid = mapOf("customerAccount" to "OK-1", "supplierName" to "Avis")
+        val params = assertNotNull(
+            parseAdditionalParams(
+                mapOf(
+                    "supplierLoyaltyAccounts" to listOf(
+                        mapOf("supplierName" to "Hertz"),
+                        null,
+                        "SLA-123",
+                        mapOf("customerAccount" to 42),
+                        valid,
+                    ),
+                ),
+            ),
+        )
+
+        assertEquals(listOf(SupplierLoyaltyAccount("OK-1", "Avis")), params.supplierLoyaltyAccounts)
+    }
+
+    @Test
+    fun `a wrong-typed supplierName is dropped but the account is kept`() {
+        val params = assertNotNull(
+            parseAdditionalParams(
+                mapOf("supplierLoyaltyAccounts" to listOf(mapOf("customerAccount" to "OK-1", "supplierName" to 7))),
+            ),
+        )
+
+        assertEquals(listOf(SupplierLoyaltyAccount("OK-1", null)), params.supplierLoyaltyAccounts)
+    }
+
+    @Test
+    fun `a supplierLoyaltyAccounts value that is not a list is ignored`() {
+        val params = assertNotNull(parseAdditionalParams(mapOf("supplierLoyaltyAccounts" to "SLA-123")))
+
+        assertNull(params.supplierLoyaltyAccounts)
+    }
+
+    @Test
+    fun `non-string phone numbers are skipped`() {
+        val params = assertNotNull(
+            parseAdditionalParams(mapOf("phoneNumbers" to listOf("+44123", 4412, null, "+353871234567"))),
+        )
+
+        assertEquals(listOf("+44123", "+353871234567"), params.phoneNumbers)
+    }
+
+    @Test
+    fun `wrong-typed givenName and corporateCode are ignored`() {
+        val params = assertNotNull(parseAdditionalParams(mapOf("givenName" to 1, "corporateCode" to listOf("x"))))
+
+        assertNull(params.givenName)
+        assertNull(params.corporateCode)
     }
 }

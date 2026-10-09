@@ -178,6 +178,33 @@ listener.
 The enum name is what reaches the native SDKs. A value they do not accept
 fails `MeiliCar.open` with a `PlatformException` (`INVALID_ARGUMENT`) instead of opening dev.
 
+## Additional params
+
+`AdditionalParams` reaches both SDKs key for key, with the SDKs' own names and types.
+
+| Dart key | iOS `AdditionalParams` field | Android `AdditionalParams` field |
+|----------|------------------------------|----------------------------------|
+| `supplierLoyaltyAccounts` (`List<SupplierLoyaltyAccount>`) | `supplierLoyaltyAccounts: [SupplierLoyaltyAccount]` | `supplierLoyaltyAccounts: List<SupplierLoyaltyAccount>` |
+| `phoneNumbers` (`List<String>`, international format with a leading `+`) | `phoneNumbers: [String]` | `phoneNumbers: List<String>` |
+| `givenName` | `givenName` | `givenName` |
+| `corporateCode` | `corporateCode` | `corporateCode` |
+
+`SupplierLoyaltyAccount(customerAccount: ..., supplierName: ...)` has the same name and fields
+on both SDKs; `supplierName` is optional. An element without a `String` `customerAccount`, or
+that is not a map, is skipped on both platforms.
+
+```dart
+additionalParams: AdditionalParams(
+  supplierLoyaltyAccounts: [
+    SupplierLoyaltyAccount(customerAccount: '123456', supplierName: 'Hertz'),
+    SupplierLoyaltyAccount(customerAccount: '789012'),
+  ],
+  phoneNumbers: ['+353871234567'],
+  givenName: 'Ada',
+  corporateCode: 'ACME-42',
+),
+```
+
 ## Migrating from `meili_flutter`
 
 See [Migrating from `meili_flutter`](meili_flutter_car/README.md#migrating-from-meili_flutter)

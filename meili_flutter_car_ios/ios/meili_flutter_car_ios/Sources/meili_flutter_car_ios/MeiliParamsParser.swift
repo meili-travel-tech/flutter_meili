@@ -22,7 +22,7 @@ func parseBookingParams(from dict: [String: Any]) -> AdditionalParams? {
         infant: dict["infant"] as? Int,
         child: dict["child"] as? Int,
         teenager: dict["teenager"] as? Int,
-        supplierLoyaltyAccounts: dict["supplierLoyaltyAccount"] as? [String],
+        supplierLoyaltyAccounts: parseSupplierLoyaltyAccounts(dict["supplierLoyaltyAccounts"]),
         fareTypeAndFlex: dict["fareTypeAndFlex"] as? String,
         departureAirport: dict["departureAirport"] as? String,
         arrivalAirport: dict["arrivalAirport"] as? String,
@@ -33,15 +33,30 @@ func parseBookingParams(from dict: [String: Any]) -> AdditionalParams? {
         firstName: dict["firstName"] as? String,
         lastName: dict["lastName"] as? String ?? "",
         email: dict["email"] as? String,
-        phoneNumbers: dict["phoneNumbers"] as? [Int],
+        phoneNumbers: (dict["phoneNumbers"] as? [Any])?.compactMap { $0 as? String },
         companyName: dict["companyName"] as? String,
+        corporateCode: dict["corporateCode"] as? String,
         addressLine1: dict["addressLine1"] as? String,
         postCode: dict["postCode"] as? String,
         city: dict["city"] as? String,
         state: dict["state"] as? String,
         confirmationId: dict["confirmationId"] as? String ?? "",
-        prefillOnly: dict["prefillOnly"] as? Bool
+        prefillOnly: dict["prefillOnly"] as? Bool,
+        givenName: dict["givenName"] as? String
     )
+}
+
+private func parseSupplierLoyaltyAccounts(_ value: Any?) -> [SupplierLoyaltyAccount]? {
+    guard let elements = value as? [Any] else { return nil }
+    return elements.compactMap { element in
+        guard let account = element as? [String: Any],
+              let customerAccount = account["customerAccount"] as? String
+        else { return nil }
+        return SupplierLoyaltyAccount(
+            customerAccount: customerAccount,
+            supplierName: account["supplierName"] as? String
+        )
+    }
 }
 
 // Every AvailParams field is optional on the SDK side. The Dart model makes most of them

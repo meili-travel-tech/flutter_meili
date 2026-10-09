@@ -1,6 +1,7 @@
 ## Unreleased
 
 - **Breaking:** `MeiliCarParams.env` is now a `MeiliCarEnv` (`prod`, `preProd`, `uat`, `dev`) instead of a `String`, sent over the channel as its name. Replace `env: 'prod'` with `env: MeiliCarEnv.prod`; the old `'pre_prod'` spelling becomes `MeiliCarEnv.preProd`. There is no string alias (MPD-11767).
+- **Breaking:** `AdditionalParams.supplierLoyaltyAccounts` is now a `List<SupplierLoyaltyAccount>` (new, `customerAccount` required, `supplierName` optional) instead of a `List<String>`, and `phoneNumbers` is a `List<String>` in international format with a leading `+` instead of a `List<int>`. `AdditionalParams` gains `givenName` and `corporateCode`. Replace `supplierLoyaltyAccounts: ['123']` with `[SupplierLoyaltyAccount(customerAccount: '123')]` and `phoneNumbers: [353871234567]` with `['+353871234567']`. There are no aliases for the old types (MPD-11767).
 
 ## 0.6.0
 

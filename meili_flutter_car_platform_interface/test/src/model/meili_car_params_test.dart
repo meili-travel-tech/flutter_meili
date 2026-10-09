@@ -40,7 +40,14 @@ void main() {
         infant: 1,
         child: 2,
         teenager: 4,
-        supplierLoyaltyAccounts: ['SLA-1006', 'SLA-1007'],
+        supplierLoyaltyAccounts: [
+          const SupplierLoyaltyAccount(
+            customerAccount: 'SLA-1006',
+            supplierName: 'Hertz',
+          ),
+          const SupplierLoyaltyAccount(customerAccount: 'SLA-1007'),
+        ],
+        corporateCode: 'CORP-1012',
         fareTypeAndFlex: 'FLEX-1008',
         departureAirport: 'DUB',
         arrivalAirport: 'NCE',
@@ -51,7 +58,7 @@ void main() {
         firstName: 'Ada',
         lastName: 'Lovelace',
         email: 'ada.lovelace@example.com',
-        phoneNumbers: [353871234567, 442071234567],
+        phoneNumbers: ['+353871234567', '+442071234567'],
         companyName: 'Analytical Engines Ltd',
         addressLine1: '12 Babbage Street',
         postCode: 'D02 X285',
@@ -59,6 +66,7 @@ void main() {
         state: 'Leinster',
         confirmationId: 'CONF-1011',
         prefillOnly: true,
+        givenName: 'Augusta',
       ),
     );
 
@@ -76,5 +84,44 @@ void main() {
       MeiliCarEnv.values.map((env) => env.name),
       ['prod', 'preProd', 'uat', 'dev'],
     );
+  });
+
+  test('SupplierLoyaltyAccount sends its customerAccount and supplierName', () {
+    expect(
+      const SupplierLoyaltyAccount(customerAccount: '123', supplierName: 'Avis')
+          .toMap(),
+      {'customerAccount': '123', 'supplierName': 'Avis'},
+    );
+    expect(
+      const SupplierLoyaltyAccount(customerAccount: '123').toMap(),
+      {'customerAccount': '123', 'supplierName': null},
+    );
+  });
+
+  test('AdditionalParams sends the new fields as the SDKs name them', () {
+    final map = AdditionalParams(
+      supplierLoyaltyAccounts: [
+        const SupplierLoyaltyAccount(customerAccount: '1'),
+      ],
+      phoneNumbers: ['+0044'],
+      givenName: 'Ada',
+      corporateCode: 'ACME',
+    ).toMap();
+
+    expect(map['supplierLoyaltyAccounts'], [
+      {'customerAccount': '1', 'supplierName': null},
+    ]);
+    expect(map['phoneNumbers'], ['+0044']);
+    expect(map['givenName'], 'Ada');
+    expect(map['corporateCode'], 'ACME');
+  });
+
+  test('unset AdditionalParams fields are sent as null', () {
+    final map = AdditionalParams().toMap();
+
+    expect(map['supplierLoyaltyAccounts'], isNull);
+    expect(map['phoneNumbers'], isNull);
+    expect(map['givenName'], isNull);
+    expect(map['corporateCode'], isNull);
   });
 }
