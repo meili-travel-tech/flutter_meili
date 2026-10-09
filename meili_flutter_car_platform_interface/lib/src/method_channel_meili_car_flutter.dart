@@ -26,9 +26,4 @@ class MethodChannelMeiliCarFlutter extends MeiliCarFlutterPlatform {
             MeiliCarEvent.fromMap(Map<String, dynamic>.from(event as Map)))
         .asBroadcastStream();
   }
-
-  @override
-  Future<void> popToRoot() {
-    return _channel.invokeMethod('popToRoot');
-  }
 }

@@ -12,14 +12,13 @@ import MeiliCarSDK
 
 /// Single shared sink for native Meili events. Acts as the EventChannel's
 /// stream handler and is fed by the SDK's lifecycle closures
-/// (`dismissAction`, `onEndBookingFlow`) and by `MeiliFlutterAnalyticsProvider`.
+/// (`dismissAction`, `onEndBookingFlow`, `onBookingSucceeded`) and by `MeiliFlutterAnalyticsProvider`.
 ///
 /// Events emitted before Dart subscribes (no sink yet) are dropped.
 final class MeiliEventDispatcher: NSObject, FlutterStreamHandler {
     static let shared = MeiliEventDispatcher()
 
     private var eventSink: FlutterEventSink?
-    private var pendingPopToRoot: (() -> Void)?
 
     func onListen(
         withArguments arguments: Any?,
@@ -43,17 +42,6 @@ final class MeiliEventDispatcher: NSObject, FlutterStreamHandler {
         }
     }
 
-    /// Retains the `popToRoot` closure delivered with the end-of-flow event.
-    /// Since MeiliCarSDK 1.13.0 that closure is itself a compatibility no-op.
-    func retainPopToRoot(_ action: @escaping () -> Void) {
-        pendingPopToRoot = action
-    }
-
-    /// Invokes the retained `popToRoot` action, if any.
-    func popToRoot() {
-        pendingPopToRoot?()
-    }
-
     /// Emits a `flowDismissed` event.
     func sendDismissed() {
         send(["type": "flowDismissed"])
@@ -62,6 +50,11 @@ final class MeiliEventDispatcher: NSObject, FlutterStreamHandler {
     /// Emits a `bookingFlowEnded` event.
     func sendBookingFlowEnded() {
         send(["type": "bookingFlowEnded"])
+    }
+
+    /// Emits a `bookingSucceeded` event carrying the decoded reservation.
+    func sendBookingSucceeded(reservationJson: String) {
+        send(bookingSucceededEvent(reservationJson: reservationJson))
     }
 
     func sendError(_ error: MeiliCarError) {
@@ -73,6 +66,13 @@ final class MeiliEventDispatcher: NSObject, FlutterStreamHandler {
             "message": error.message,
         ])
     }
+}
+
+/// An undecodable or non-object body becomes an empty reservation, like the Dart side expects.
+func bookingSucceededEvent(reservationJson: String) -> [String: Any] {
+    let reservation = reservationJson.data(using: .utf8)
+        .flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }
+    return ["type": "bookingSucceeded", "reservation": reservation ?? [:]]
 }
 
 extension MeiliCarErrorArea {

@@ -7,6 +7,9 @@ Key code
   `meili_flutter_car/events` in `MeiliEventDispatcher`.
 - UIKit wrapper: `MeiliViewController` embeds SwiftUI `MeiliCarView` from `MeiliCarSDK`, via the
   plugin-internal `MeiliWrapperView`.
+- `MeiliWrapperView` sets the SDK's `dismissAction`, `onEndBookingFlow` (argument-less) and
+  `onBookingSucceeded`; the last decodes its reservation JSON with `bookingSucceededEvent(reservationJson:)`
+  (an undecodable or non-object body gives an empty `reservation`) and sends `bookingSucceeded`.
 - `MeiliFlutterAnalyticsProvider` registers with `MeiliCarAnalytics.shared.addProvider(_:)` and
   forwards every SDK analytics event to Dart through `MeiliEventDispatcher`.
 - Swift sources live in `ios/meili_flutter_car_ios/Sources/meili_flutter_car_ios/`. Both build

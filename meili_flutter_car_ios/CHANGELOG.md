@@ -5,6 +5,9 @@
 - **Breaking:** an `env` other than `prod`, `preProd`, `uat` or `dev` now fails `openMeiliViewController` with a `FlutterError` (`INVALID_ARGUMENT`) instead of silently opening dev. The check runs before the window lookup. Requires the `MeiliCarEnv` enum from `meili_flutter_car_platform_interface` (MPD-11767).
 - **Breaking:** `supplierLoyaltyAccounts` is read as a list of `{customerAccount, supplierName}` maps into the SDK's `SupplierLoyaltyAccount` (the old adapter read a singular key, so loyalty never reached the SDK), `phoneNumbers` as a list of strings, and `givenName` and `corporateCode` are passed through. Elements that are not a map, or lack a `String` `customerAccount`, are skipped. Requires the `meili_flutter_car_platform_interface` types and MeiliCarSDK 1.14.0 (MPD-11767).
 - **Breaking:** the plugin no longer treats blank strings or a `driverAge` of 0 as unset and no longer reads `pickupDateTime`/`dropoffDateTime`; avail values reach `AvailParams` one-to-one, and MeiliCarSDK applies the empty-value rule and derives the date-time itself. Requires `meili_flutter_car_platform_interface` with the `DateTime` split (MPD-11767).
+- **New:** forwards the SDK's `onBookingSucceeded` as a `bookingSucceeded` event with the reservation JSON decoded to a map (an undecodable or non-object body gives an empty map). The `booking_succeeded` analytics event keeps flowing as before. Requires MeiliCarSDK 1.14.0 and `meili_flutter_car_platform_interface` with `MeiliCarBookingSucceeded` (MPD-11767).
+- **Breaking:** the `popToRoot` method-channel case and the stored `popToRoot` closure are removed; the SDK's `onEndBookingFlow` takes no arguments from 1.14.0 (MPD-11767).
+- The iOS 15 web fallback sends no booking success and receives the params only through its query.
 
 ## 0.6.0
 

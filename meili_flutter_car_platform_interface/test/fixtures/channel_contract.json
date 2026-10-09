@@ -62,5 +62,381 @@
       "driverAge": 0,
       "partnerLoyaltyAccountTier": " "
     }
+  },
+  "events": {
+    "bookingSucceeded": {
+      "type": "bookingSucceeded",
+      "reservation": {
+        "confirmationId": "9907881244",
+        "status": "BOOKED",
+        "pickupLocation": {
+          "addressLine2": "Terminal 1 and 2",
+          "city": "Dublin",
+          "code": "1385",
+          "countryCode": "IE",
+          "countryName": "Ireland",
+          "latitude": 53.421246,
+          "longitude": -6.226426,
+          "name": "Dublin Airport",
+          "openingHours": [
+            "Mon 05:00 - 24:00",
+            "Tue 05:00 - 24:00",
+            "Wed 05:00 - 24:00",
+            "Thu 05:00 - 24:00",
+            "Fri 05:00 - 24:00",
+            "Sat 05:00 - 24:00",
+            "Sun 05:00 - 24:00"
+          ],
+          "phone": "+35312352030",
+          "postalCode": "CQG6 X9"
+        },
+        "dropoffLocation": {
+          "addressLine2": "Terminal 1 and 2",
+          "city": "Dublin",
+          "code": "1385",
+          "countryCode": "IE",
+          "countryName": "Ireland",
+          "latitude": 53.421246,
+          "longitude": -6.226426,
+          "name": "Dublin Airport",
+          "openingHours": [
+            "Mon 05:00 - 24:00",
+            "Tue 05:00 - 24:00",
+            "Wed 05:00 - 24:00",
+            "Thu 05:00 - 24:00",
+            "Fri 05:00 - 24:00",
+            "Sat 05:00 - 24:00",
+            "Sun 05:00 - 24:00"
+          ],
+          "phone": "+35312352030",
+          "postalCode": "CQG6 X9"
+        },
+        "pickupDateTime": "2026-08-26 10:00",
+        "dropoffDateTime": "2026-08-31 10:00",
+        "rentalSummary": {
+          "totalPrice": {
+            "cost": {
+              "amount": 169.73,
+              "currency": "GBP",
+              "symbol": "£",
+              "fromAmount": 198.4,
+              "fromCurrency": "EUR",
+              "fromSymbol": "€",
+              "rate": 0.8555,
+              "zero": false
+            },
+            "paymentModel": "postpay",
+            "earn": {
+              "amount": 19839,
+              "currency": "points"
+            }
+          },
+          "basePrice": {
+            "cost": {
+              "amount": 169.73,
+              "currency": "GBP",
+              "symbol": "£",
+              "fromAmount": 198.4,
+              "fromCurrency": "EUR",
+              "fromSymbol": "€",
+              "rate": 0.8555,
+              "zero": false
+            }
+          },
+          "baseRentalPrice": {
+            "cost": {
+              "amount": 149.54,
+              "currency": "GBP",
+              "symbol": "£",
+              "fromAmount": 174.8,
+              "fromCurrency": "EUR",
+              "fromSymbol": "€",
+              "rate": 0.8555,
+              "zero": false
+            }
+          },
+          "fees": [
+            {
+              "amount": {
+                "amount": 0.0,
+                "currency": "GBP",
+                "symbol": "£",
+                "fromAmount": 0.0,
+                "fromCurrency": "EUR",
+                "fromSymbol": "€",
+                "rate": 1.168907071887785,
+                "zero": true
+              },
+              "feeType": "Fee",
+              "includedInRate": false,
+              "name": "Premium Location Fee"
+            }
+          ],
+          "taxes": [
+            {
+              "amount": {
+                "amount": 20.19,
+                "currency": "GBP",
+                "symbol": "£",
+                "fromAmount": 23.6,
+                "fromCurrency": "EUR",
+                "fromSymbol": "€",
+                "rate": 1.168907071887785,
+                "zero": false
+              },
+              "feeType": "Tax",
+              "includedInRate": true,
+              "name": "Tax included"
+            }
+          ],
+          "limitedText": "Unlimited mileage/kms for car hire allows you to drive the rented vehicle without any mileage/km restrictions",
+          "loyaltyPaymentType": "MONEY",
+          "mileage": "Unlimited",
+          "mileagePlan": [
+            {
+              "additionalCost": {
+                "amount": 0.0,
+                "currency": "GBP",
+                "symbol": "£",
+                "fromAmount": 0.0,
+                "fromCurrency": "EUR",
+                "fromSymbol": "€",
+                "rate": 0.855551,
+                "zero": true
+              },
+              "code": "623.VCP.X",
+              "reference": "eyB9",
+              "selected": true,
+              "text": {
+                "name": "Unlimited",
+                "desc": "Unlimited mileage/kms for car hire allows you to drive the rented vehicle without any mileage/km restrictions"
+              },
+              "unit": "km",
+              "unlimited": true
+            }
+          ],
+          "payLaterAmount": {
+            "cost": {
+              "amount": 169.73,
+              "currency": "GBP",
+              "symbol": "£",
+              "fromAmount": 198.4,
+              "fromCurrency": "EUR",
+              "fromSymbol": "€",
+              "rate": 0.8555,
+              "zero": false
+            },
+            "paymentModel": "postpay",
+            "earn": {
+              "amount": 19839,
+              "currency": "points"
+            }
+          },
+          "payNowAmount": {
+            "cost": {
+              "amount": 0.0,
+              "currency": "GBP",
+              "symbol": "£",
+              "zero": true
+            },
+            "paymentModel": "prepay"
+          },
+          "points": 0,
+          "units": "km",
+          "unlimited": true
+        },
+        "importantInfo": [
+          {
+            "category": "license",
+            "text": "When you pick the car up, you'll need:\nPassport or national ID card\nDriving licence\nCredit card\n\nAge restrictions and additional charges may apply when renting a vehicle. Eligibility, fees, and requirements—including an international driving license in some destinations—can vary depending on the driver’s age and location. For full details, please review the Terms & Conditions.\n",
+            "title": "Driver & licence requirements"
+          },
+          {
+            "category": "deposit",
+            "text": "A pre-authorisation on your payment card will likely be required before the vehicle is released to you, calculated as the cost of the vehicle rental plus a nominal extra amount. Please see the expanded terms and conditions for further information.\n",
+            "title": "Security deposit"
+          },
+          {
+            "category": "excess",
+            "text": "If the car's bodywork gets damaged, or the car is stolen, the most you'll pay towards repairs or replacement of the vehicle is the damage & theft excess of GBP 2,000\nThis cover is only valid if you adhere to the terms of the rental agreement. It does not cover the vehicle e.g. windows, wheels, undercarriage and interior. Charges for towing or other services are not covered. Contents of the car are also not insured e.g. Child seats, GPS devices or personal belongings",
+            "title": "Damage and theft excess GBP 2,000"
+          },
+          {
+            "category": "mileage",
+            "text": "Your rental includes Unlimited kilometres, unless otherwise selected. Please refer to the full T&C's below.",
+            "title": "Mileage is Unlimited"
+          }
+        ],
+        "bundles": [
+          {
+            "code": "900.VCT.X",
+            "prices": [],
+            "text": {
+              "name": "Standard",
+              "desc": "Standard protection is included in the price. If the car is damaged, you will be asked to pay an excess fee, you can further protect against this excess by upgrading to a medium or full protection bundle.",
+              "full": "Standard protection is included in the price. If the car is damaged, you will be asked to pay an excess fee, you can further protect against this excess by upgrading to a medium or full protection bundle."
+            },
+            "bundlePrice": {
+              "cost": {
+                "amount": 0.0,
+                "currency": "GBP",
+                "symbol": "£",
+                "fromAmount": 0.0,
+                "fromCurrency": "EUR",
+                "fromSymbol": "€",
+                "rate": 1.168907071887785,
+                "zero": true
+              },
+              "includedInRate": true
+            },
+            "excessAmount": {
+              "amount": 2000.0,
+              "currency": "EUR",
+              "symbol": "€",
+              "zero": false
+            },
+            "excessPayable": true,
+            "includedInRate": true,
+            "ranking": 2,
+            "ix": 0,
+            "bundleExclusives": [
+              {
+                "code": "D",
+                "text": {
+                  "name": "Theft Protection"
+                }
+              },
+              {
+                "code": "TI",
+                "text": {
+                  "name": "Third party insurance"
+                }
+              },
+              {
+                "code": "V",
+                "text": {
+                  "name": "Collision Damage Waiver"
+                }
+              }
+            ],
+            "feeType": "VCT_BUN_STD"
+          }
+        ],
+        "insurances": [],
+        "extras": [],
+        "freeInclusions": [
+          {
+            "code": "TF",
+            "text": {
+              "name": "Taxes and fees",
+              "desc": "No hidden charges at the desk"
+            }
+          },
+          {
+            "code": "T",
+            "text": {
+              "name": "Rental days"
+            }
+          },
+          {
+            "code": "U",
+            "text": {
+              "name": "Registration Fee / Road Tax"
+            }
+          },
+          {
+            "code": "Y",
+            "text": {
+              "name": "Premium Location Fee"
+            }
+          }
+        ],
+        "referredTerms": [
+          {
+            "content": "PDF",
+            "informationType": "GENERAL",
+            "url": "https://www.sixt.com/shared/t-c/sixt_IE_en.pdf"
+          }
+        ],
+        "merchandisingFeatures": [
+          {
+            "text": {
+              "name": "Free Additional Driver",
+              "desc": "You get a FREE additional driver when you book this car"
+            }
+          },
+          {
+            "text": {
+              "name": "Mobile check-in"
+            }
+          }
+        ],
+        "earn": {
+          "amount": 19839,
+          "currency": "points"
+        },
+        "isPrepaid": false,
+        "drivers": [
+          {
+            "firstName": "JANE",
+            "lastName": "DOE",
+            "phone": "447411011011"
+          }
+        ],
+        "vehicle": {
+          "airConditionInd": true,
+          "baggageQuantity": "0",
+          "baggageSmallQuantity": "0",
+          "doorCount": "5",
+          "duration": 5,
+          "fuelPolicy": {
+            "code": "FF",
+            "text": {
+              "name": "Pick up full, return full",
+              "desc": "Pick up the car with a full tank of fuel, then return the car with a full tank of fuel"
+            }
+          },
+          "fuelType": "Petrol",
+          "fuelVariant": {
+            "code": "FT_PET",
+            "text": {
+              "name": "Petrol"
+            }
+          },
+          "isElectric": false,
+          "isManual": true,
+          "mileage": "Unlimited",
+          "mileageText": "Unlimited mileage/kms for car hire allows you to drive the rented vehicle without any mileage/km restrictions",
+          "name": "Hyundai i20",
+          "onRequest": false,
+          "orSimilar": true,
+          "passengerQuantity": "5",
+          "pictureURL": "https://cdn.imagin.studio/getImage?customer=ie-meilitravel&make=hyundai&modelFamily=i20&zoomLevel=80&width=800&modelVariant=sedan",
+          "sippCategory": {
+            "code": "C",
+            "text": {
+              "name": "Compact"
+            }
+          },
+          "sippType": {
+            "code": "D",
+            "text": {
+              "name": "4-5 Door"
+            }
+          },
+          "transmissionType": "Manual",
+          "vehCode": "CDMR",
+          "vehicleSize": "Medium car",
+          "vehicleSizeKey": "car_medium",
+          "vendorImage": "https://uat-static-cdn.meili.travel/images/vendors/sixt.png",
+          "vendorName": "Sixt"
+        },
+        "execTime": 2172,
+        "traceId": "becc73450180ff6d",
+        "email": "traveller@example.com",
+        "warnings": [],
+        "meiliSessionId": "7f3c9a52-2b8e-4d61-9c0a-5e4f1d8b6a27"
+      }
+    }
   }
 }

@@ -1,5 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meili_flutter_car_platform_interface/meili_flutter_car_platform_interface.dart';
+
+Map<String, dynamic> _fixtureEvent(String name) {
+  final root = jsonDecode(
+    File('test/fixtures/channel_contract.json').readAsStringSync(),
+  ) as Map<String, dynamic>;
+  return (root['events'] as Map<String, dynamic>)[name] as Map<String, dynamic>;
+}
 
 void main() {
   group('MeiliCarEvent.fromMap', () {
@@ -35,6 +45,65 @@ void main() {
         MeiliCarEvent.fromMap({'type': 'bookingFlowEnded'}),
         isA<MeiliCarBookingFlowEnded>(),
       );
+    });
+
+    test('parses the fixture bookingSucceeded event', () {
+      final map = _fixtureEvent('bookingSucceeded');
+
+      final event = MeiliCarEvent.fromMap(map);
+
+      expect(event, isA<MeiliCarBookingSucceeded>());
+      final reservation = (event as MeiliCarBookingSucceeded).reservation;
+      expect(reservation, map['reservation']);
+      expect(reservation['confirmationId'], isNotNull);
+      expect(reservation['meiliSessionId'], isNotNull);
+      expect(event.toMap(), map);
+    });
+
+    test('bookingSucceeded keeps nested values dynamic', () {
+      final event = MeiliCarEvent.fromMap(const {
+        'type': 'bookingSucceeded',
+        'reservation': <Object?, Object?>{
+          'confirmationId': 'ABC',
+          'drivers': [
+            <Object?, Object?>{'firstName': 'Ada'},
+          ],
+          'isPrepaid': false,
+          'execTime': 12,
+          'notes': null,
+        },
+      }) as MeiliCarBookingSucceeded;
+
+      expect(event.reservation['confirmationId'], 'ABC');
+      expect(event.reservation['isPrepaid'], false);
+      expect(event.reservation['execTime'], 12);
+      expect(event.reservation['notes'], isNull);
+      expect(
+        ((event.reservation['drivers'] as List).single as Map)['firstName'],
+        'Ada',
+      );
+    });
+
+    test(
+        'bookingSucceeded with a missing, null or wrong-typed reservation '
+        'still decodes with an empty reservation', () {
+      final maps = <Map<String, dynamic>>[
+        {'type': 'bookingSucceeded'},
+        {'type': 'bookingSucceeded', 'reservation': null},
+        {'type': 'bookingSucceeded', 'reservation': 'x'},
+        {'type': 'bookingSucceeded', 'reservation': 42},
+        {
+          'type': 'bookingSucceeded',
+          'reservation': ['a'],
+        },
+      ];
+
+      for (final map in maps) {
+        final event = MeiliCarEvent.fromMap(map);
+
+        expect(event, isA<MeiliCarBookingSucceeded>(), reason: '$map');
+        expect((event as MeiliCarBookingSucceeded).reservation, isEmpty);
+      }
     });
 
     test('parses analytics with name and properties', () {
@@ -195,6 +264,14 @@ void main() {
       expect(
         const MeiliCarBookingFlowEnded().toMap(),
         {'type': 'bookingFlowEnded'},
+      );
+      expect(
+        const MeiliCarBookingSucceeded(reservation: {'confirmationId': 'ABC'})
+            .toMap(),
+        {
+          'type': 'bookingSucceeded',
+          'reservation': {'confirmationId': 'ABC'},
+        },
       );
       expect(
         const MeiliCarAnalyticsEvent(name: 'e', properties: {'a': 1}).toMap(),

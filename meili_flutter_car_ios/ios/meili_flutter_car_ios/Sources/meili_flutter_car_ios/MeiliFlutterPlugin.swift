@@ -33,9 +33,6 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
                 } else {
                     result(FlutterError(code: "INVALID_ARGUMENT", message: "Arguments are missing", details: nil))
                 }
-            case "popToRoot":
-                MeiliEventDispatcher.shared.popToRoot()
-                result(nil)
             default:
                 result(FlutterMethodNotImplemented)
         }

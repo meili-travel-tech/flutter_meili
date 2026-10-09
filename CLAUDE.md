@@ -32,7 +32,8 @@ Android requirements
 Notes
 - `MeiliCar.open()` presents the SDK UI modally; there is no inline widget.
 - `MeiliCar.events` forwards lifecycle events (`MeiliCarFlowDismissed`,
-  `MeiliCarBookingFlowEnded`) and SDK failures (`MeiliCarErrorEvent`) on both platforms. Forwarded analytics events
+  `MeiliCarBookingFlowEnded`), booking success (`MeiliCarBookingSucceeded`) and SDK failures
+  (`MeiliCarErrorEvent`) on both platforms. Forwarded analytics events
   (`MeiliCarAnalyticsEvent`) are iOS-only for now.
 
 Package notes

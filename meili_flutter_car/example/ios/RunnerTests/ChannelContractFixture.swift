@@ -26,6 +26,16 @@ enum ChannelContractFixture {
         try section("availParams", of: section("paramsBlank", of: root()))
     }
 
+    static func bookingSucceededEvent() throws -> [String: Any] {
+        try section("bookingSucceeded", of: section("events", of: root()))
+    }
+
+    static func bookingSucceededReservationJson() throws -> String {
+        let reservation = try #require(bookingSucceededEvent()["reservation"])
+        let data = try JSONSerialization.data(withJSONObject: reservation)
+        return try #require(String(data: data, encoding: .utf8))
+    }
+
     private static func root() throws -> [String: Any] {
         let data = try Data(contentsOf: url)
         return try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])

@@ -143,6 +143,9 @@ class _MyPageState extends State<MyPage> {
         case MeiliCarBookingFlowEnded():
           // Booking complete; the SDK returns to its search panel right after this
           break;
+        case MeiliCarBookingSucceeded(:final reservation):
+          // A reservation was just made (record the conversion)
+          log('Booked ${reservation['confirmationId']}');
         case MeiliCarErrorEvent(:final area, :final kind, :final message):
           // An SDK-internal failure occurred (log it, report to analytics, etc.)
           log('MeiliCar error: $area/$kind — $message');
@@ -153,6 +156,21 @@ class _MyPageState extends State<MyPage> {
   }
 }
 ```
+
+| Event | When it fires | Platforms |
+|-------|---------------|-----------|
+| `MeiliCarFlowDismissed` | The user closed the MeiliCar UI | iOS, Android |
+| `MeiliCarBookingSucceeded` | Right after a reservation succeeds, once per booking | iOS, Android |
+| `MeiliCarBookingFlowEnded` | The booking flow reached its end | iOS, Android |
+| `MeiliCarErrorEvent` | An SDK-internal request failed | iOS, Android |
+| `MeiliCarAnalyticsEvent` | The SDK tracked an analytics event | iOS only, see [Known limitations](#known-limitations) |
+| `MeiliCarUnknownEvent` | An event type this plugin version does not model | iOS, Android |
+
+`MeiliCarBookingSucceeded.reservation` is the raw reservation response from the booking API,
+decoded from JSON, plus a top-level `meiliSessionId`. It has the same keys on iOS and
+Android, includes the traveller's contact details, and fires as soon as the reservation
+succeeds, before the confirmation screen appears, like the web app's booking success event.
+If the native payload cannot be decoded, `reservation` is an empty map.
 
 `MeiliCarBookingFlowEnded` is informational: the SDK resets itself to its own
 search panel immediately after this event; no host action is required. Hosts
@@ -234,6 +252,13 @@ additionalParams: AdditionalParams(
   corporateCode: 'ACME-42',
 ),
 ```
+
+## Known limitations
+
+- **Android analytics:** `MeiliCarAnalyticsEvent` is only sent on iOS. Android forwarding arrives
+  in a later 0.10.x release, after the Android SDK exposes a public analytics API (MPD-7113).
+- **iOS 15:** the funnel is not available natively, so the SDK opens its web fallback. The
+  fallback sends no `MeiliCarBookingSucceeded`, and it receives the params only through its query.
 
 ## Migrating from `meili_flutter`
 

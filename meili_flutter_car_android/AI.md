@@ -8,8 +8,14 @@ Purpose: Android implementation of the Meili Flutter Car plugin.
   `meili_flutter_car`, EventChannel `meili_flutter_car/events`, implements `ActivityAware`.
   `openMeiliViewController` launches the SDK's `com.meili.travel.car.api.MeiliCarActivity` with the
   full parsed params (ptid, env, flow, availParams, additionalParams) and a
-  `MeiliCarComposeListener` — `onBack`/`onEndBookingFlow`/`onError` push
-  `flowDismissed`/`bookingFlowEnded`/`error` onto the event sink.
+  `MeiliCarComposeListener` — `onBack`/`onEndBookingFlow`/`onBookingSucceeded`/`onError` push
+  `flowDismissed`/`bookingFlowEnded`/`bookingSucceeded`/`error` onto the event sink.
+  `onEndBookingFlow` sends the event, then invokes the SDK's restart callback.
+- `ReservationJson.kt`: decodes the `onBookingSucceeded` JSON with kotlinx-serialization-json
+  into plain maps and lists (`org.json` is not mocked in JVM tests), and builds the
+  `bookingSucceeded` event map. An undecodable or non-object body gives an empty `reservation`.
+- The host `MainActivity` must be an androidx `ComponentActivity` (`FlutterFragmentActivity`);
+  `openMeiliViewController` otherwise fails with `NO_ACTIVITY` naming the attached class.
 - `MeiliParamsParser.kt`: maps the Dart method-call argument maps to `AvailParams`/
   `AdditionalParams`/`MeiliCarEnvironment`/`MeiliCarFlow`.
 - The plugin's package is product-scoped (`com.meili.travel.flutter.car`) so a second Meili
@@ -35,7 +41,7 @@ Purpose: Android implementation of the Meili Flutter Car plugin.
 
 ## Events
 
-`flowDismissed`, `bookingFlowEnded` and SDK errors (`onError`, sent as type `error`) are forwarded
+`flowDismissed`, `bookingFlowEnded`, `bookingSucceeded` and SDK errors (`onError`, sent as type `error`) are forwarded
 through the `MeiliCarComposeListener`. Analytics events (`MeiliCarAnalyticsEvent` on the Dart side) are **not**
 forwarded on Android — there is no Android equivalent yet of iOS's
 `MeiliFlutterAnalyticsProvider`/`MeiliCarAnalytics.shared.addProvider(_:)` wiring.

@@ -2,14 +2,8 @@ package com.meili.travel.flutter.car
 
 import java.io.File
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.longOrNull
+import kotlinx.serialization.json.jsonObject
 
 internal typealias ChannelMap = Map<String, Any?>
 
@@ -17,7 +11,9 @@ internal typealias ChannelMap = Map<String, Any?>
 internal object ChannelContractFixture {
     private val file = File("../../meili_flutter_car_platform_interface/test/fixtures/channel_contract.json")
 
-    private val root: ChannelMap by lazy { decode(Json.parseToJsonElement(file.readText())).asMap() }
+    private val rootElement: JsonObject by lazy { Json.parseToJsonElement(file.readText()).jsonObject }
+
+    private val root: ChannelMap by lazy { rootElement.toChannelValue().asMap() }
 
     val params: ChannelMap get() = root.getValue("params").asMap()
 
@@ -28,20 +24,14 @@ internal object ChannelContractFixture {
     val availParamsBlank: ChannelMap
         get() = root.getValue("paramsBlank").asMap().getValue("availParams").asMap()
 
+    val bookingSucceededEvent: ChannelMap
+        get() = root.getValue("events").asMap().getValue("bookingSucceeded").asMap()
+
+    val bookingSucceededReservationJson: String
+        get() = rootElement.getValue("events").jsonObject
+            .getValue("bookingSucceeded").jsonObject
+            .getValue("reservation").toString()
+
     @Suppress("UNCHECKED_CAST")
     private fun Any?.asMap() = this as ChannelMap
-
-    private fun decode(element: JsonElement): Any? = when (element) {
-        is JsonNull -> null
-        is JsonObject -> element.mapValues { decode(it.value) }
-        is JsonArray -> element.map { decode(it) }
-        is JsonPrimitive -> decodePrimitive(element)
-    }
-
-    private fun decodePrimitive(element: JsonPrimitive): Any? {
-        if (element.isString) return element.content
-        element.booleanOrNull?.let { return it }
-        element.longOrNull?.let { return if (it in Int.MIN_VALUE..Int.MAX_VALUE) it.toInt() else it }
-        return element.doubleOrNull
-    }
 }

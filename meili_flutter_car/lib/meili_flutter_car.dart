@@ -13,6 +13,7 @@ export 'package:meili_flutter_car_platform_interface/meili_flutter_car_platform_
         MeiliCarEvent,
         MeiliCarFlowDismissed,
         MeiliCarBookingFlowEnded,
+        MeiliCarBookingSucceeded,
         MeiliCarAnalyticsEvent,
         MeiliCarErrorEvent,
         MeiliCarErrorArea,

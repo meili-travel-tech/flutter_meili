@@ -49,6 +49,9 @@ struct MeiliWrapperView: View {
         _params.onEndBookingFlow = {
             MeiliEventDispatcher.shared.sendBookingFlowEnded()
         }
+        _params.onBookingSucceeded = { reservationJson in
+            MeiliEventDispatcher.shared.sendBookingSucceeded(reservationJson: reservationJson)
+        }
         return _params
     }
     

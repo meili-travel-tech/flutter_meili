@@ -48,11 +48,5 @@ void main() {
       );
       expect((log.single.arguments as Map)['env'], 'preProd');
     });
-
-    test('popToRoot invokes the popToRoot method', () async {
-      await impl.popToRoot();
-      expect(log, hasLength(1));
-      expect(log.single.method, 'popToRoot');
-    });
   });
 }

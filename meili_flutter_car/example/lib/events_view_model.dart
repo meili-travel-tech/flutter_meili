@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:meili_flutter_car/meili_flutter_car.dart';
@@ -24,6 +26,9 @@ class EventsViewModel extends ChangeNotifier {
   List<EventRecord> get records => List<EventRecord>.unmodifiable(_records);
 
   void _onEvent(MeiliCarEvent event) {
+    if (event is MeiliCarBookingSucceeded) {
+      printReservation(event.reservation);
+    }
     _records.insert(0, (id: _nextId++, event: event));
     notifyListeners();
   }
@@ -38,5 +43,20 @@ class EventsViewModel extends ChangeNotifier {
   void dispose() {
     _subscription.cancel();
     super.dispose();
+  }
+}
+
+/// Prints [reservation] as JSON in numbered pieces, each prefixed
+/// `MeiliCarBookingSucceeded [n] ::`. `print` output is cut at about 1000
+/// characters per line on iOS and Android, so a longer line loses its tail.
+void printReservation(
+  Map<String, dynamic> reservation, {
+  int chunkSize = 800,
+}) {
+  final json = jsonEncode(reservation);
+  for (var start = 0, n = 1; start < json.length; start += chunkSize, n++) {
+    final end = min(start + chunkSize, json.length);
+    // ignore: avoid_print
+    print('MeiliCarBookingSucceeded [$n] :: ${json.substring(start, end)}');
   }
 }
