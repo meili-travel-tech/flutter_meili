@@ -200,6 +200,33 @@ await MeiliCar.open(MeiliCarParams(
 ));
 ```
 
+### Events
+
+`MeiliCar.events` is a broadcast stream of `MeiliCarEvent`: `MeiliCarFlowDismissed`,
+`MeiliCarBookingFlowEnded`, `MeiliCarBookingSucceeded(reservation)`, `MeiliCarErrorEvent`,
+`MeiliCarAnalyticsEvent` and `MeiliCarUnknownEvent` for future types. `MeiliCarBookingSucceeded`
+fires once per booking, right after the reservation succeeds, on iOS and Android alike; its
+`reservation` is the booking response as the API returned it plus `meiliSessionId`.
+
+```dart
+MeiliCar.events.listen((event) {
+  if (event case MeiliCarBookingSucceeded(:final reservation)) {
+    debugPrint('Booked ${reservation['confirmationId']}');
+  }
+});
+```
+
+The tables mapping every `AvailParams` and `AdditionalParams` key to the iOS and Android SDK
+fields are in the repository README:
+https://github.com/meili-travel-tech/meili_flutter_car#avail-params
+
+### Known limitations
+
+- `MeiliCarAnalyticsEvent` is only sent on iOS; Android forwarding arrives in a later 0.10.x
+  release, after the Android SDK exposes a public analytics API.
+- On iOS 15 the SDK opens its web fallback, which sends no `MeiliCarBookingSucceeded` and
+  receives the params only through its query.
+
 ---
 
 ## 5. Troubleshooting
@@ -209,7 +236,7 @@ await MeiliCar.open(MeiliCarParams(
 | `Could not find ... .aar` during Gradle | Maven repo URL missing, or the version isn't published yet | Check the `build.gradle.kts` repo block points to the public Pages URL and that the version exists. |
 | `Unable to find a specification for MeiliCarSDK` | Missing `source` line in Podfile | Add the private spec repo URL. |
 | `pod install` hangs on first run | First-time SSH clone of spec repo | Confirm SSH key: `ssh -T git@github.com`. |
-| `IllegalStateException ... requires FragmentActivity` | `MainActivity` still extends `FlutterActivity` | Change to `FlutterFragmentActivity`. |
+| `PlatformException(NO_ACTIVITY, Your MainActivity must extend FlutterFragmentActivity ...)` | `MainActivity` still extends `FlutterActivity` | Change to `FlutterFragmentActivity`. |
 | NDK strip / linker errors | NDK version mismatch | Pin `ndkVersion = "27.0.12077973"`. |
 | Env vars set in terminal but not in Android Studio | macOS GUI apps don't load `~/.zshrc` | Move env vars to `~/.zshenv`, relaunch Android Studio. |
 

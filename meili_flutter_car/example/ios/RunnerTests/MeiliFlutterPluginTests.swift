@@ -28,6 +28,17 @@ struct MeiliFlutterPluginTests {
     }
 
     @Test
+    func unknownMethodIsNotImplemented() {
+        let box = ResultBox()
+        MeiliFlutterPlugin().handle(
+            FlutterMethodCall(methodName: "popToRoot", arguments: nil),
+            result: { box.delivered = $0 }
+        )
+
+        #expect(box.delivered as? NSObject === FlutterMethodNotImplemented)
+    }
+
+    @Test
     func missingEnvFailsOpenWithInvalidArgument() throws {
         var arguments = try ChannelContractFixture.params()
         arguments["env"] = nil

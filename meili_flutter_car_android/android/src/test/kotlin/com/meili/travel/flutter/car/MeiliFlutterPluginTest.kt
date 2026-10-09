@@ -21,12 +21,20 @@ class MeiliFlutterPluginTest {
 
     @Test
     fun `an unknown env fails open with INVALID_ARGUMENT`() {
-        listOf("pre_prod", "production", "PROD", "", "staging", null).forEach { env ->
+        listOf("pre_prod", "production", "PROD", "", "staging").forEach { env ->
             val result = open(env)
 
             verify(result).error("INVALID_ARGUMENT", "env must be one of prod, preProd, uat, dev", null)
             verifyNoMoreInteractions(result)
         }
+    }
+
+    @Test
+    fun `a missing env fails open as a missing argument`() {
+        val result = open(null)
+
+        verify(result).error("INVALID_ARGUMENT", "Required arguments are missing", null)
+        verifyNoMoreInteractions(result)
     }
 
     @Test
@@ -68,7 +76,7 @@ class MeiliFlutterPluginTest {
     }
 
     @Test
-    fun `popToRoot is no longer a method`() {
+    fun `an unknown method is not implemented`() {
         val result = mock(MethodChannel.Result::class.java)
 
         MeiliFlutterPlugin().onMethodCall(MethodCall("popToRoot", null), result)

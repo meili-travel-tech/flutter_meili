@@ -14,7 +14,7 @@ import kotlinx.serialization.json.longOrNull
 internal fun bookingSucceededEvent(reservationJson: String): Map<String, Any?> =
     mapOf("type" to "bookingSucceeded", "reservation" to decodeReservation(reservationJson))
 
-/** An undecodable or non-object body becomes an empty map, like the Dart side expects. */
+/** An undecodable or non-object body becomes an empty map. */
 internal fun decodeReservation(reservationJson: String): Map<String, Any?> {
     val element = try {
         Json.parseToJsonElement(reservationJson)

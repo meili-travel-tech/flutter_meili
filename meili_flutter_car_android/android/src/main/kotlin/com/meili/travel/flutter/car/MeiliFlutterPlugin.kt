@@ -50,7 +50,11 @@ class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     result.error("MISSING_PTID", "ptid is required", null)
                     return
                 }
-                val env = parseEnv(args["env"] as? String) ?: run {
+                val envName = args["env"] as? String ?: run {
+                    result.error("INVALID_ARGUMENT", "Required arguments are missing", null)
+                    return
+                }
+                val env = parseEnv(envName) ?: run {
                     result.error(
                         "INVALID_ARGUMENT",
                         "env must be one of prod, preProd, uat, dev",

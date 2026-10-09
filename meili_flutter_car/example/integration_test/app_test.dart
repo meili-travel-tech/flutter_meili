@@ -45,8 +45,7 @@ void main() {
       // resolves while paused; the `.timeout()` bounds the wait instead of
       // hanging the suite if it doesn't.
       await tester.runAsync(() async {
-        await Future<void>.delayed(const Duration(seconds: 5));
-        await Future<void>.delayed(const Duration(seconds: 2));
+        await Future<void>.delayed(const Duration(seconds: 7));
       }).timeout(
         const Duration(seconds: 30),
         onTimeout: () {

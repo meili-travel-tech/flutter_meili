@@ -47,6 +47,28 @@ void main() {
       );
     });
 
+    test('parses every fixture event map to its typed variant', () {
+      expect(_fixtureEvent('flowDismissed'), isA<Map<String, dynamic>>());
+      expect(
+        MeiliCarEvent.fromMap(_fixtureEvent('flowDismissed')),
+        isA<MeiliCarFlowDismissed>(),
+      );
+      expect(
+        MeiliCarEvent.fromMap(_fixtureEvent('bookingFlowEnded')),
+        isA<MeiliCarBookingFlowEnded>(),
+      );
+      final error =
+          MeiliCarEvent.fromMap(_fixtureEvent('error')) as MeiliCarErrorEvent;
+      expect(error.area, MeiliCarErrorArea.costs);
+      expect(error.kind, MeiliCarErrorKind.http);
+      expect(error.httpCode, 503);
+      expect(error.message, 'costs request failed: HTTP 503');
+      final analytics = MeiliCarEvent.fromMap(_fixtureEvent('analytics'))
+          as MeiliCarAnalyticsEvent;
+      expect(analytics.name, 'screen_viewed');
+      expect(analytics.properties, {'screen_name': 'search'});
+    });
+
     test('parses the fixture bookingSucceeded event', () {
       final map = _fixtureEvent('bookingSucceeded');
 
@@ -60,7 +82,7 @@ void main() {
       expect(event.toMap(), map);
     });
 
-    test('bookingSucceeded keeps nested values dynamic', () {
+    test('bookingSucceeded rebuilds nested maps as Map<String, dynamic>', () {
       final event = MeiliCarEvent.fromMap(const {
         'type': 'bookingSucceeded',
         'reservation': <Object?, Object?>{
@@ -78,10 +100,9 @@ void main() {
       expect(event.reservation['isPrepaid'], false);
       expect(event.reservation['execTime'], 12);
       expect(event.reservation['notes'], isNull);
-      expect(
-        ((event.reservation['drivers'] as List).single as Map)['firstName'],
-        'Ada',
-      );
+      final drivers = event.reservation['drivers'] as List<dynamic>;
+      final driver = drivers.single as Map<String, dynamic>;
+      expect(driver['firstName'], 'Ada');
     });
 
     test(

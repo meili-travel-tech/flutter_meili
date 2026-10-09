@@ -52,7 +52,6 @@ final class MeiliEventDispatcher: NSObject, FlutterStreamHandler {
         send(["type": "bookingFlowEnded"])
     }
 
-    /// Emits a `bookingSucceeded` event carrying the decoded reservation.
     func sendBookingSucceeded(reservationJson: String) {
         send(bookingSucceededEvent(reservationJson: reservationJson))
     }
@@ -68,7 +67,7 @@ final class MeiliEventDispatcher: NSObject, FlutterStreamHandler {
     }
 }
 
-/// An undecodable or non-object body becomes an empty reservation, like the Dart side expects.
+/// An undecodable or non-object body becomes an empty reservation.
 func bookingSucceededEvent(reservationJson: String) -> [String: Any] {
     let reservation = reservationJson.data(using: .utf8)
         .flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }

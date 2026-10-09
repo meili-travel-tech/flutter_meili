@@ -236,6 +236,33 @@ fails `MeiliCar.open` with a `PlatformException` (`INVALID_ARGUMENT`) instead of
 | `phoneNumbers` (`List<String>`, international format with a leading `+`) | `phoneNumbers: [String]` | `phoneNumbers: List<String>` |
 | `givenName` | `givenName` | `givenName` |
 | `corporateCode` | `corporateCode` | `corporateCode` |
+| `partnerLoyaltyAccount` | `partnerLoyaltyAccount` | `partnerLoyaltyAccount` |
+| `partnerLoyaltyAccountTier` | `partnerLoyaltyAccountTier` | `partnerLoyaltyAccountTier` |
+| `numberOfPassengers` | `numberOfPassengers` | `numberOfPassengers` |
+| `customerPartnerCode` | `customerPartnerCode` | `customerPartnerCode` |
+| `flightNumber` | `flightNumber` | `flightNumber` |
+| `passengerNameRecord` | `passengerNameRecord` | `passengerNameRecord` |
+| `superPassengerNameRecord` | `superPassengerNameRecord` | `superPassengerNameRecord` |
+| `infant` | `infant` | `infant` |
+| `child` | `child` | `child` |
+| `teenager` | `teenager` | `teenager` |
+| `fareTypeAndFlex` | `fareTypeAndFlex` | `fareTypeAndFlex` |
+| `departureAirport` | `departureAirport` | `departureAirport` |
+| `arrivalAirport` | `arrivalAirport` | `arrivalAirport` |
+| `ancillaryActivity` | `ancillaryActivity` | `ancillaryActivity` |
+| `airlineFareAmount` | `airlineFareAmount` | `airlineFareAmount` |
+| `airlineFareCurrency` | `airlineFareCurrency` | `airlineFareCurrency` |
+| `partnerCustomerID` | `partnerCustomerID` | `partnerCustomerID` |
+| `firstName` | `firstName` | `firstName` |
+| `lastName` | `lastName` | `lastName` |
+| `email` | `email` | `email` |
+| `companyName` | `companyName` | `companyName` |
+| `addressLine1` | `addressLine1` | `addressLine1` |
+| `postCode` | `postCode` | `postCode` |
+| `city` | `city` | `city` |
+| `state` | `state` | `state` |
+| `confirmationId` | `confirmationId` | `confirmationId` |
+| `prefillOnly` | `prefillOnly` | `prefillOnly` |
 
 `SupplierLoyaltyAccount(customerAccount: ..., supplierName: ...)` has the same name and fields
 on both SDKs; `supplierName` is optional. An element without a `String` `customerAccount`, or

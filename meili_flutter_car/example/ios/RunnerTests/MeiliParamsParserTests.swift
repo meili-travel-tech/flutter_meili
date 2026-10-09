@@ -56,7 +56,7 @@ struct MeiliParamsParserTests {
         #expect(stored["pickupLocation"] == AnyHashable(""))
         #expect(stored["driverAge"] == AnyHashable(0))
         #expect(stored["partnerLoyaltyAccountTier"] == AnyHashable(" "))
-        #expect(stored["currencyCode"] == nil)
+        #expect(try #require(stored["currencyCode"]) == nil)
     }
 
     @Test(arguments: [

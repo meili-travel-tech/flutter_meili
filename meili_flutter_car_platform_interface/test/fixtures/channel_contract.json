@@ -64,6 +64,20 @@
     }
   },
   "events": {
+    "flowDismissed": { "type": "flowDismissed" },
+    "bookingFlowEnded": { "type": "bookingFlowEnded" },
+    "error": {
+      "type": "error",
+      "area": "costs",
+      "kind": "http",
+      "httpCode": 503,
+      "message": "costs request failed: HTTP 503"
+    },
+    "analytics": {
+      "type": "analytics",
+      "name": "screen_viewed",
+      "properties": { "screen_name": "search" }
+    },
     "bookingSucceeded": {
       "type": "bookingSucceeded",
       "reservation": {
