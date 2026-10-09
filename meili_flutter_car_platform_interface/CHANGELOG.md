@@ -1,3 +1,7 @@
+## Unreleased
+
+- **Breaking:** `MeiliCarParams.env` is now a `MeiliCarEnv` (`prod`, `preProd`, `uat`, `dev`) instead of a `String`, sent over the channel as its name. Replace `env: 'prod'` with `env: MeiliCarEnv.prod`; the old `'pre_prod'` spelling becomes `MeiliCarEnv.preProd`. There is no string alias (MPD-11767).
+
 ## 0.6.0
 
 - **New (breaking for exhaustive switches):** `MeiliCarErrorEvent`, a `MeiliCarEvent` forwarding SDK-internal failures (config,

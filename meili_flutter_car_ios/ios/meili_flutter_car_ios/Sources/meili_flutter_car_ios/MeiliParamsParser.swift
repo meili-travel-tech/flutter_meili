@@ -6,6 +6,10 @@
 import Foundation
 import MeiliCarSDK
 
+func parseEnvironment(named name: String) -> MeiliCarEnvironment? {
+    MeiliCarEnvironment(rawValue: name)
+}
+
 func parseBookingParams(from dict: [String: Any]) -> AdditionalParams? {
     return AdditionalParams(
         partnerLoyaltyAccount: dict["partnerLoyaltyAccount"] as? String,

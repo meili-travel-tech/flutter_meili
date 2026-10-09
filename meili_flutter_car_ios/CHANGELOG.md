@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Breaking:** an `env` other than `prod`, `preProd`, `uat` or `dev` now fails `openMeiliViewController` with a `FlutterError` (`INVALID_ARGUMENT`) instead of silently opening dev. The check runs before the window lookup. Requires the `MeiliCarEnv` enum from `meili_flutter_car_platform_interface` (MPD-11767).
+
 ## 0.6.0
 
 - Pins `MeiliCarSDK` `1.13.0` in both the podspec and `Package.swift`.

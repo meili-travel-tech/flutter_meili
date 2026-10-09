@@ -42,7 +42,20 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
     }
     
     private func openMeiliViewController(arguments: [String: Any], result: @escaping FlutterResult) {
-        let viewController = MeiliViewController()
+        guard let ptid = arguments["ptid"] as? String,
+              let flow = arguments["flow"] as? String,
+              let envName = arguments["env"] as? String else {
+            result(FlutterError(code: "INVALID_ARGUMENT", message: "Required arguments are missing", details: nil))
+            return
+        }
+        guard let environment = parseEnvironment(named: envName) else {
+            result(FlutterError(
+                code: "INVALID_ARGUMENT",
+                message: "env must be one of prod, preProd, uat, dev",
+                details: nil
+            ))
+            return
+        }
 
         guard let windowScene = UIApplication.shared.connectedScenes
             .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
@@ -51,16 +64,9 @@ public class MeiliFlutterPlugin: NSObject, FlutterPlugin {
             result(FlutterError(code: "UNAVAILABLE", message: "Root view controller is unavailable", details: nil))
             return
         }
-        
-        guard let ptid = arguments["ptid"] as? String,
-              let flow = arguments["flow"] as? String,
-              let env = arguments["env"] as? String else {
-            result(FlutterError(code: "INVALID_ARGUMENT", message: "Required arguments are missing", details: nil))
-            return
-        }
-        
+
+        let viewController = MeiliViewController()
         let meiliFlow = MeiliCarFlow(rawValue: flow) ?? .direct
-        let environment = MeiliCarEnvironment(rawValue: env) ?? .dev
         let availParams = (arguments["availParams"] as? [String: Any]).flatMap(parseAvailParams)
         let additionalParams = (arguments["additionalParams"] as? [String: Any]).flatMap(parseBookingParams)
         

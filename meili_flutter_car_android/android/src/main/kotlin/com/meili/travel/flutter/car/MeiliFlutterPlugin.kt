@@ -41,21 +41,29 @@ class MeiliFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
             "openMeiliViewController" -> {
-                val act = activity ?: run {
-                    result.error("NO_ACTIVITY", "Activity not available", null)
-                    return
-                }
                 @Suppress("UNCHECKED_CAST")
                 val args = call.arguments as Map<String, Any?>
                 val ptid = args["ptid"] as? String ?: run {
                     result.error("MISSING_PTID", "ptid is required", null)
                     return
                 }
+                val env = parseEnv(args["env"] as? String) ?: run {
+                    result.error(
+                        "INVALID_ARGUMENT",
+                        "env must be one of prod, preProd, uat, dev",
+                        null,
+                    )
+                    return
+                }
+                val act = activity ?: run {
+                    result.error("NO_ACTIVITY", "Activity not available", null)
+                    return
+                }
 
                 MeiliCarActivity.start(
                     context = act,
                     ptid = ptid,
-                    env = parseEnv(args["env"] as? String),
+                    env = env,
                     flow = parseFlow(args["flow"] as? String),
                     availParams = parseAvailParams(args["availParams"] as? Map<*, *>)
                         ?: AvailParams(null, null, null, null, null, null, null, null, null),

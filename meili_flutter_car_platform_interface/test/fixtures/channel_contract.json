@@ -1,0 +1,53 @@
+{
+  "params": {
+    "ptid": "100.9",
+    "flow": "bookingManager",
+    "env": "preProd",
+    "availParams": {
+      "pickupLocation": "LHR",
+      "dropoffLocation": "CDG",
+      "pickupDate": "2026-11-05",
+      "pickupTime": "10:30",
+      "dropoffDate": "2026-11-12",
+      "dropoffTime": "16:45",
+      "pickupDateTime": "2026-11-05T10:30:00.000Z",
+      "dropoffDateTime": "2026-11-12T16:45:00.000Z",
+      "driverAge": 34,
+      "currencyCode": "GBP",
+      "residency": "FR",
+      "discountRequested": true,
+      "partnerLoyaltyAccountTier": "TIER-AVAIL"
+    },
+    "additionalParams": {
+      "partnerLoyaltyAccount": "PLA-1001",
+      "partnerLoyaltyAccountTier": "TIER-ADDITIONAL",
+      "numberOfPassengers": 3,
+      "customerPartnerCode": "CPC-1002",
+      "flightNumber": "BA1003",
+      "passengerNameRecord": "PNR1004",
+      "superPassengerNameRecord": "SPNR1005",
+      "infant": 1,
+      "child": 2,
+      "teenager": 4,
+      "supplierLoyaltyAccounts": ["SLA-1006", "SLA-1007"],
+      "fareTypeAndFlex": "FLEX-1008",
+      "departureAirport": "DUB",
+      "arrivalAirport": "NCE",
+      "ancillaryActivity": "ACT-1009",
+      "airlineFareAmount": 199.5,
+      "airlineFareCurrency": "EUR",
+      "partnerCustomerID": "PCID-1010",
+      "firstName": "Ada",
+      "lastName": "Lovelace",
+      "email": "ada.lovelace@example.com",
+      "phoneNumbers": [353871234567, 442071234567],
+      "companyName": "Analytical Engines Ltd",
+      "addressLine1": "12 Babbage Street",
+      "postCode": "D02 X285",
+      "city": "Dublin",
+      "state": "Leinster",
+      "confirmationId": "CONF-1011",
+      "prefillOnly": true
+    }
+  }
+}

@@ -181,7 +181,7 @@ import 'package:meili_flutter_car/meili_flutter_car.dart';
 
 await MeiliCar.open(MeiliCarParams(
   ptid: 'your-ptid',
-  env: 'prod',
+  env: MeiliCarEnv.prod,
   flow: FlowType.direct,
 ));
 ```
@@ -191,7 +191,7 @@ await MeiliCar.open(MeiliCarParams(
 ```dart
 await MeiliCar.open(MeiliCarParams(
   ptid: 'your-ptid',
-  env: 'prod',
+  env: MeiliCarEnv.prod,
   flow: FlowType.bookingManager,
   additionalParams: AdditionalParams(
     confirmationId: '1234ABCD',

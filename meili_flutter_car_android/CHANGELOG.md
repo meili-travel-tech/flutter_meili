@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Breaking:** the environment is matched exactly against `prod`, `preProd`, `uat` and `dev`; `pre_prod`, `production`, other casings and unknown values now fail `openMeiliViewController` with an `INVALID_ARGUMENT` error instead of silently opening dev. Requires the `MeiliCarEnv` enum from `meili_flutter_car_platform_interface` (MPD-11767).
+
 ## 0.6.0
 
 - Pins `com.meili.travel:meili-car-sdk` `1.12.0`, which resolves vendor-link

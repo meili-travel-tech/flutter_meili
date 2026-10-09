@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Breaking:** `MeiliCarParams.env` is now a `MeiliCarEnv` (`prod`, `preProd`, `uat`, `dev`) instead of a `String`, and an environment the native SDKs do not recognise fails `MeiliCar.open` with a `PlatformException` instead of silently opening dev. Replace `env: 'prod'` with `env: MeiliCarEnv.prod`; the old `'pre_prod'` spelling becomes `MeiliCarEnv.preProd`. `MeiliCarEnv` is exported from `meili_flutter_car` (MPD-11767).
+
 ## 0.9.0
 
 - **Start again now works in Flutter hosts on iOS without calling `popToRoot`.**

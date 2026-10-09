@@ -1,0 +1,33 @@
+import Foundation
+import Testing
+
+enum ChannelContractFixture {
+    private static let url = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .appendingPathComponent("meili_flutter_car_platform_interface/test/fixtures/channel_contract.json")
+
+    static func params() throws -> [String: Any] {
+        try section("params", of: root())
+    }
+
+    static func availParams() throws -> [String: Any] {
+        try section("availParams", of: params())
+    }
+
+    static func additionalParams() throws -> [String: Any] {
+        try section("additionalParams", of: params())
+    }
+
+    private static func root() throws -> [String: Any] {
+        let data = try Data(contentsOf: url)
+        return try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+    }
+
+    private static func section(_ key: String, of map: [String: Any]) throws -> [String: Any] {
+        try #require(map[key] as? [String: Any])
+    }
+}

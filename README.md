@@ -74,7 +74,7 @@ import 'package:meili_flutter_car/meili_flutter_car.dart';
 
 await MeiliCar.open(MeiliCarParams(
   ptid: 'your-ptid',
-  env: 'prod',
+  env: MeiliCarEnv.prod,
   flow: FlowType.direct,
 ));
 ```
@@ -84,7 +84,7 @@ await MeiliCar.open(MeiliCarParams(
 ```dart
 await MeiliCar.open(MeiliCarParams(
   ptid: 'your-ptid',
-  env: 'prod',
+  env: MeiliCarEnv.prod,
   flow: FlowType.bookingManager,
   additionalParams: AdditionalParams(
     confirmationId: '1234ABCD',
@@ -98,7 +98,7 @@ await MeiliCar.open(MeiliCarParams(
 ```dart
 await MeiliCar.open(MeiliCarParams(
   ptid: 'your-ptid',
-  env: 'prod',
+  env: MeiliCarEnv.prod,
   flow: FlowType.direct,
   availParams: AvailParams(
     pickupLocation: 'LHR',
@@ -166,12 +166,17 @@ listener.
 
 ## Environments
 
+`MeiliCarParams.env` takes a `MeiliCarEnv`:
+
 | Value | Description |
 |-------|-------------|
-| `'prod'` | Production |
-| `'pre_prod'` | Pre-production |
-| `'uat'` | UAT |
-| `'dev'` | Development |
+| `MeiliCarEnv.prod` | Production |
+| `MeiliCarEnv.preProd` | Pre-production |
+| `MeiliCarEnv.uat` | UAT |
+| `MeiliCarEnv.dev` | Development |
+
+The enum name is what reaches the native SDKs. A value they do not accept
+fails `MeiliCar.open` with a `PlatformException` (`INVALID_ARGUMENT`) instead of opening dev.
 
 ## Migrating from `meili_flutter`
 

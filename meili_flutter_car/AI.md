@@ -19,7 +19,7 @@ Key APIs
   `MeiliCarBookingFlowEnded`.
 
 Models (`meili_flutter_car_platform_interface`)
-- `MeiliCarParams`: ptid, flow (`FlowType`), env, availParams, additionalParams.
+- `MeiliCarParams`: ptid, flow (`FlowType`), env (`MeiliCarEnv`), availParams, additionalParams.
 - `AvailParams`: pickup/dropoff info, dates/times, driverAge, currency, residency — every field optional.
 - `AdditionalParams`: booking/customer details (`BookingParams` is a deprecated alias).
 - `MeiliCarEvent`: sealed hierarchy — `MeiliCarFlowDismissed`, `MeiliCarBookingFlowEnded`, `MeiliCarAnalyticsEvent`, `MeiliCarErrorEvent`, `MeiliCarUnknownEvent`.

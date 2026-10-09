@@ -12,6 +12,13 @@ Key code
 - Swift sources live in `ios/meili_flutter_car_ios/Sources/meili_flutter_car_ios/`. Both build
   systems compile this one copy.
 
+Tests
+- Swift Testing tests live in the example app's `RunnerTests` target
+  (`meili_flutter_car/example/ios/RunnerTests/`) and read the platform interface's channel fixture
+  by repo path. Run from `meili_flutter_car/example/ios` after `flutter pub get` and
+  `flutter build ios --config-only --simulator`: `xcodebuild test -workspace Runner.xcworkspace
+  -scheme Runner -destination 'id=<simulator UDID>' -only-testing:RunnerTests`.
+
 Build systems (both supported)
 - CocoaPods: `ios/meili_flutter_car_ios.podspec` (default path). `source_files`
   points at the shared `Sources/` dir; depends on `MeiliCarSDK` from the

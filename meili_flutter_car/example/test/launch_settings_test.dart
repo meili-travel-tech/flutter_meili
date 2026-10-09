@@ -25,10 +25,21 @@ void main() {
       const settings = MeiliSettings(env: MeiliEnv.prod);
       final params = settings.toMeiliParams();
       expect(params.ptid, '100.9');
-      expect(params.env, 'prod');
+      expect(params.env, MeiliCarEnv.prod);
       expect(params.flow, FlowType.direct);
       expect(params.availParams, isNull);
       expect(params.additionalParams, isNull);
+    });
+
+    test('every picker env maps to its MeiliCarEnv and persists by name', () {
+      for (final env in MeiliEnv.values) {
+        final settings = MeiliSettings(env: env);
+
+        expect(settings.toMeiliParams().env, env.carEnv);
+        expect(settings.toJson()['env'], env.carEnv.name);
+        expect(MeiliSettings.fromJson(settings.toJson()).env, env);
+      }
+      expect(MeiliEnv.preProd.carEnv, MeiliCarEnv.preProd);
     });
 
     test('toMeiliParams includes booking + currency when set', () {

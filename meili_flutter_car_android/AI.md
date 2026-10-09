@@ -15,6 +15,14 @@ Purpose: Android implementation of the Meili Flutter Car plugin.
 - The plugin's package is product-scoped (`com.meili.travel.flutter.car`) so a second Meili
   Flutter plugin in the same host app cannot collide on `MeiliFlutterPlugin`.
 
+## Tests
+
+- JVM unit tests in `android/src/test/kotlin/` read the platform interface's channel fixture
+  (`test/fixtures/channel_contract.json`) by repo path. Run them from the example's Gradle build,
+  which includes this module: run `flutter pub get` in `meili_flutter_car/example`, then in
+  `meili_flutter_car/example/android` run Gradle 8.9 on JDK 17 (`-Dorg.gradle.java.home=<jdk17>`;
+  the example has no checked-in wrapper) with `:meili_flutter_car_android:testDebugUnitTest`.
+
 ## Dependencies
 
 - `com.meili.travel:meili-car-sdk` from GitHub Pages (public Maven, no credentials required).

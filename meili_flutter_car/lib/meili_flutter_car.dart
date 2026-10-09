@@ -7,6 +7,7 @@ export 'package:meili_flutter_car_platform_interface/meili_flutter_car_platform_
         AdditionalParams,
         BookingParams,
         FlowType,
+        MeiliCarEnv,
         MeiliCarFlutterPlatform,
         MeiliCarEvent,
         MeiliCarFlowDismissed,

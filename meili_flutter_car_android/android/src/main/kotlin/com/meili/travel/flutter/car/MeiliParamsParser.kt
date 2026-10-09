@@ -9,11 +9,12 @@ import com.meili.travel.car.api.PreProductionEnvironment
 import com.meili.travel.car.api.ProductionEnvironment
 import com.meili.travel.car.api.UatEnvironment
 
-internal fun parseEnv(envName: String?): MeiliCarEnvironment = when (envName?.lowercase()) {
-    "prod", "production" -> ProductionEnvironment()
-    "pre_prod", "preprod" -> PreProductionEnvironment()
+internal fun parseEnv(envName: String?): MeiliCarEnvironment? = when (envName) {
+    "prod" -> ProductionEnvironment()
+    "preProd" -> PreProductionEnvironment()
     "uat" -> UatEnvironment()
-    else -> DevelopmentEnvironment()
+    "dev" -> DevelopmentEnvironment()
+    else -> null
 }
 
 internal fun parseFlow(flowName: String?): MeiliCarFlow = when (flowName?.lowercase()) {

@@ -36,7 +36,7 @@ void main() {
 
     test('open delegates to the instance', () async {
       await MeiliCarFlutterPlatform.instance.open(
-        MeiliCarParams(ptid: '1', flow: FlowType.direct, env: 'dev'),
+        MeiliCarParams(ptid: '1', flow: FlowType.direct, env: MeiliCarEnv.dev),
       );
       expect(mock.opened, isTrue);
     });

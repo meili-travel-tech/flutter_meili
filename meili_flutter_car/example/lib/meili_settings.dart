@@ -2,25 +2,26 @@ import 'package:meili_flutter_car/meili_flutter_car.dart';
 
 /// The API environment the sample app points the SDK at.
 ///
-/// Mirrors the iOS Sample App's environment picker. [wireValue] is the raw
-/// string passed to [MeiliCarParams.env]; [label] is what the picker shows.
+/// Mirrors the iOS Sample App's environment picker. [carEnv] is the value
+/// passed to [MeiliCarParams.env]; [label] is what the picker shows.
 enum MeiliEnv {
-  dev('dev', 'Dev'),
-  uat('uat', 'UAT'),
-  preProd('preProd', 'Pre-Prod'),
-  prod('prod', 'Prod');
+  dev(MeiliCarEnv.dev, 'Dev'),
+  uat(MeiliCarEnv.uat, 'UAT'),
+  preProd(MeiliCarEnv.preProd, 'Pre-Prod'),
+  prod(MeiliCarEnv.prod, 'Prod');
 
-  const MeiliEnv(this.wireValue, this.label);
+  const MeiliEnv(this.carEnv, this.label);
 
   /// The value sent to the native SDK via [MeiliCarParams.env].
-  final String wireValue;
+  final MeiliCarEnv carEnv;
 
   /// The human-readable label shown in the picker.
   final String label;
 
-  /// Resolves a persisted [wireValue] back to an enum, defaulting to [dev].
-  static MeiliEnv fromWire(String? value) => MeiliEnv.values.firstWhere(
-        (env) => env.wireValue == value,
+  /// Resolves a persisted [MeiliCarEnv] name back to an enum, defaulting to
+  /// [dev].
+  static MeiliEnv fromName(String? value) => MeiliEnv.values.firstWhere(
+        (env) => env.carEnv.name == value,
         orElse: () => MeiliEnv.dev,
       );
 }
@@ -46,7 +47,7 @@ class MeiliSettings {
   /// Rebuilds a snapshot from its [toJson] representation.
   factory MeiliSettings.fromJson(Map<String, dynamic> json) => MeiliSettings(
         ptid: json['ptid'] as String? ?? '100.9',
-        env: MeiliEnv.fromWire(json['env'] as String?),
+        env: MeiliEnv.fromName(json['env'] as String?),
         flow: json['flow'] == 'bookingManager'
             ? FlowType.bookingManager
             : FlowType.direct,
@@ -113,7 +114,7 @@ class MeiliSettings {
   /// Serializes the settings for persistence.
   Map<String, dynamic> toJson() => <String, dynamic>{
         'ptid': ptid,
-        'env': env.wireValue,
+        'env': env.carEnv.name,
         'flow': flow.name,
         'overrideCurrency': overrideCurrency,
         'currency': currency,
@@ -128,7 +129,7 @@ class MeiliSettings {
     return MeiliCarParams(
       ptid: ptid,
       flow: flow,
-      env: env.wireValue,
+      env: env.carEnv,
       availParams: overrideCurrency ? _currencyOnlyAvailParams() : null,
       additionalParams: _additionalParams(),
     );
