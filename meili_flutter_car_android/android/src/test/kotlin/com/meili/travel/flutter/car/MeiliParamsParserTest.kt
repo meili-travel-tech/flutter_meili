@@ -50,6 +50,16 @@ class MeiliParamsParserTest {
     }
 
     @Test
+    fun `blank avail values reach the SDK availParams unchanged`() {
+        val params = assertNotNull(parseAvailParams(ChannelContractFixture.availParamsBlank))
+
+        assertEquals("", params.pickupLocation)
+        assertEquals(0, params.driverAge)
+        assertEquals(" ", params.partnerLoyaltyAccountTier)
+        assertNull(params.currencyCode)
+    }
+
+    @Test
     fun `the fixture additionalParams produce the SDK additionalParams`() {
         val params = assertNotNull(parseAdditionalParams(ChannelContractFixture.additionalParams))
 

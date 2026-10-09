@@ -22,6 +22,10 @@ enum ChannelContractFixture {
         try section("additionalParams", of: params())
     }
 
+    static func availParamsBlank() throws -> [String: Any] {
+        try section("availParams", of: section("paramsBlank", of: root()))
+    }
+
     private static func root() throws -> [String: Any] {
         let data = try Data(contentsOf: url)
         return try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])

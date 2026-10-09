@@ -38,6 +38,7 @@ class MeiliSettings {
     this.flow = FlowType.direct,
     this.overrideCurrency = false,
     this.currency = 'EUR',
+    this.overrideDates = false,
     this.confirmationId = '',
     this.lastName = '',
     this.prefillOnly = false,
@@ -53,6 +54,7 @@ class MeiliSettings {
             : FlowType.direct,
         overrideCurrency: json['overrideCurrency'] as bool? ?? false,
         currency: json['currency'] as String? ?? 'EUR',
+        overrideDates: json['overrideDates'] as bool? ?? false,
         confirmationId: json['confirmationId'] as String? ?? '',
         lastName: json['lastName'] as String? ?? '',
         prefillOnly: json['prefillOnly'] as bool? ?? false,
@@ -74,6 +76,10 @@ class MeiliSettings {
   /// Currency code used when [overrideCurrency] is on.
   final String currency;
 
+  /// Whether to seed the search with a pickup and drop-off [DateTime], sent
+  /// through [AvailParams.pickupDateTime] and [AvailParams.dropoffDateTime].
+  final bool overrideDates;
+
   /// Booking confirmation id for the Booking Manager flow.
   final String confirmationId;
 
@@ -93,6 +99,7 @@ class MeiliSettings {
     FlowType? flow,
     bool? overrideCurrency,
     String? currency,
+    bool? overrideDates,
     String? confirmationId,
     String? lastName,
     bool? prefillOnly,
@@ -104,6 +111,7 @@ class MeiliSettings {
       flow: flow ?? this.flow,
       overrideCurrency: overrideCurrency ?? this.overrideCurrency,
       currency: currency ?? this.currency,
+      overrideDates: overrideDates ?? this.overrideDates,
       confirmationId: confirmationId ?? this.confirmationId,
       lastName: lastName ?? this.lastName,
       prefillOnly: prefillOnly ?? this.prefillOnly,
@@ -118,6 +126,7 @@ class MeiliSettings {
         'flow': flow.name,
         'overrideCurrency': overrideCurrency,
         'currency': currency,
+        'overrideDates': overrideDates,
         'confirmationId': confirmationId,
         'lastName': lastName,
         'prefillOnly': prefillOnly,
@@ -125,12 +134,14 @@ class MeiliSettings {
       };
 
   /// Builds the [MeiliCarParams] used to launch the SDK from these settings.
-  MeiliCarParams toMeiliParams() {
+  ///
+  /// [now] anchors the seeded dates and is injectable for testing.
+  MeiliCarParams toMeiliParams({DateTime? now}) {
     return MeiliCarParams(
       ptid: ptid,
       flow: flow,
       env: env.carEnv,
-      availParams: overrideCurrency ? _currencyOnlyAvailParams() : null,
+      availParams: _availParams(now ?? DateTime.now()),
       additionalParams: _additionalParams(),
     );
   }
@@ -149,5 +160,19 @@ class MeiliSettings {
     );
   }
 
-  AvailParams _currencyOnlyAvailParams() => AvailParams(currencyCode: currency);
+  /// Search prefill, or null when neither the currency nor the dates are set.
+  AvailParams? _availParams(DateTime now) {
+    if (!overrideCurrency && !overrideDates) {
+      return null;
+    }
+    return AvailParams(
+      currencyCode: overrideCurrency ? currency : null,
+      pickupDateTime: overrideDates
+          ? DateTime(now.year, now.month, now.day + 7, 10, 30)
+          : null,
+      dropoffDateTime: overrideDates
+          ? DateTime(now.year, now.month, now.day + 14, 16, 45)
+          : null,
+    );
+  }
 }

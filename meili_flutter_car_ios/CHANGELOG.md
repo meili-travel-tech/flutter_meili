@@ -3,6 +3,7 @@
 ## Unreleased
 
 - **Breaking:** an `env` other than `prod`, `preProd`, `uat` or `dev` now fails `openMeiliViewController` with a `FlutterError` (`INVALID_ARGUMENT`) instead of silently opening dev. The check runs before the window lookup. Requires the `MeiliCarEnv` enum from `meili_flutter_car_platform_interface` (MPD-11767).
+- **Breaking:** the plugin no longer treats blank strings or a `driverAge` of 0 as unset and no longer reads `pickupDateTime`/`dropoffDateTime`; avail values reach `AvailParams` one-to-one, and MeiliCarSDK applies the empty-value rule and derives the date-time itself. Requires `meili_flutter_car_platform_interface` with the `DateTime` split (MPD-11767).
 
 ## 0.6.0
 

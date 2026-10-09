@@ -29,7 +29,8 @@ class MeiliCarParams {
   /// The booking parameters for the MeiliCar view.
   final AdditionalParams? additionalParams;
 
-  /// Converts the [MeiliCarParams] instance to a map.
+  /// Converts the [MeiliCarParams] instance to a channel map, leaving out
+  /// null entries.
   Map<String, dynamic> toMap() {
     return {
       'ptid': ptid,
@@ -37,6 +38,6 @@ class MeiliCarParams {
       'env': env.name,
       'availParams': availParams?.toMap(),
       'additionalParams': additionalParams?.toMap(),
-    };
+    }..removeWhere((_, value) => value == null);
   }
 }

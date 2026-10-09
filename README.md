@@ -103,10 +103,8 @@ await MeiliCar.open(MeiliCarParams(
   availParams: AvailParams(
     pickupLocation: 'LHR',
     dropoffLocation: 'LHR',
-    pickupDate: '2025-06-01',
-    pickupTime: '10:00',
-    dropoffDate: '2025-06-08',
-    dropoffTime: '10:00',
+    pickupDateTime: DateTime(2025, 6, 1, 10),
+    dropoffDateTime: DateTime(2025, 6, 8, 10),
     driverAge: 30,
     currencyCode: 'GBP',
     residency: 'GB',
@@ -119,6 +117,10 @@ Every `AvailParams` field is optional. Pass only what you want to prefill and th
 ```dart
 availParams: AvailParams(currencyCode: 'GBP'),
 ```
+
+Pass the pickup and drop-off as a `DateTime`, or as `pickupDate` (`yyyy-MM-dd`) and
+`pickupTime` (`HH:mm`) strings, never both: setting a `DateTime` together with its
+strings is an assertion error. See [Avail params](#avail-params) for what reaches the SDKs.
 
 ### Listening for events
 
@@ -177,6 +179,34 @@ listener.
 
 The enum name is what reaches the native SDKs. A value they do not accept
 fails `MeiliCar.open` with a `PlatformException` (`INVALID_ARGUMENT`) instead of opening dev.
+
+## Avail params
+
+`AvailParams` keys reach both SDKs one-to-one, with the same name on the iOS and Android
+`AvailParams`:
+
+| Dart key | iOS `AvailParams` field | Android `AvailParams` field |
+|----------|-------------------------|-----------------------------|
+| `pickupLocation` | `pickupLocation` | `pickupLocation` |
+| `dropoffLocation` | `dropoffLocation` | `dropoffLocation` |
+| `pickupDate` | `pickupDate` | `pickupDate` |
+| `pickupTime` | `pickupTime` | `pickupTime` |
+| `dropoffDate` | `dropoffDate` | `dropoffDate` |
+| `dropoffTime` | `dropoffTime` | `dropoffTime` |
+| `pickupDateTime` | `pickupDate` + `pickupTime` | `pickupDate` + `pickupTime` |
+| `dropoffDateTime` | `dropoffDate` + `dropoffTime` | `dropoffDate` + `dropoffTime` |
+| `driverAge` | `driverAge` | `driverAge` |
+| `currencyCode` | `currencyCode` | `currencyCode` |
+| `residency` | `residency` | `residency` |
+| `discountRequested` | `discountRequested` | `discountRequested` |
+| `partnerLoyaltyAccountTier` | `partnerLoyaltyAccountTier` | `partnerLoyaltyAccountTier` |
+
+- `pickupDateTime` and `dropoffDateTime` are split in Dart and never cross the channel: the
+  plugin sends `pickupDate` as `yyyy-MM-dd` and `pickupTime` as `HH:mm` (and the same for
+  drop-off) from the `DateTime`'s own fields, with no time-zone conversion.
+- A `null` field is left out of the map. Everything else is passed through as given: the
+  SDKs treat blank strings (empty or whitespace only) and a `driverAge` of 0 or less as unset,
+  so the plugin does not normalise them.
 
 ## Migrating from `meili_flutter`
 

@@ -3,6 +3,7 @@
 ## Unreleased
 
 - **Breaking:** `MeiliCarParams.env` is now a `MeiliCarEnv` (`prod`, `preProd`, `uat`, `dev`) instead of a `String`, and an environment the native SDKs do not recognise fails `MeiliCar.open` with a `PlatformException` instead of silently opening dev. Replace `env: 'prod'` with `env: MeiliCarEnv.prod`; the old `'pre_prod'` spelling becomes `MeiliCarEnv.preProd`. `MeiliCarEnv` is exported from `meili_flutter_car` (MPD-11767).
+- **Breaking:** `AvailParams.pickupDateTime`/`dropoffDateTime` now reach both SDKs, as the `yyyy-MM-dd` date and `HH:mm` time they parse (previously iOS received an ISO string it ignored and Android got nothing). Set a `DateTime` or its separate date/time strings, not both: both set is an assertion error. Blank strings and a `driverAge` of 0 or less are passed through unchanged and treated as unset by both SDKs (MPD-11767).
 
 ## 0.9.0
 

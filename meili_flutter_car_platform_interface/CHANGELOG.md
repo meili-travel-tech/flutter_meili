@@ -1,6 +1,7 @@
 ## Unreleased
 
 - **Breaking:** `MeiliCarParams.env` is now a `MeiliCarEnv` (`prod`, `preProd`, `uat`, `dev`) instead of a `String`, sent over the channel as its name. Replace `env: 'prod'` with `env: MeiliCarEnv.prod`; the old `'pre_prod'` spelling becomes `MeiliCarEnv.preProd`. There is no string alias (MPD-11767).
+- **Breaking:** `AvailParams.toMap` no longer sends `pickupDateTime`/`dropoffDateTime`. A `DateTime` is split into `pickupDate` (`yyyy-MM-dd`) and `pickupTime` (`HH:mm`), and the same for drop-off, so both SDKs parse it; setting a `DateTime` together with its separate strings is an assertion error. `toMap` on `MeiliCarParams`, `AvailParams` and `AdditionalParams` now leaves out null entries only and passes blanks and a `driverAge` of 0 through: the SDKs treat them as unset (MPD-11767).
 
 ## 0.6.0
 
