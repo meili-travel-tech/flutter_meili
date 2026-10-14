@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.7.0
+
+- Pins MeiliCarSDK 1.14.0 on both the CocoaPods and SwiftPM channels (MPD-11767).
 
 - **Breaking:** an `env` other than `prod`, `preProd`, `uat` or `dev` now fails `openMeiliViewController` with a `FlutterError` (`INVALID_ARGUMENT`) instead of silently opening dev. The check runs before the window lookup. Requires the `MeiliCarEnv` enum from `meili_flutter_car_platform_interface` (MPD-11767).
 - **Breaking:** `supplierLoyaltyAccounts` is read as a list of `{customerAccount, supplierName}` maps into the SDK's `SupplierLoyaltyAccount` (the old adapter read a singular key, so loyalty never reached the SDK), `phoneNumbers` as a list of strings, and `givenName` and `corporateCode` are passed through. Elements that are not a map, or lack a `String` `customerAccount`, are skipped. Requires the `meili_flutter_car_platform_interface` types and MeiliCarSDK 1.14.0 (MPD-11767).

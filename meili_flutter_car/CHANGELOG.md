@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.10.0
+
+Breaking release: the Flutter host contract now matches the native SDKs (MPD-11767). Pins MeiliCarSDK 1.14.0 and meili-car-sdk 1.13.0 through `meili_flutter_car_ios` 0.7.0, `meili_flutter_car_android` 0.7.0 and `meili_flutter_car_platform_interface` 0.7.0.
 
 - **Breaking:** `MeiliCarParams.env` is now a `MeiliCarEnv` (`prod`, `preProd`, `uat`, `dev`) instead of a `String`, and an environment the native SDKs do not recognise fails `MeiliCar.open` with a `PlatformException` instead of silently opening dev. Replace `env: 'prod'` with `env: MeiliCarEnv.prod`; the old `'pre_prod'` spelling becomes `MeiliCarEnv.preProd`. `MeiliCarEnv` is exported from `meili_flutter_car` (MPD-11767).
 - **Breaking:** `AdditionalParams.supplierLoyaltyAccounts` is now a `List<SupplierLoyaltyAccount>` instead of a `List<String>`, and `phoneNumbers` is a `List<String>` in international format with a leading `+` instead of a `List<int>`. `AdditionalParams` gains `givenName` and `corporateCode`. `SupplierLoyaltyAccount` is exported from `meili_flutter_car`. See the "Additional params" table in the README for the iOS and Android fields each key reaches (MPD-11767).
