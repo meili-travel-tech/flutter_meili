@@ -51,19 +51,25 @@ class _EventTile extends StatelessWidget {
     final subtitle = _subtitle;
     return ListTile(
       title: Text(_title),
-      subtitle: subtitle == null ? null : Text(subtitle),
+      subtitle: subtitle == null
+          ? null
+          : Text(subtitle, maxLines: 4, overflow: TextOverflow.ellipsis),
     );
   }
 
   String get _title => switch (event) {
         MeiliCarFlowDismissed() => 'Flow dismissed',
         MeiliCarBookingFlowEnded() => 'Booking flow ended',
+        MeiliCarBookingSucceeded() => 'Booking succeeded',
         MeiliCarAnalyticsEvent(:final name) => 'Analytics · $name',
         MeiliCarErrorEvent(:final area, :final kind) => 'Error · ${area.name}/${kind.name}',
         MeiliCarUnknownEvent(:final type) => 'Unknown · $type',
       };
 
   String? get _subtitle => switch (event) {
+        MeiliCarBookingSucceeded(:final reservation) =>
+          'confirmationId: ${reservation['confirmationId']}\n'
+              'meiliSessionId: ${reservation['meiliSessionId']}',
         MeiliCarAnalyticsEvent(:final properties) =>
           properties.isEmpty ? null : properties.toString(),
         MeiliCarErrorEvent(:final httpCode, :final message) =>

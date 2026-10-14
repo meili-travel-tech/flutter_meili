@@ -33,5 +33,36 @@ void main() {
     controller.add(const MeiliCarFlowDismissed());
     await tester.pump();
     expect(find.text('Flow dismissed'), findsOneWidget);
+
+    controller.add(
+      const MeiliCarBookingSucceeded(
+        reservation: {
+          'confirmationId': 'CONF-1',
+          'meiliSessionId': 'SESSION-1',
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Booking succeeded'), findsOneWidget);
+    expect(find.textContaining('confirmationId: CONF-1'), findsOneWidget);
+    expect(find.textContaining('meiliSessionId: SESSION-1'), findsOneWidget);
+  });
+
+  test('printReservation prints the reservation in numbered pieces', () {
+    final lines = <String>[];
+    runZoned(
+      () => printReservation({'k': 'v' * 25}, chunkSize: 10),
+      zoneSpecification: ZoneSpecification(
+        print: (self, parent, zone, line) => lines.add(line),
+      ),
+    );
+
+    expect(lines, hasLength(4));
+    expect(lines.first, startsWith('MeiliCarBookingSucceeded [1] :: '));
+    expect(lines.last, startsWith('MeiliCarBookingSucceeded [4] :: '));
+    expect(
+      lines.map((line) => line.split(' :: ').last).join(),
+      '{"k":"${'v' * 25}"}',
+    );
   });
 }

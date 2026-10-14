@@ -13,6 +13,8 @@ import 'package:flutter/foundation.dart';
 ///       // user closed the MeiliCar UI
 ///     case MeiliCarBookingFlowEnded():
 ///       // booking flow reached its end
+///     case MeiliCarBookingSucceeded(:final reservation):
+///       // a reservation was made; `reservation` is the booking response
 ///     case MeiliCarAnalyticsEvent(:final name):
 ///       // an analytics event was tracked
 ///     case MeiliCarErrorEvent(:final area, :final message):
@@ -40,6 +42,9 @@ sealed class MeiliCarEvent {
     return switch (map) {
       {'type': 'flowDismissed'} => const MeiliCarFlowDismissed(),
       {'type': 'bookingFlowEnded'} => const MeiliCarBookingFlowEnded(),
+      {'type': 'bookingSucceeded'} => MeiliCarBookingSucceeded(
+          reservation: _coerceReservation(map['reservation']),
+        ),
       {'type': 'analytics', 'name': final String name} =>
         MeiliCarAnalyticsEvent(
           name: name,
@@ -76,6 +81,20 @@ Map<String, dynamic> _coerceProperties(Object? value) {
   return const {};
 }
 
+// The codec delivers nested maps as Map<Object?, Object?>, which a host cannot
+// cast to Map<String, dynamic>; rebuild every level so it can.
+Map<String, dynamic> _coerceReservation(Object? value) =>
+    value is Map ? _deepStringKeyed(value) : const {};
+
+Map<String, dynamic> _deepStringKeyed(Map<dynamic, dynamic> map) =>
+    map.map((key, dynamic val) => MapEntry(key.toString(), _deepValue(val)));
+
+dynamic _deepValue(Object? value) => switch (value) {
+      final Map<dynamic, dynamic> map => _deepStringKeyed(map),
+      final List<dynamic> list => list.map(_deepValue).toList(),
+      _ => value,
+    };
+
 /// The MeiliCar UI was dismissed (maps to the SDK's `dismissAction`).
 final class MeiliCarFlowDismissed extends MeiliCarEvent {
   /// Creates a dismissed event.
@@ -95,6 +114,29 @@ final class MeiliCarBookingFlowEnded extends MeiliCarEvent {
 
   @override
   Map<String, dynamic> toMap() => {'type': 'bookingFlowEnded'};
+}
+
+/// A reservation succeeded (maps to the SDK's `onBookingSucceeded`).
+///
+/// Fires once per booking, right after the reservation succeeds and before
+/// any confirmation screen is shown, the same moment as the web app's booking
+/// success event.
+final class MeiliCarBookingSucceeded extends MeiliCarEvent {
+  /// Creates a booking-succeeded event carrying the [reservation].
+  const MeiliCarBookingSucceeded({required this.reservation});
+
+  /// The reservation response as the booking API returned it, decoded from
+  /// JSON, plus a top-level `meiliSessionId`. Contains the traveller's contact
+  /// details. The keys are the same on iOS and Android, and every nested map
+  /// is a `Map<String, dynamic>`. Empty when the native payload could not be
+  /// decoded.
+  final Map<String, dynamic> reservation;
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': 'bookingSucceeded',
+        'reservation': reservation,
+      };
 }
 
 /// An analytics event tracked by the SDK (forwarded from a registered

@@ -25,10 +25,21 @@ void main() {
       const settings = MeiliSettings(env: MeiliEnv.prod);
       final params = settings.toMeiliParams();
       expect(params.ptid, '100.9');
-      expect(params.env, 'prod');
+      expect(params.env, MeiliCarEnv.prod);
       expect(params.flow, FlowType.direct);
       expect(params.availParams, isNull);
       expect(params.additionalParams, isNull);
+    });
+
+    test('every picker env maps to its MeiliCarEnv and persists by name', () {
+      for (final env in MeiliEnv.values) {
+        final settings = MeiliSettings(env: env);
+
+        expect(settings.toMeiliParams().env, env.carEnv);
+        expect(settings.toJson()['env'], env.carEnv.name);
+        expect(MeiliSettings.fromJson(settings.toJson()).env, env);
+      }
+      expect(MeiliEnv.preProd.carEnv, MeiliCarEnv.preProd);
     });
 
     test('toMeiliParams includes booking + currency when set', () {
@@ -48,6 +59,24 @@ void main() {
       expect(params.additionalParams?.prefillOnly, isTrue);
     });
 
+    test('seeds pickup and drop-off DateTimes when overriding dates', () {
+      const settings = MeiliSettings(overrideDates: true);
+      final params = settings.toMeiliParams(now: DateTime(2026, 10, 28, 9));
+
+      expect(params.availParams?.pickupDateTime, DateTime(2026, 11, 4, 10, 30));
+      expect(
+        params.availParams?.dropoffDateTime,
+        DateTime(2026, 11, 11, 16, 45),
+      );
+      expect(params.availParams?.currencyCode, isNull);
+      expect(params.toMap()['availParams'], {
+        'pickupDate': '2026-11-04',
+        'pickupTime': '10:30',
+        'dropoffDate': '2026-11-11',
+        'dropoffTime': '16:45',
+      });
+    });
+
     test('round-trips through JSON', () {
       const settings = MeiliSettings(
         ptid: '42',
@@ -55,6 +84,7 @@ void main() {
         flow: FlowType.bookingManager,
         overrideCurrency: true,
         currency: 'GBP',
+        overrideDates: true,
         confirmationId: 'X1',
         lastName: 'Smith',
         prefillOnly: true,

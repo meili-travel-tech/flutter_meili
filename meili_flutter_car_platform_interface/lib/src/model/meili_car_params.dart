@@ -1,6 +1,7 @@
 import 'additional_params.dart';
 import 'avail_params.dart';
 import 'flow_enum.dart';
+import 'meili_car_env.dart';
 
 /// Represents the parameters required to open the MeiliCar view.
 class MeiliCarParams {
@@ -19,8 +20,8 @@ class MeiliCarParams {
   /// The current flow type for the MeiliCar view.
   final FlowType flow;
 
-  /// The environment for the MeiliCar view (e.g., dev, prod).
-  final String env;
+  /// The environment for the MeiliCar view.
+  final MeiliCarEnv env;
 
   /// The availability parameters for the MeiliCar view.
   final AvailParams? availParams;
@@ -28,14 +29,15 @@ class MeiliCarParams {
   /// The booking parameters for the MeiliCar view.
   final AdditionalParams? additionalParams;
 
-  /// Converts the [MeiliCarParams] instance to a map.
+  /// Converts the [MeiliCarParams] instance to a channel map, leaving out
+  /// null entries.
   Map<String, dynamic> toMap() {
     return {
       'ptid': ptid,
       'flow': flow.toString().split('.').last,
-      'env': env,
+      'env': env.name,
       'availParams': availParams?.toMap(),
       'additionalParams': additionalParams?.toMap(),
-    };
+    }..removeWhere((_, value) => value == null);
   }
 }

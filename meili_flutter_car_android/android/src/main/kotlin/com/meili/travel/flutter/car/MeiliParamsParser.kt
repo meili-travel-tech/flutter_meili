@@ -7,13 +7,15 @@ import com.meili.travel.car.api.MeiliCarEnvironment
 import com.meili.travel.car.api.MeiliCarFlow
 import com.meili.travel.car.api.PreProductionEnvironment
 import com.meili.travel.car.api.ProductionEnvironment
+import com.meili.travel.car.api.SupplierLoyaltyAccount
 import com.meili.travel.car.api.UatEnvironment
 
-internal fun parseEnv(envName: String?): MeiliCarEnvironment = when (envName?.lowercase()) {
-    "prod", "production" -> ProductionEnvironment()
-    "pre_prod", "preprod" -> PreProductionEnvironment()
+internal fun parseEnv(envName: String?): MeiliCarEnvironment? = when (envName) {
+    "prod" -> ProductionEnvironment()
+    "preProd" -> PreProductionEnvironment()
     "uat" -> UatEnvironment()
-    else -> DevelopmentEnvironment()
+    "dev" -> DevelopmentEnvironment()
+    else -> null
 }
 
 internal fun parseFlow(flowName: String?): MeiliCarFlow = when (flowName?.lowercase()) {
@@ -38,10 +40,8 @@ internal fun parseAvailParams(map: Map<*, *>?): AvailParams? {
     )
 }
 
-@Suppress("UNCHECKED_CAST")
 internal fun parseAdditionalParams(map: Map<*, *>?): AdditionalParams? {
     map ?: return null
-    val supplierAccounts = map["supplierLoyaltyAccounts"] as? List<*>
     return AdditionalParams(
         passengerNameRecord = map["passengerNameRecord"] as? String,
         partnerLoyaltyAccount = map["partnerLoyaltyAccount"] as? String,
@@ -53,7 +53,8 @@ internal fun parseAdditionalParams(map: Map<*, *>?): AdditionalParams? {
         infant = (map["infant"] as? Number)?.toInt(),
         child = (map["child"] as? Number)?.toInt(),
         teenager = (map["teenager"] as? Number)?.toInt(),
-        supplierLoyaltyAccount = supplierAccounts?.firstOrNull()?.toString(),
+        supplierLoyaltyAccounts = parseSupplierLoyaltyAccounts(map["supplierLoyaltyAccounts"]),
+        corporateCode = map["corporateCode"] as? String,
         fareTypeAndFlex = map["fareTypeAndFlex"] as? String,
         departureAirport = map["departureAirport"] as? String,
         arrivalAirport = map["arrivalAirport"] as? String,
@@ -64,7 +65,7 @@ internal fun parseAdditionalParams(map: Map<*, *>?): AdditionalParams? {
         firstName = map["firstName"] as? String,
         lastName = map["lastName"] as? String,
         email = map["email"] as? String,
-        phoneNumbers = (map["phoneNumbers"] as? List<*>)?.map { it.toString() },
+        phoneNumbers = (map["phoneNumbers"] as? List<*>)?.filterIsInstance<String>(),
         companyName = map["companyName"] as? String,
         addressLine1 = map["addressLine1"] as? String,
         postCode = map["postCode"] as? String,
@@ -75,3 +76,10 @@ internal fun parseAdditionalParams(map: Map<*, *>?): AdditionalParams? {
         givenName = map["givenName"] as? String,
     )
 }
+
+private fun parseSupplierLoyaltyAccounts(value: Any?): List<SupplierLoyaltyAccount>? =
+    (value as? List<*>)?.mapNotNull { element ->
+        val account = element as? Map<*, *> ?: return@mapNotNull null
+        val customerAccount = account["customerAccount"] as? String ?: return@mapNotNull null
+        SupplierLoyaltyAccount(customerAccount, account["supplierName"] as? String)
+    }

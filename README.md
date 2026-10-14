@@ -24,7 +24,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  meili_flutter_car: ^0.9.0
+  meili_flutter_car: ^0.10.0
 ```
 
 Run:
@@ -74,7 +74,7 @@ import 'package:meili_flutter_car/meili_flutter_car.dart';
 
 await MeiliCar.open(MeiliCarParams(
   ptid: 'your-ptid',
-  env: 'prod',
+  env: MeiliCarEnv.prod,
   flow: FlowType.direct,
 ));
 ```
@@ -84,7 +84,7 @@ await MeiliCar.open(MeiliCarParams(
 ```dart
 await MeiliCar.open(MeiliCarParams(
   ptid: 'your-ptid',
-  env: 'prod',
+  env: MeiliCarEnv.prod,
   flow: FlowType.bookingManager,
   additionalParams: AdditionalParams(
     confirmationId: '1234ABCD',
@@ -98,15 +98,13 @@ await MeiliCar.open(MeiliCarParams(
 ```dart
 await MeiliCar.open(MeiliCarParams(
   ptid: 'your-ptid',
-  env: 'prod',
+  env: MeiliCarEnv.prod,
   flow: FlowType.direct,
   availParams: AvailParams(
     pickupLocation: 'LHR',
     dropoffLocation: 'LHR',
-    pickupDate: '2025-06-01',
-    pickupTime: '10:00',
-    dropoffDate: '2025-06-08',
-    dropoffTime: '10:00',
+    pickupDateTime: DateTime(2025, 6, 1, 10),
+    dropoffDateTime: DateTime(2025, 6, 8, 10),
     driverAge: 30,
     currencyCode: 'GBP',
     residency: 'GB',
@@ -119,6 +117,10 @@ Every `AvailParams` field is optional. Pass only what you want to prefill and th
 ```dart
 availParams: AvailParams(currencyCode: 'GBP'),
 ```
+
+Pass the pickup and drop-off as a `DateTime`, or as `pickupDate` (`yyyy-MM-dd`) and
+`pickupTime` (`HH:mm`) strings, never both: setting a `DateTime` together with its
+strings is an assertion error. See [Avail params](#avail-params) for what reaches the SDKs.
 
 ### Listening for events
 
@@ -141,6 +143,9 @@ class _MyPageState extends State<MyPage> {
         case MeiliCarBookingFlowEnded():
           // Booking complete; the SDK returns to its search panel right after this
           break;
+        case MeiliCarBookingSucceeded(:final reservation):
+          // A reservation was just made (record the conversion)
+          log('Booked ${reservation['confirmationId']}');
         case MeiliCarErrorEvent(:final area, :final kind, :final message):
           // An SDK-internal failure occurred (log it, report to analytics, etc.)
           log('MeiliCar error: $area/$kind — $message');
@@ -151,6 +156,21 @@ class _MyPageState extends State<MyPage> {
   }
 }
 ```
+
+| Event | When it fires | Platforms |
+|-------|---------------|-----------|
+| `MeiliCarFlowDismissed` | The user closed the MeiliCar UI | iOS, Android |
+| `MeiliCarBookingSucceeded` | Right after a reservation succeeds, once per booking | iOS, Android |
+| `MeiliCarBookingFlowEnded` | The booking flow reached its end | iOS, Android |
+| `MeiliCarErrorEvent` | An SDK-internal request failed | iOS, Android |
+| `MeiliCarAnalyticsEvent` | The SDK tracked an analytics event | iOS only, see [Known limitations](#known-limitations) |
+| `MeiliCarUnknownEvent` | An event type this plugin version does not model | iOS, Android |
+
+`MeiliCarBookingSucceeded.reservation` is the raw reservation response from the booking API,
+decoded from JSON, plus a top-level `meiliSessionId`. It has the same keys on iOS and
+Android, includes the traveller's contact details, and fires as soon as the reservation
+succeeds, before the confirmation screen appears, like the web app's booking success event.
+If the native payload cannot be decoded, `reservation` is an empty map.
 
 `MeiliCarBookingFlowEnded` is informational: the SDK resets itself to its own
 search panel immediately after this event; no host action is required. Hosts
@@ -166,12 +186,106 @@ listener.
 
 ## Environments
 
+`MeiliCarParams.env` takes a `MeiliCarEnv`:
+
 | Value | Description |
 |-------|-------------|
-| `'prod'` | Production |
-| `'pre_prod'` | Pre-production |
-| `'uat'` | UAT |
-| `'dev'` | Development |
+| `MeiliCarEnv.prod` | Production |
+| `MeiliCarEnv.preProd` | Pre-production |
+| `MeiliCarEnv.uat` | UAT |
+| `MeiliCarEnv.dev` | Development |
+
+The enum name is what reaches the native SDKs. A value they do not accept
+fails `MeiliCar.open` with a `PlatformException` (`INVALID_ARGUMENT`) instead of opening dev.
+
+## Avail params
+
+`AvailParams` keys reach both SDKs one-to-one, with the same name on the iOS and Android
+`AvailParams`:
+
+| Dart key | iOS `AvailParams` field | Android `AvailParams` field |
+|----------|-------------------------|-----------------------------|
+| `pickupLocation` | `pickupLocation` | `pickupLocation` |
+| `dropoffLocation` | `dropoffLocation` | `dropoffLocation` |
+| `pickupDate` | `pickupDate` | `pickupDate` |
+| `pickupTime` | `pickupTime` | `pickupTime` |
+| `dropoffDate` | `dropoffDate` | `dropoffDate` |
+| `dropoffTime` | `dropoffTime` | `dropoffTime` |
+| `pickupDateTime` | `pickupDate` + `pickupTime` | `pickupDate` + `pickupTime` |
+| `dropoffDateTime` | `dropoffDate` + `dropoffTime` | `dropoffDate` + `dropoffTime` |
+| `driverAge` | `driverAge` | `driverAge` |
+| `currencyCode` | `currencyCode` | `currencyCode` |
+| `residency` | `residency` | `residency` |
+| `discountRequested` | `discountRequested` | `discountRequested` |
+| `partnerLoyaltyAccountTier` | `partnerLoyaltyAccountTier` | `partnerLoyaltyAccountTier` |
+
+- `pickupDateTime` and `dropoffDateTime` are split in Dart and never cross the channel: the
+  plugin sends `pickupDate` as `yyyy-MM-dd` and `pickupTime` as `HH:mm` (and the same for
+  drop-off) from the `DateTime`'s own fields, with no time-zone conversion.
+- A `null` field is left out of the map. Everything else is passed through as given: the
+  SDKs treat blank strings (empty or whitespace only) and a `driverAge` of 0 or less as unset,
+  so the plugin does not normalise them.
+
+## Additional params
+
+`AdditionalParams` reaches both SDKs key for key, with the SDKs' own names and types.
+
+| Dart key | iOS `AdditionalParams` field | Android `AdditionalParams` field |
+|----------|------------------------------|----------------------------------|
+| `supplierLoyaltyAccounts` (`List<SupplierLoyaltyAccount>`) | `supplierLoyaltyAccounts: [SupplierLoyaltyAccount]` | `supplierLoyaltyAccounts: List<SupplierLoyaltyAccount>` |
+| `phoneNumbers` (`List<String>`, international format with a leading `+`) | `phoneNumbers: [String]` | `phoneNumbers: List<String>` |
+| `givenName` | `givenName` | `givenName` |
+| `corporateCode` | `corporateCode` | `corporateCode` |
+| `partnerLoyaltyAccount` | `partnerLoyaltyAccount` | `partnerLoyaltyAccount` |
+| `partnerLoyaltyAccountTier` | `partnerLoyaltyAccountTier` | `partnerLoyaltyAccountTier` |
+| `numberOfPassengers` | `numberOfPassengers` | `numberOfPassengers` |
+| `customerPartnerCode` | `customerPartnerCode` | `customerPartnerCode` |
+| `flightNumber` | `flightNumber` | `flightNumber` |
+| `passengerNameRecord` | `passengerNameRecord` | `passengerNameRecord` |
+| `superPassengerNameRecord` | `superPassengerNameRecord` | `superPassengerNameRecord` |
+| `infant` | `infant` | `infant` |
+| `child` | `child` | `child` |
+| `teenager` | `teenager` | `teenager` |
+| `fareTypeAndFlex` | `fareTypeAndFlex` | `fareTypeAndFlex` |
+| `departureAirport` | `departureAirport` | `departureAirport` |
+| `arrivalAirport` | `arrivalAirport` | `arrivalAirport` |
+| `ancillaryActivity` | `ancillaryActivity` | `ancillaryActivity` |
+| `airlineFareAmount` | `airlineFareAmount` | `airlineFareAmount` |
+| `airlineFareCurrency` | `airlineFareCurrency` | `airlineFareCurrency` |
+| `partnerCustomerID` | `partnerCustomerID` | `partnerCustomerID` |
+| `firstName` | `firstName` | `firstName` |
+| `lastName` | `lastName` | `lastName` |
+| `email` | `email` | `email` |
+| `companyName` | `companyName` | `companyName` |
+| `addressLine1` | `addressLine1` | `addressLine1` |
+| `postCode` | `postCode` | `postCode` |
+| `city` | `city` | `city` |
+| `state` | `state` | `state` |
+| `confirmationId` | `confirmationId` | `confirmationId` |
+| `prefillOnly` | `prefillOnly` | `prefillOnly` |
+
+`SupplierLoyaltyAccount(customerAccount: ..., supplierName: ...)` has the same name and fields
+on both SDKs; `supplierName` is optional. An element without a `String` `customerAccount`, or
+that is not a map, is skipped on both platforms.
+
+```dart
+additionalParams: AdditionalParams(
+  supplierLoyaltyAccounts: [
+    SupplierLoyaltyAccount(customerAccount: '123456', supplierName: 'Hertz'),
+    SupplierLoyaltyAccount(customerAccount: '789012'),
+  ],
+  phoneNumbers: ['+353871234567'],
+  givenName: 'Ada',
+  corporateCode: 'ACME-42',
+),
+```
+
+## Known limitations
+
+- **Android analytics:** `MeiliCarAnalyticsEvent` is only sent on iOS. Android forwarding arrives
+  in a later 0.10.x release, after the Android SDK exposes a public analytics API (MPD-7113).
+- **iOS 15:** the funnel is not available natively, so the SDK opens its web fallback. The
+  fallback sends no `MeiliCarBookingSucceeded`, and it receives the params only through its query.
 
 ## Migrating from `meili_flutter`
 

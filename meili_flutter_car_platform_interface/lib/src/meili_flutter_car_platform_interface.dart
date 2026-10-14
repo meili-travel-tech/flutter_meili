@@ -24,14 +24,8 @@ abstract class MeiliCarFlutterPlatform extends PlatformInterface {
   }
 
   /// A broadcast stream of [MeiliCarEvent]s emitted by the native SDK
-  /// (lifecycle events plus forwarded analytics).
+  /// (lifecycle events, booking success, errors and forwarded analytics).
   Stream<MeiliCarEvent> get events {
     throw UnimplementedError('events has not been implemented.');
-  }
-
-  /// Kept for older app packages that still call it. A no-op from
-  /// MeiliCarSDK 1.13.0, which resets itself to its search panel on its own.
-  Future<void> popToRoot() {
-    throw UnimplementedError('popToRoot() has not been implemented.');
   }
 }

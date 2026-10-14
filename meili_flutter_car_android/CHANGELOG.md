@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.0
+
+- Pins `com.meili.travel:meili-car-sdk` 1.13.0 (MPD-11767).
+
+- **Breaking:** the environment is matched exactly against `prod`, `preProd`, `uat` and `dev`; `pre_prod`, `production`, other casings and unknown values now fail `openMeiliViewController` with an `INVALID_ARGUMENT` error instead of silently opening dev; `ptid` and `env` are validated before the activity check. Requires the `MeiliCarEnv` enum from `meili_flutter_car_platform_interface` (MPD-11767).
+- **Breaking:** `supplierLoyaltyAccounts` is read as a list of `{customerAccount, supplierName}` maps into the SDK's `SupplierLoyaltyAccount` (previously only the first account reached the SDK), `phoneNumbers` as a list of strings, and `givenName` and `corporateCode` are passed through. Elements that are not a map, or lack a `String` `customerAccount`, are skipped. Requires the `meili_flutter_car_platform_interface` types and `meili-car-sdk` 1.13.0 (MPD-11767).
+- **New:** forwards `MeiliCarComposeListener.onBookingSucceeded` as a `bookingSucceeded` event with the reservation JSON decoded to a map (an undecodable or non-object body gives an empty map). Requires `meili-car-sdk` 1.13.0 and `meili_flutter_car_platform_interface` with `MeiliCarBookingSucceeded`. The plugin now depends on `kotlinx-serialization-json` 1.9.0, which the SDK already uses (MPD-11767).
+- **Breaking:** the `popToRoot` method-channel case is removed (MPD-11767).
+- A host `MainActivity` that is not a `ComponentActivity` now fails `openMeiliViewController` with a `NO_ACTIVITY` error naming the attached class and saying `MainActivity` must extend `FlutterFragmentActivity`; with no activity attached the error says so. A warning is logged when the plugin attaches to such an activity.
+- Analytics forwarding (`MeiliCarAnalyticsEvent`) is not sent on Android yet; it arrives in a later 0.10.x, after the Android SDK has a public analytics API (MPD-7113).
+
 ## 0.6.0
 
 - Pins `com.meili.travel:meili-car-sdk` `1.12.0`, which resolves vendor-link

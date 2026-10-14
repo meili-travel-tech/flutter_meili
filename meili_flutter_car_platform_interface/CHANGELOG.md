@@ -1,3 +1,11 @@
+## 0.7.0
+
+- **Breaking:** `MeiliCarParams.env` is now a `MeiliCarEnv` (`prod`, `preProd`, `uat`, `dev`) instead of a `String`, sent over the channel as its name. Replace `env: 'prod'` with `env: MeiliCarEnv.prod`; the old `'pre_prod'` spelling becomes `MeiliCarEnv.preProd`. There is no string alias (MPD-11767).
+- **Breaking:** `AdditionalParams.supplierLoyaltyAccounts` is now a `List<SupplierLoyaltyAccount>` (new, `customerAccount` required, `supplierName` optional) instead of a `List<String>`, and `phoneNumbers` is a `List<String>` in international format with a leading `+` instead of a `List<int>`. `AdditionalParams` gains `givenName` and `corporateCode`. Replace `supplierLoyaltyAccounts: ['123']` with `[SupplierLoyaltyAccount(customerAccount: '123')]` and `phoneNumbers: [353871234567]` with `['+353871234567']`. There are no aliases for the old types (MPD-11767).
+- **Breaking:** `AvailParams.toMap` no longer sends `pickupDateTime`/`dropoffDateTime`. A `DateTime` is split into `pickupDate` (`yyyy-MM-dd`) and `pickupTime` (`HH:mm`), and the same for drop-off, so both SDKs parse it; setting a `DateTime` together with its separate strings is an assertion error. `toMap` on `MeiliCarParams`, `AvailParams` and `AdditionalParams` now leaves out null entries only and passes blanks and a `driverAge` of 0 through: the SDKs treat them as unset (MPD-11767).
+- **New (breaking for exhaustive switches):** `MeiliCarBookingSucceeded(reservation)`, a `MeiliCarEvent` for `{type: bookingSucceeded, reservation: <map>}`. `reservation` is the raw reservation response from the booking API plus a top-level `meiliSessionId`, with the same keys on iOS and Android. It decodes leniently: a missing, null or wrong-typed `reservation` gives an empty map. Add a `MeiliCarBookingSucceeded` case to any `switch` over `MeiliCarEvent` that has no default (MPD-11767).
+- **Breaking:** `MeiliCarFlutterPlatform.popToRoot()` and the `popToRoot` method-channel call are removed. It was a no-op on both platforms since the SDKs restart the funnel themselves; delete the call (MPD-11767).
+
 ## 0.6.0
 
 - **New (breaking for exhaustive switches):** `MeiliCarErrorEvent`, a `MeiliCarEvent` forwarding SDK-internal failures (config,

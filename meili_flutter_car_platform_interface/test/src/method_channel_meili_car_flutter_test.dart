@@ -24,7 +24,11 @@ void main() {
 
     test('open invokes openMeiliViewController with params', () async {
       await impl.open(
-        MeiliCarParams(ptid: '100.9', flow: FlowType.direct, env: 'dev'),
+        MeiliCarParams(
+          ptid: '100.9',
+          flow: FlowType.direct,
+          env: MeiliCarEnv.dev,
+        ),
       );
       expect(log, hasLength(1));
       expect(log.single.method, 'openMeiliViewController');
@@ -34,10 +38,15 @@ void main() {
       expect(args['env'], 'dev');
     });
 
-    test('popToRoot invokes the popToRoot method', () async {
-      await impl.popToRoot();
-      expect(log, hasLength(1));
-      expect(log.single.method, 'popToRoot');
+    test('open sends the env enum name', () async {
+      await impl.open(
+        MeiliCarParams(
+          ptid: '100.9',
+          flow: FlowType.direct,
+          env: MeiliCarEnv.preProd,
+        ),
+      );
+      expect((log.single.arguments as Map)['env'], 'preProd');
     });
   });
 }

@@ -2,25 +2,26 @@ import 'package:meili_flutter_car/meili_flutter_car.dart';
 
 /// The API environment the sample app points the SDK at.
 ///
-/// Mirrors the iOS Sample App's environment picker. [wireValue] is the raw
-/// string passed to [MeiliCarParams.env]; [label] is what the picker shows.
+/// Mirrors the iOS Sample App's environment picker. [carEnv] is the value
+/// passed to [MeiliCarParams.env]; [label] is what the picker shows.
 enum MeiliEnv {
-  dev('dev', 'Dev'),
-  uat('uat', 'UAT'),
-  preProd('preProd', 'Pre-Prod'),
-  prod('prod', 'Prod');
+  dev(MeiliCarEnv.dev, 'Dev'),
+  uat(MeiliCarEnv.uat, 'UAT'),
+  preProd(MeiliCarEnv.preProd, 'Pre-Prod'),
+  prod(MeiliCarEnv.prod, 'Prod');
 
-  const MeiliEnv(this.wireValue, this.label);
+  const MeiliEnv(this.carEnv, this.label);
 
   /// The value sent to the native SDK via [MeiliCarParams.env].
-  final String wireValue;
+  final MeiliCarEnv carEnv;
 
   /// The human-readable label shown in the picker.
   final String label;
 
-  /// Resolves a persisted [wireValue] back to an enum, defaulting to [dev].
-  static MeiliEnv fromWire(String? value) => MeiliEnv.values.firstWhere(
-        (env) => env.wireValue == value,
+  /// Resolves a persisted [MeiliCarEnv] name back to an enum, defaulting to
+  /// [dev].
+  static MeiliEnv fromName(String? value) => MeiliEnv.values.firstWhere(
+        (env) => env.carEnv.name == value,
         orElse: () => MeiliEnv.dev,
       );
 }
@@ -37,6 +38,7 @@ class MeiliSettings {
     this.flow = FlowType.direct,
     this.overrideCurrency = false,
     this.currency = 'EUR',
+    this.overrideDates = false,
     this.confirmationId = '',
     this.lastName = '',
     this.prefillOnly = false,
@@ -46,12 +48,13 @@ class MeiliSettings {
   /// Rebuilds a snapshot from its [toJson] representation.
   factory MeiliSettings.fromJson(Map<String, dynamic> json) => MeiliSettings(
         ptid: json['ptid'] as String? ?? '100.9',
-        env: MeiliEnv.fromWire(json['env'] as String?),
+        env: MeiliEnv.fromName(json['env'] as String?),
         flow: json['flow'] == 'bookingManager'
             ? FlowType.bookingManager
             : FlowType.direct,
         overrideCurrency: json['overrideCurrency'] as bool? ?? false,
         currency: json['currency'] as String? ?? 'EUR',
+        overrideDates: json['overrideDates'] as bool? ?? false,
         confirmationId: json['confirmationId'] as String? ?? '',
         lastName: json['lastName'] as String? ?? '',
         prefillOnly: json['prefillOnly'] as bool? ?? false,
@@ -73,6 +76,10 @@ class MeiliSettings {
   /// Currency code used when [overrideCurrency] is on.
   final String currency;
 
+  /// Whether to seed the search with a pickup and drop-off [DateTime], sent
+  /// through [AvailParams.pickupDateTime] and [AvailParams.dropoffDateTime].
+  final bool overrideDates;
+
   /// Booking confirmation id for the Booking Manager flow.
   final String confirmationId;
 
@@ -92,6 +99,7 @@ class MeiliSettings {
     FlowType? flow,
     bool? overrideCurrency,
     String? currency,
+    bool? overrideDates,
     String? confirmationId,
     String? lastName,
     bool? prefillOnly,
@@ -103,6 +111,7 @@ class MeiliSettings {
       flow: flow ?? this.flow,
       overrideCurrency: overrideCurrency ?? this.overrideCurrency,
       currency: currency ?? this.currency,
+      overrideDates: overrideDates ?? this.overrideDates,
       confirmationId: confirmationId ?? this.confirmationId,
       lastName: lastName ?? this.lastName,
       prefillOnly: prefillOnly ?? this.prefillOnly,
@@ -113,10 +122,11 @@ class MeiliSettings {
   /// Serializes the settings for persistence.
   Map<String, dynamic> toJson() => <String, dynamic>{
         'ptid': ptid,
-        'env': env.wireValue,
+        'env': env.carEnv.name,
         'flow': flow.name,
         'overrideCurrency': overrideCurrency,
         'currency': currency,
+        'overrideDates': overrideDates,
         'confirmationId': confirmationId,
         'lastName': lastName,
         'prefillOnly': prefillOnly,
@@ -124,12 +134,14 @@ class MeiliSettings {
       };
 
   /// Builds the [MeiliCarParams] used to launch the SDK from these settings.
-  MeiliCarParams toMeiliParams() {
+  ///
+  /// [now] anchors the seeded dates and is injectable for testing.
+  MeiliCarParams toMeiliParams({DateTime? now}) {
     return MeiliCarParams(
       ptid: ptid,
       flow: flow,
-      env: env.wireValue,
-      availParams: overrideCurrency ? _currencyOnlyAvailParams() : null,
+      env: env.carEnv,
+      availParams: _availParams(now ?? DateTime.now()),
       additionalParams: _additionalParams(),
     );
   }
@@ -148,5 +160,19 @@ class MeiliSettings {
     );
   }
 
-  AvailParams _currencyOnlyAvailParams() => AvailParams(currencyCode: currency);
+  /// Search prefill, or null when neither the currency nor the dates are set.
+  AvailParams? _availParams(DateTime now) {
+    if (!overrideCurrency && !overrideDates) {
+      return null;
+    }
+    return AvailParams(
+      currencyCode: overrideCurrency ? currency : null,
+      pickupDateTime: overrideDates
+          ? DateTime(now.year, now.month, now.day + 7, 10, 30)
+          : null,
+      dropoffDateTime: overrideDates
+          ? DateTime(now.year, now.month, now.day + 14, 16, 45)
+          : null,
+    );
+  }
 }

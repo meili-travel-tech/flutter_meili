@@ -5,7 +5,6 @@ import 'package:meili_flutter_car_platform_interface/meili_flutter_car_platform_
 
 class _MockMeiliFlutter extends MeiliCarFlutterPlatform {
   bool opened = false;
-  bool poppedToRoot = false;
   final StreamController<MeiliCarEvent> controller =
       StreamController<MeiliCarEvent>.broadcast();
 
@@ -16,11 +15,6 @@ class _MockMeiliFlutter extends MeiliCarFlutterPlatform {
 
   @override
   Stream<MeiliCarEvent> get events => controller.stream;
-
-  @override
-  Future<void> popToRoot() async {
-    poppedToRoot = true;
-  }
 }
 
 void main() {
@@ -36,14 +30,9 @@ void main() {
 
     test('open delegates to the instance', () async {
       await MeiliCarFlutterPlatform.instance.open(
-        MeiliCarParams(ptid: '1', flow: FlowType.direct, env: 'dev'),
+        MeiliCarParams(ptid: '1', flow: FlowType.direct, env: MeiliCarEnv.dev),
       );
       expect(mock.opened, isTrue);
-    });
-
-    test('popToRoot delegates to the instance', () async {
-      await MeiliCarFlutterPlatform.instance.popToRoot();
-      expect(mock.poppedToRoot, isTrue);
     });
 
     test('events surfaces emitted MeiliCarEvents', () {

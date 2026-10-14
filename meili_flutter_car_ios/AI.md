@@ -7,10 +7,20 @@ Key code
   `meili_flutter_car/events` in `MeiliEventDispatcher`.
 - UIKit wrapper: `MeiliViewController` embeds SwiftUI `MeiliCarView` from `MeiliCarSDK`, via the
   plugin-internal `MeiliWrapperView`.
+- `MeiliWrapperView` sets the SDK's `dismissAction`, `onEndBookingFlow` (argument-less) and
+  `onBookingSucceeded`; the last decodes its reservation JSON with `bookingSucceededEvent(reservationJson:)`
+  (an undecodable or non-object body gives an empty `reservation`) and sends `bookingSucceeded`.
 - `MeiliFlutterAnalyticsProvider` registers with `MeiliCarAnalytics.shared.addProvider(_:)` and
   forwards every SDK analytics event to Dart through `MeiliEventDispatcher`.
 - Swift sources live in `ios/meili_flutter_car_ios/Sources/meili_flutter_car_ios/`. Both build
   systems compile this one copy.
+
+Tests
+- Swift Testing tests live in the example app's `RunnerTests` target
+  (`meili_flutter_car/example/ios/RunnerTests/`) and read the platform interface's channel fixture
+  by repo path. Run from `meili_flutter_car/example/ios` after `flutter pub get` and
+  `flutter build ios --config-only --simulator`: `xcodebuild test -workspace Runner.xcworkspace
+  -scheme Runner -destination 'id=<simulator UDID>' -only-testing:RunnerTests`.
 
 Build systems (both supported)
 - CocoaPods: `ios/meili_flutter_car_ios.podspec` (default path). `source_files`

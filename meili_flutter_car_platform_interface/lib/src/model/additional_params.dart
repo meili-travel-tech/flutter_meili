@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
+import 'package:meili_flutter_car_platform_interface/src/model/supplier_loyalty_account.dart';
+
 class AdditionalParams {
   AdditionalParams({
     this.partnerLoyaltyAccount,
@@ -13,6 +15,7 @@ class AdditionalParams {
     this.child,
     this.teenager,
     this.supplierLoyaltyAccounts,
+    this.corporateCode,
     this.fareTypeAndFlex,
     this.departureAirport,
     this.arrivalAirport,
@@ -31,6 +34,7 @@ class AdditionalParams {
     this.state,
     this.confirmationId,
     this.prefillOnly,
+    this.givenName,
   });
 
   String? partnerLoyaltyAccount;
@@ -43,7 +47,8 @@ class AdditionalParams {
   int? infant;
   int? child;
   int? teenager;
-  List<String>? supplierLoyaltyAccounts;
+  List<SupplierLoyaltyAccount>? supplierLoyaltyAccounts;
+  String? corporateCode;
   String? fareTypeAndFlex;
   String? departureAirport;
   String? arrivalAirport;
@@ -54,7 +59,11 @@ class AdditionalParams {
   String? firstName;
   String? lastName;
   String? email;
-  List<int>? phoneNumbers;
+
+  /// Phone numbers in international format with a leading `+`, such as
+  /// `+353871234567`.
+  List<String>? phoneNumbers;
+
   String? companyName;
   String? addressLine1;
   String? postCode;
@@ -62,6 +71,7 @@ class AdditionalParams {
   String? state;
   String? confirmationId;
   bool? prefillOnly;
+  String? givenName;
 
   Map<String, dynamic> toMap() {
     return {
@@ -75,7 +85,9 @@ class AdditionalParams {
       'infant': infant,
       'child': child,
       'teenager': teenager,
-      'supplierLoyaltyAccounts': supplierLoyaltyAccounts,
+      'supplierLoyaltyAccounts':
+          supplierLoyaltyAccounts?.map((account) => account.toMap()).toList(),
+      'corporateCode': corporateCode,
       'fareTypeAndFlex': fareTypeAndFlex,
       'departureAirport': departureAirport,
       'arrivalAirport': arrivalAirport,
@@ -94,7 +106,8 @@ class AdditionalParams {
       'state': state,
       'confirmationId': confirmationId,
       'prefillOnly': prefillOnly,
-    };
+      'givenName': givenName,
+    }..removeWhere((_, value) => value == null);
   }
 }
 

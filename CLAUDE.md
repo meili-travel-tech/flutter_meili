@@ -32,7 +32,8 @@ Android requirements
 Notes
 - `MeiliCar.open()` presents the SDK UI modally; there is no inline widget.
 - `MeiliCar.events` forwards lifecycle events (`MeiliCarFlowDismissed`,
-  `MeiliCarBookingFlowEnded`) and SDK failures (`MeiliCarErrorEvent`) on both platforms. Forwarded analytics events
+  `MeiliCarBookingFlowEnded`), booking success (`MeiliCarBookingSucceeded`) and SDK failures
+  (`MeiliCarErrorEvent`) on both platforms. Forwarded analytics events
   (`MeiliCarAnalyticsEvent`) are iOS-only for now.
 
 Package notes
@@ -58,4 +59,4 @@ Local markdown in the workspace root's `.scratch/<JIRA-KEY>/` (`../../.scratch/`
 
 ### Domain docs
 
-Single-context: `GLOSSARY.md` and `docs/adr/` at the repo root, created when the first term or decision is resolved. See `docs/agents/domain.md`.
+Single-context: `GLOSSARY.md` and `docs/adr/` at the repo root, created when the first term or decision is resolved. The plugin's contract decision (wrappers conform to the native SDKs) spans repos and lives in the Meili native workspace's root `adr/`: https://github.com/meili-travel-tech/ux-native-agents/blob/main/adr/0001-wrappers-conform-to-the-native-sdks.md. See `docs/agents/domain.md`.

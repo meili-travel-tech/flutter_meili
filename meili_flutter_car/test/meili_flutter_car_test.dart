@@ -27,7 +27,7 @@ void main() {
   final params = MeiliCarParams(
     ptid: '100.10',
     flow: FlowType.direct,
-    env: 'dev',
+    env: MeiliCarEnv.dev,
   );
 
   test('open delegates to platform instance', () async {
