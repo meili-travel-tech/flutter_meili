@@ -6,6 +6,7 @@ How the engineering skills use this repo's domain documentation.
 
 - **`GLOSSARY.md`** at the repo root: the glossary for this repo's domain.
 - **`docs/adr/`**: decisions that touch the area you are about to work in.
+- When working from the Meili native workspace, its root **`adr/`** holds the decisions that span repos; ADR 0001 there (wrappers conform to the native SDKs) governs this plugin.
 - When working from the Meili native workspace, its root **`GLOSSARY-MAP.md`** lists every repo's glossary and how the contexts relate.
 
 If a file doesn't exist, proceed silently. `/domain-modeling` (reached through `/grill-with-docs`) creates `GLOSSARY.md` and ADRs when a term or decision is actually resolved. Both are committed.

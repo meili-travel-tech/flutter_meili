@@ -18,4 +18,4 @@ Notes
   the example's iOS `RunnerTests` all read it by repo path; extend it, never copy it. Its
   top-level `events` object holds the canonical event maps (`bookingSucceeded`: the `gw_makeres`
   body plus `meiliSessionId`); every layer decodes it. See
-  `docs/adr/0001-wrappers-conform-to-the-native-sdks.md`.
+  the workspace ADR https://github.com/meili-travel-tech/ux-native-agents/blob/main/adr/0001-wrappers-conform-to-the-native-sdks.md.
